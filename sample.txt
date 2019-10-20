@@ -1,0 +1,87 @@
+title="A Sample Set of Slides for dss"
+area="50,15"
+__________________________________________________
+|        A sample set of slides for dss          |
+|                                                |
+|                                                |
+|         DSS is a terminal .txt slide           |
+|         tool that uses premade .txt            |
+|         files similar to this one.             |
+|                                                |
+|         DSS has an advantage in that           |
+|         You can format and control             |
+|         exactly how the slide looks            |
+|                                                |
+|         DSS slides are simply sections         |
+|         of a text document that can            |
+|         be easily cycled through               |
+|                                                |
+|________________________________________________|
+__________________________________________________
+|        A sample set of slides for dss          |
+|                                                |
+|                                                |
+|      Reasons to use DSS:                       |
+|                                                |
+|       * It is minimal, foss goodness           |
+|                                                |
+|       * Creating slides is dead simple         |
+|                                                |
+|       * You have unlimited customizability     |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|________________________________________________|
+__________________________________________________
+|        A sample set of slides for dss          |
+|                                                |
+|                                                |
+|     With DSS you can enjoy increased           |
+|     productivity[0], vim-like bindings,        |
+|     terminal accessability, and if that        |
+|     is not enough, we offer a 30-day money     |
+|     back guarantee!                            |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|[0] Increased productivity not guaranteed       |
+|[1] We don't actually offer money back__________|
+__________________________________________________
+|        A sample set of slides for dss          |
+|                                                |
+|                                                |
+|     _____________________________________      |
+|     |                                   |      |
+|     |    We appreciate contributions!   |      |
+|     |__________________________________ |      |
+|                                                |
+|                                                |
+|      If you think that you can provide a       |
+|      usefull fix or feature to the project     |
+|      please see the contributing section       |
+|      of the readme.                            |
+|                                                |
+|                                                |
+|________________________________________________|
+__________________________________________________
+|        A sample set of slides for dss          |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|                                                |
+|________________________________________________|
