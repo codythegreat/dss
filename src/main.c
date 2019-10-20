@@ -5,8 +5,8 @@
 #include "main.h"
 
 void usage() {
-    fprintf(stderr, "%s", "Usage: dss [OPTION]... [FILE]\n");
-    fprintf(stderr, "%s", "A damn simple slide tool for the terminal.\n\n");
+    fprintf(stderr, "%s", "Usage: dss [FILE]\n");
+    fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
     fprintf(stderr, "%s", "With no FILE, or when FILE is -, read standard input.\n\n");
     exit(EXIT_FAILURE);
 }
@@ -17,11 +17,11 @@ void version() {
     exit(EXIT_SUCCESS);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     FILE *file;
     char buf[1000];
-    file = fopen("../sample.txt", "r"); // open the file as read only
+    file = fopen(argv[1], "r"); // open the file as read only
     if (!file) {
         fprintf(stderr, "could not read file.");
         return 1;
@@ -30,7 +30,7 @@ int main()
 
     char title[128];
     // todo : assign title value
-    int x = 55;
+    int x = 51;
     int y = 16;
     // todo : assign area to x/y values
     int currentSlide = 0;
@@ -42,16 +42,36 @@ int main()
     int i = 0;
     while(fgets(buf, 1000, file)!=NULL) {
         if (strstr(buf, "___")!=NULL || strstr(buf, "|")!=NULL) {
-            printf("%li\n", strlen(buf));
             strcat(slide[i], buf);
             if (strstr(buf, "_|")!=NULL) {
                 i++;
             }
         } else if (strstr(buf, "title")!=NULL) {
+            char quoted[128];
+            if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
+                strcat(title, quoted);
+		continue;
+            } else {
+                fprintf(stderr, "improper title in %s\n", argv[1]);
+            }
             continue; // todo : get title of slide show
         } else if (strstr(buf, "area")!=NULL) {
+            char quoted[10];
+            if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
+                //area == quoted;
+		continue;
+            } else {
+                fprintf(stderr, "improper area in %s\n", argv[1]);
+            }
             continue; // todo : get area of slide show
         } else if (strstr(buf, "slides")!=NULL) {
+            char quoted[10];
+            if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
+                //slideCount == quoted;
+		continue;
+            } else {
+                fprintf(stderr, "improper slide count in %s\n", argv[1]);
+            }
             continue; // todo : get slide count of slide show
         } else {
             continue;
@@ -63,6 +83,8 @@ int main()
     noecho();
     clear();
     while(1) {
+	printw(title);
+	printw("\n");
         printw(slide[currentSlide]);
         char keyInput = getch();
         if (keyInput == 'q' || keyInput == 'Q') {

@@ -1,5 +1,6 @@
 title="A Sample Set of Slides for dss"
 area="50,15"
+slides="5"
 __________________________________________________
 |        A sample set of slides for dss          |
 |                                                |
