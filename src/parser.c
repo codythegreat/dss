@@ -1,3 +1,8 @@
+// this file can be ignored for right now
+// it contains code from main that parses 
+// the .txt file. eventually this will be
+// imported into main.c
+
 #include <stdio.h>
 #include <string.h>
 
