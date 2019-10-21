@@ -11,7 +11,7 @@ void usage() {
     fprintf(stderr, "%s", "  -v     display the version number and copyright\n");
     fprintf(stderr, "%s", "  -x     change the slide width value (default 100)\n");
     fprintf(stderr, "%s", "  -y     change the slide height value (default 30)\n");
-    fprintf(stderr, "%s", "  -s     set the number of slides\n");
+    fprintf(stderr, "%s", "  -s     set the number of slides (default 15)\n");
     fprintf(stderr, "%s", "File is currently a required argument.\n\n");
     exit(EXIT_FAILURE);
 }
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
     int x = 100; // default value. Practical solutions typically occupy something like 50x15
     int y = 30;  // This should allow for plenty of slides without ever risking memory issues
-    int slideCount = 5; // default value; should be changed with each file
+    int slideCount = 15; // default value; should be changed with each file
 
     char ch;
 

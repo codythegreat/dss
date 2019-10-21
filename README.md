@@ -4,7 +4,7 @@ Dead Simple Slides (DSS) is a text/terminal based slide presentation tool that r
 
 DSS is in the very early stages of development. At this moment it can display the slides in the sample.txt files profided, but it can't do much else. 
 
-### Planned features
+### Planned Features
 
 DSS's main goal is to display text slides in their raw format, so outside of this functionality there probably won't be many other features to note.
 
@@ -25,7 +25,9 @@ cd into the src directory and run the following command:
 
 Assuming that you have compiled the main.c file as a simple a.out file and you are using the sample txt, you can do this:
 
-`./a.out -x 51 -y 16 sample.txt`
+`./a.out -x 51 -y 16 -s 5 sample.txt`
+
+Note that you can omit the x/y/s values. Defaults are 100/30/15.
 
 ### Contributing
 
