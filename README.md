@@ -15,7 +15,7 @@ A few features that are planned include:
 + url detection and selection with H/L
 + bookmarking and jumping to bookmarks 
 
-### installation
+### Installation
 
 cd into the src directory and run the following command:
 
