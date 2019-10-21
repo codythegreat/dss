@@ -6,7 +6,7 @@
 #include "main.h"
 
 void usage() {
-    fprintf(stderr, "%s", "Usage: dss -x int -y int [FILE]\n");
+    fprintf(stderr, "%s", "Usage: dss [OPTIONS]... [FILE]\n");
     fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
     fprintf(stderr, "%s", "With no FILE, or when FILE is -, read standard input.\n\n");
     exit(EXIT_FAILURE);
@@ -20,12 +20,13 @@ void version() {
 
 int main(int argc, char *argv[])
 {
-    int x = 0;
-    int y = 0;
+    int x = 100; // default value. Practical solutions typically occupy something like 50x15
+    int y = 30;  // This should allow for plenty of slides without ever risking memory issues
+    int slideCount = 5; // default value; should be changed with each file
 
     char ch;
 
-    while ((ch=getopt(argc, argv, "x:y:"))!=EOF) {
+    while ((ch=getopt(argc, argv, "x:y:s:"))!=EOF) {
         switch (ch)
         {
         case 'x':
@@ -33,6 +34,9 @@ int main(int argc, char *argv[])
             break;
         case 'y':
             y = atoi(optarg);
+            break;
+        case 's':
+            slideCount = atoi(optarg);
             break;
         default:
             fprintf(stderr, "Unknown option '%s'\n", optarg);
@@ -56,46 +60,41 @@ int main(int argc, char *argv[])
     // todo : assign title value
     int currentSlide = 0;
     // todo : add ability to get maximum slide count
-    int slideCount = 5; // todo : add ability to find slide count in file
     char slide[slideCount][(x+1)*(y+1)]; // leave enough space for top row of underscore and newline characters
     slide[0][0] = '\0';
     // todo : add ability to get slide 
     // initialize ncurses
     int i = 0;
     while(fgets(buf, 1000, file)!=NULL) {
-        if (strstr(buf, "___")!=NULL || strstr(buf, "|")!=NULL) {
+        if (strstr(buf, "__________")!=NULL || strstr(buf, "|\n")!=NULL) { // finds line of slide
             strcat(slide[i], buf);
-            if (strstr(buf, "_|")!=NULL) {
-                i++;
-		slide[i][0] = '\0';
-            }
-        } else if (strstr(buf, "title")!=NULL) {
+        } else if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
+            i++;
+		    slide[i][0] = '\0';
+        } else if (strstr(buf, "title")!=NULL) { // finds title line
             char quoted[128];
             if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
                 strcat(title, quoted);
-		continue;
+		        continue;
             } else {
                 fprintf(stderr, "improper title in %s\n", argv[1]);
             }
-            continue; // todo : get title of slide show
         } else if (strstr(buf, "area")!=NULL) {
             char quoted[10];
             if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
                 //area == quoted;
-		continue;
+		        continue;
             } else {
                 fprintf(stderr, "improper area in %s\n", argv[1]);
             }
-            continue; // todo : get area of slide show
         } else if (strstr(buf, "slides")!=NULL) {
             char quoted[10];
             if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
                 //slideCount == quoted;
-		continue;
+		        continue;
             } else {
                 fprintf(stderr, "improper slide count in %s\n", argv[1]);
             }
-            continue; // todo : get slide count of slide show
         } else {
             continue;
         }
