@@ -47,23 +47,19 @@ int main(int argc, char *argv[])
     argv += optind;
     // todo : assign area to x/y values
     FILE *file;
-    char buf[1000];
     file = fopen(argv[0], "r"); // open the file as read only
     if (!file) {
         fprintf(stderr, "could not read file.");
         return 1;
     }
-    // todo : read a file dynamically from input.
 
     char title[128];
     title[0] = '\0';
-    // todo : assign title value
     int currentSlide = 0;
-    // todo : add ability to get maximum slide count
     char slide[slideCount][(x+1)*(y+1)]; // leave enough space for top row of underscore and newline characters
     slide[0][0] = '\0';
-    // todo : add ability to get slide 
-    // initialize ncurses
+    // parseTXT(*file, argv[0], title,slide, x, y);
+    char buf[1000];
     int i = 0;
     while(fgets(buf, 1000, file)!=NULL) {
         if (strstr(buf, "__________")!=NULL || strstr(buf, "|\n")!=NULL) { // finds line of slide
@@ -100,6 +96,7 @@ int main(int argc, char *argv[])
         }
     }
     fclose(file); // closes the file
+    // initialize ncurses
     initscr();
     cbreak();
     noecho();

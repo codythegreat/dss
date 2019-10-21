@@ -7,22 +7,24 @@
 #include <string.h>
 #include "parser.h"
 
-int parseTXT(FILE *inFile)
+void parseTXT(FILE *inFile, char *fileName, char *title, char slides[5][3131], int *x, int *y)
 {
+    char buf[1000];
     int i = 0;
     while(fgets(buf, 1000, inFile)!=NULL) {
         if (strstr(buf, "__________")!=NULL || strstr(buf, "|%*|")!=NULL) { // finds line of slide
-            strcat(slide[i], buf);
+            strcat(slides[i], buf);
         } else if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
             i++;
-		    slide[i][0] = '\0';
+		    slides[i][0] = '\0';
         } else if (strstr(buf, "title")!=NULL) { // finds title line
             char quoted[128];
             if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
-                strcat(title, quoted);
+                // strcat(*title, quoted);
+                *title = quoted;
 		        continue;
             } else {
-                fprintf(stderr, "improper title in %s\n", argv[1]);
+                fprintf(stderr, "improper title in %s\n", *fileName);
             }
         } else if (strstr(buf, "area")!=NULL) {
             char quoted[10];
@@ -30,7 +32,7 @@ int parseTXT(FILE *inFile)
                 //area == quoted;
 		        continue;
             } else {
-                fprintf(stderr, "improper area in %s\n", argv[1]);
+                fprintf(stderr, "improper area in %s\n", *fileName);
             }
         } else if (strstr(buf, "slides")!=NULL) {
             char quoted[10];
@@ -38,11 +40,10 @@ int parseTXT(FILE *inFile)
                 //slideCount == quoted;
 		        continue;
             } else {
-                fprintf(stderr, "improper slide count in %s\n", argv[1]);
+                fprintf(stderr, "improper slide count in %s\n", *fileName);
             }
         } else {
             continue;
         }
     }
-    return 1;
 }
