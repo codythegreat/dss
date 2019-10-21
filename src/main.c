@@ -8,7 +8,11 @@
 void usage() {
     fprintf(stderr, "%s", "Usage: dss [OPTIONS]... [FILE]\n");
     fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
-    fprintf(stderr, "%s", "With no FILE, or when FILE is -, read standard input.\n\n");
+    fprintf(stderr, "%s", "  -v     display the version number and copyright\n");
+    fprintf(stderr, "%s", "  -x     change the slide width value (default 100)\n");
+    fprintf(stderr, "%s", "  -y     change the slide height value (default 30)\n");
+    fprintf(stderr, "%s", "  -s     set the number of slides\n");
+    fprintf(stderr, "%s", "File is currently a required argument.\n\n");
     exit(EXIT_FAILURE);
 }
 
@@ -26,9 +30,11 @@ int main(int argc, char *argv[])
 
     char ch;
 
-    while ((ch=getopt(argc, argv, "x:y:s:"))!=EOF) {
+    while ((ch=getopt(argc, argv, "vx:y:s:"))!=EOF) {
         switch (ch)
         {
+        case 'v':
+            version();
         case 'x':
             x = atoi(optarg);
             break;
@@ -39,8 +45,7 @@ int main(int argc, char *argv[])
             slideCount = atoi(optarg);
             break;
         default:
-            fprintf(stderr, "Unknown option '%s'\n", optarg);
-            return 1;
+            usage();
         }
     }
     argc -= optind;
