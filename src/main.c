@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "main.h"
 
 void usage() {
-    fprintf(stderr, "%s", "Usage: dss [FILE]\n");
+    fprintf(stderr, "%s", "Usage: dss -x int -y int [FILE]\n");
     fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
     fprintf(stderr, "%s", "With no FILE, or when FILE is -, read standard input.\n\n");
     exit(EXIT_FAILURE);
@@ -19,9 +20,31 @@ void version() {
 
 int main(int argc, char *argv[])
 {
+    int x = 0;
+    int y = 0;
+
+    char ch;
+
+    while ((ch=getopt(argc, argv, "x:y:"))!=EOF) {
+        switch (ch)
+        {
+        case 'x':
+            x = atoi(optarg);
+            break;
+        case 'y':
+            y = atoi(optarg);
+            break;
+        default:
+            fprintf(stderr, "Unknown option '%s'\n", optarg);
+            return 1;
+        }
+    }
+    argc -= optind;
+    argv += optind;
+    // todo : assign area to x/y values
     FILE *file;
     char buf[1000];
-    file = fopen(argv[1], "r"); // open the file as read only
+    file = fopen(argv[0], "r"); // open the file as read only
     if (!file) {
         fprintf(stderr, "could not read file.");
         return 1;
@@ -29,14 +52,13 @@ int main(int argc, char *argv[])
     // todo : read a file dynamically from input.
 
     char title[128];
+    title[0] = '\0';
     // todo : assign title value
-    int x = 51;
-    int y = 16;
-    // todo : assign area to x/y values
     int currentSlide = 0;
     // todo : add ability to get maximum slide count
     int slideCount = 5; // todo : add ability to find slide count in file
     char slide[slideCount][(x+1)*(y+1)]; // leave enough space for top row of underscore and newline characters
+    slide[0][0] = '\0';
     // todo : add ability to get slide 
     // initialize ncurses
     int i = 0;
@@ -45,6 +67,7 @@ int main(int argc, char *argv[])
             strcat(slide[i], buf);
             if (strstr(buf, "_|")!=NULL) {
                 i++;
+		slide[i][0] = '\0';
             }
         } else if (strstr(buf, "title")!=NULL) {
             char quoted[128];
