@@ -19,7 +19,11 @@ A few features that are planned include:
 
 cd into the src directory and run the following command:
 
-`gcc -I path/to/DSS/include main.c -lncurses`
+`gcc -I path/to/DSS/include main.c -o dss -lncurses`
+
+or simply run the Makefile:
+
+`make dss`
 
 ### Usage
 
