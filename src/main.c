@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "main.h"
+#include "parser.h"
 
 void usage() {
     fprintf(stderr, "%s", "Usage: dss [OPTIONS]... [FILE]\n");
@@ -65,7 +66,7 @@ int main(int argc, char *argv[])
     int currentSlide = 0;
     char slide[slideCount][(x+1)*(y+1)]; // leave enough space for top row of underscore and newline characters
     slide[0][0] = '\0';
-    //parseTXT(*file);
+    // Slide* slides = parseTXT(file); to be used when parser.c is implemented
     char buf[1000];
     int i = 0;
     while(fgets(buf, 1000, file)!=NULL) {
@@ -111,6 +112,7 @@ int main(int argc, char *argv[])
     while(1) {
 	printw(title);
 	printw("\n");
+	// printw(slides[currentSlide].content); to be used when parser.c implemented
         printw(slide[currentSlide]);
         char keyInput = getch();
         if (keyInput == 'q' || keyInput == 'Q') {

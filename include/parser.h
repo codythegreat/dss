@@ -10,6 +10,6 @@ typedef struct
 } Slide;
 
 void parseArea(char *buffer, int* xVar, int* yVar);
-Slide *parseTXT(FILE *inFile);
+Slide* parseTXT(FILE *inFile);
 
 #endif
