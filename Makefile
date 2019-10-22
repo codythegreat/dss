@@ -1,8 +1,25 @@
-main.o: src/main.c include/main.h include/parser.h
-	gcc -c -I ./include src/main.c
+SRCS = src/main.c src/parser.c
+OBJS = $(SRCS:.c=.o)
 
-parser.o: src/parser.c include/parser.h
-	gcc -c -I ./include src/parser.c
+LDFLAGS = -lncurses
 
-dss: main.o parser.o
-	gcc main.o parser.o -o dss -lncurses
+all: dss
+
+# XXX only needed because of -I ./include:
+# generally speaking, Make knows
+# how to build C programs.
+%.o: %.c
+	$(CC) -c -I ./include $< -o $@
+
+# main.o: src/main.c include/main.h include/parser.h
+# 	$(CC) -c -I ./include src/main.c
+#
+# parser.o: src/parser.c include/parser.h
+# 	$(CC) -c -I ./include src/parser.c
+
+dss: $(OBJS)
+	$(CC) $(OBJS) -o dss $(LDFLAGS)
+
+clean:
+	$(RM) src/*.o *.o
+	$(RM) dss
