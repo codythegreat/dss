@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
         {
         case 'v':
             version();
+            break;
         case 'x':
             x = atoi(optarg);
             break;
@@ -46,6 +47,7 @@ int main(int argc, char *argv[])
             break;
         default:
             usage();
+            break;
         }
     }
     argc -= optind;
@@ -63,20 +65,20 @@ int main(int argc, char *argv[])
     int currentSlide = 0;
     char slide[slideCount][(x+1)*(y+1)]; // leave enough space for top row of underscore and newline characters
     slide[0][0] = '\0';
-    // parseTXT(*file, argv[0], title,slide, x, y);
+    //parseTXT(*file);
     char buf[1000];
     int i = 0;
     while(fgets(buf, 1000, file)!=NULL) {
-        if (strstr(buf, "__________")!=NULL || strstr(buf, "|\n")!=NULL) { // finds line of slide
+        if (strstr(buf, "___")!=NULL || strstr(buf, "|")!=NULL) { // finds line of slide
             strcat(slide[i], buf);
         } else if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
             i++;
-		    slide[i][0] = '\0';
+            slide[i][0] = '\0';
         } else if (strstr(buf, "title")!=NULL) { // finds title line
             char quoted[128];
             if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
                 strcat(title, quoted);
-		        continue;
+                continue;
             } else {
                 fprintf(stderr, "improper title in %s\n", argv[1]);
             }
