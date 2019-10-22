@@ -32,15 +32,11 @@ Slide *parseTXT(FILE *inFile)
     int x = 100;
     int y = 30;
     char *globalTitle;
-    // get meta variables
-    // todo : add ability to pull both area and slides from variables in txt file
     while(fgets(buf, 1000, inFile)!=NULL) {
         if (strstr(buf, "title")!=NULL) { // finds title line
             char quoted[128];
             if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
-                // strcat(*title, quoted);
                 globalTitle = quoted;
-		        continue;
             } else {
                 fprintf(stderr, "improper title\n");
             }
@@ -48,15 +44,13 @@ Slide *parseTXT(FILE *inFile)
             char quoted[10];
             if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
 		    parseArea(buf, &x, &y);
-		    continue;
             } else {
                 fprintf(stderr, "improper area\n");
             }
         } else if (strstr(buf, "slides")!=NULL) {
             char quoted[10];
             if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
-                //slideCount == quoted;
-		        continue;
+                s = atoi(quoted);
             } else {
                 fprintf(stderr, "improper slide count\n");
             }
