@@ -23,7 +23,7 @@ void parseArea(char *buffer, int* xVar, int* yVar)
     }
 }
 
-struct Slide *parseTXT(FILE *inFile)
+Slide *parseTXT(FILE *inFile)
 {
     char buf[1000];
     int i = 0;
@@ -65,7 +65,7 @@ struct Slide *parseTXT(FILE *inFile)
         }
     }
     // heap allocate array of structs, return pointer;
-    struct Slide *slides = malloc(sizeof(struct Slide) * s); // how should this be returned? pointer?
+    Slide *slides = malloc(sizeof(Slide) * s); // how should this be returned? pointer?
     char slideBody[s][(x+1)*(y+1)]; // should this be freed later on? 
     slideBody[0][0] = '\0'; // erases junk characters
 
