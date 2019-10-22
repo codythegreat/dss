@@ -23,7 +23,7 @@ cd into the src directory and run the following command:
 
 or simply run the Makefile:
 
-`make dss`
+`make`
 
 ### Usage
 
