@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
         {
         case 'v':
             version();
+            break;
         case 'x':
             x = atoi(optarg);
             break;
@@ -46,6 +47,7 @@ int main(int argc, char *argv[])
             break;
         default:
             usage();
+            break;
         }
     }
     argc -= optind;
