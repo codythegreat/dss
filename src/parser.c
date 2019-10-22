@@ -4,22 +4,33 @@
 // imported into main.c
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "parser.h"
 
-struct slide {
-    const char *title;
-    const char *content;
-    int number;
-    int r, g, b;
-};
+void parseArea(char *buffer, int* xVar, int* yVar)
+{
+    char* token;
+    int i = 0;
+    while ((token = strsep(&buffer, ","))!=NULL) {
+        if (i = 0) {
+            *xVar = atoi(token);
+	    i++;
+	} else {
+            *yVar = atoi(token);
+	    break;
+	}
+    }
+}
 
-void parseTXT(FILE *inFile)
+struct Slide *parseTXT(FILE *inFile)
 {
     char buf[1000];
     int i = 0;
-    // initialize global variables
-    int s, x, y;
+    // initialize default variables. loop detects if change is necessary
+    int s = 15;
+    int x = 100;
+    int y = 30;
     char *globalTitle;
     // get meta variables
     // todo : add ability to pull both area and slides from variables in txt file
@@ -28,7 +39,7 @@ void parseTXT(FILE *inFile)
             char quoted[128];
             if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
                 // strcat(*title, quoted);
-                *globalTitle = quoted;
+                globalTitle = quoted;
 		        continue;
             } else {
                 fprintf(stderr, "improper title\n");
@@ -36,8 +47,8 @@ void parseTXT(FILE *inFile)
         } else if (strstr(buf, "area")!=NULL) {
             char quoted[10];
             if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
-                //area == quoted;
-		        continue;
+		    parseArea(buf, &x, &y);
+		    continue;
             } else {
                 fprintf(stderr, "improper area\n");
             }
@@ -53,7 +64,8 @@ void parseTXT(FILE *inFile)
             break;
         }
     }
-    struct slide slides[s]; // how should this be returned? pointer?
+    // heap allocate array of structs, return pointer;
+    struct Slide *slides = malloc(sizeof(struct Slide) * s); // how should this be returned? pointer?
     char slideBody[s][(x+1)*(y+1)]; // should this be freed later on? 
     slideBody[0][0] = '\0'; // erases junk characters
 
@@ -61,9 +73,16 @@ void parseTXT(FILE *inFile)
         if (strstr(buf, "__________")!=NULL || strstr(buf, "|%*|")!=NULL) { // finds line of slide
             strcat(slideBody[i], buf);
         } else if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
-		    struct slide placeholder = {slideBody[i], *globalTitle, i, 0, 0, 0};
+		slides[i].title = globalTitle;
+		slides[i].content = slideBody[i];
+		slides[i].number = i+1;
+		slides[i].r = 0;
+		slides[i].g = 0;
+		slides[i].b = 0;
+                // slides[i] = {slideBody[i], *globalTitle, i, 0, 0, 0};
             i++;
             slideBody[i][0] = '\0';
         }
     }
+    return slides;
 }

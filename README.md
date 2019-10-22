@@ -29,7 +29,7 @@ or simply run the Makefile:
 
 Assuming that you have compiled the main.c file as a simple a.out file and you are using the sample txt, you can do this:
 
-`./a.out -x 51 -y 16 -s 5 sample.txt`
+`./dss -x 51 -y 16 -s 5 sample.txt`
 
 Note that you can omit the x/y/s values. Defaults are 100/30/15.
 
