@@ -6,14 +6,14 @@
 #include "main.h"
 
 void usage() {
-    fprintf(stderr, "%s", "Usage: dss [OPTIONS]... [FILE]\n");
+    fprintf(stderr, "%s", "Usage: dss [OPTIONS]... FILE\n");
     fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
+    fprintf(stderr, "%s", "  -h     print this message and exit\n");
     fprintf(stderr, "%s", "  -v     display the version number and copyright\n");
     fprintf(stderr, "%s", "  -x     change the slide width value (default 100)\n");
     fprintf(stderr, "%s", "  -y     change the slide height value (default 30)\n");
     fprintf(stderr, "%s", "  -s     set the number of slides (default 15)\n");
-    fprintf(stderr, "%s", "File is currently a required argument.\n\n");
-    exit(EXIT_FAILURE);
+    exit(EXIT_SUCCESS);
 }
 
 void version() {
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
     char ch;
 
-    while ((ch=getopt(argc, argv, "vx:y:s:"))!=EOF) {
+    while ((ch=getopt(argc, argv, "hvx:y:s:"))!=EOF) {
         switch (ch)
         {
         case 'v':
@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
         case 's':
             slideCount = atoi(optarg);
             break;
+        case 'h':
         default:
             usage();
             break;
