@@ -6,7 +6,7 @@ LDFLAGS = -lncurses
 all: dss
 
 # XXX only needed because of -I ./include:
-# generally speaking, Make usually knows
+# generally speaking, Make knows
 # how to build C programs.
 %.o: %.c
 	$(CC) -c -I ./include $< -o $@
