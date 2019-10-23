@@ -1,5 +1,6 @@
 title="A Sample Set of Slides for dss"
-area="50,15"
+areaX="50"
+areaY="16"
 slides="5"
 __________________________________________________
 |                  What is DSS?                  |

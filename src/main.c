@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "main.h"
+#include "parser.h"
 
 void usage() {
     fprintf(stderr, "%s", "Usage: dss [OPTIONS]... FILE\n");
@@ -64,55 +65,20 @@ int main(int argc, char *argv[])
     char title[128];
     title[0] = '\0';
     int currentSlide = 0;
-    char slide[slideCount][(x+1)*(y+1)]; // leave enough space for top row of underscore and newline characters
-    slide[0][0] = '\0';
-    //parseTXT(*file);
-    char buf[1000];
-    int i = 0;
-    while(fgets(buf, 1000, file)!=NULL) {
-        if (strstr(buf, "___")!=NULL || strstr(buf, "|")!=NULL) { // finds line of slide
-            strcat(slide[i], buf);
-        } else if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
-            i++;
-            slide[i][0] = '\0';
-        } else if (strstr(buf, "title")!=NULL) { // finds title line
-            char quoted[128];
-            if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
-                strcat(title, quoted);
-                continue;
-            } else {
-                fprintf(stderr, "improper title in %s\n", argv[1]);
-            }
-        } else if (strstr(buf, "area")!=NULL) {
-            char quoted[10];
-            if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
-                //area == quoted;
-		        continue;
-            } else {
-                fprintf(stderr, "improper area in %s\n", argv[1]);
-            }
-        } else if (strstr(buf, "slides")!=NULL) {
-            char quoted[10];
-            if (sscanf(buf, "%*[^\"]\"%9[^\"]\"", quoted) == 1) {
-                //slideCount == quoted;
-		        continue;
-            } else {
-                fprintf(stderr, "improper slide count in %s\n", argv[1]);
-            }
-        } else {
-            continue;
-        }
-    }
-    fclose(file); // closes the file
+    // to delete char slide[slideCount][(x+1)*(y+1)]; // leave enough space for top row of underscore and newline characters
+     // to delete slide[0][0] = '\0';
+    Slide* slides = parseTXT(file, &slideCount, title); //to be used when parser.c is implemented
+    // close file after parsing
+    fclose(file); 
     // initialize ncurses
     initscr();
     cbreak();
     noecho();
     clear();
     while(1) {
-	printw(title);
-	printw("\n");
-        printw(slide[currentSlide]);
+	    printw(title);
+	    printw("\n");
+	    printw(slides[currentSlide].content); //to be used when parser.c implemented
         char keyInput = getch();
         if (keyInput == 'q' || keyInput == 'Q') {
             break;
