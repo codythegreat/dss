@@ -3,13 +3,11 @@
 
 typedef struct
 {
-    const char *title;
-    const char *content;
+    char content[5000];
     int number;
     int r, g, b;
 } Slide;
 
-void parseArea(char *buffer, int* xVar, int* yVar);
-Slide* parseTXT(FILE *inFile);
+Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle);
 
 #endif
