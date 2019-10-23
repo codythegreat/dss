@@ -1,4 +1,4 @@
-SRCS = src/main.c src/parser.c
+SRCS = src/main.c src/parser.c src/display.c
 OBJS = $(SRCS:.c=.o)
 
 LDFLAGS = -lncurses
