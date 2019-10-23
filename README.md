@@ -1,3 +1,5 @@
+![](DSS.png)
+
 # DSS - Dead Simple Slides
 
 Dead Simple Slides (DSS) is a text/terminal based slide presentation tool that reads .txt files for for formatted slides. These slides are then displayed to the terminal.
