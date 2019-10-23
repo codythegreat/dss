@@ -17,9 +17,9 @@ A few features that are planned include:
 
 ### Installation
 
-cd into the src directory and run the following command:
+cd into the directory and run the following command:
 
-`gcc -I path/to/DSS/include main.c -o dss -lncurses`
+`gcc -I ./include src/main.c -o dss -lncurses`
 
 or simply run the Makefile:
 
@@ -27,11 +27,15 @@ or simply run the Makefile:
 
 ### Usage
 
-Assuming that you have compiled the main.c file as a simple a.out file and you are using the sample txt, you can do this:
+With the latest version of DSS you can simply run the program with a text file argument:
 
-`./dss -x 51 -y 16 -s 5 sample.txt`
+`./dss sample.txt`
 
-Note that you can omit the x/y/s values. Defaults are 100/30/15.
+Note that you will need to include `title`, `areaX`, `areaY`, and `slides` variables inside your txt file. See the sample files for more details.
+
+### Limitations
+
+The current version of DSS supports slides consisting of up to 5000 characters. This translates to about 70x70. The sample files are 50x15 and 100x25.
 
 ### Contributing
 
