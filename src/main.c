@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "main.h"
 #include "parser.h"
+#include "display.h"
 
 void usage() {
     fprintf(stderr, "%s", "Usage: dss [OPTIONS]... [FILE]\n");
@@ -64,37 +65,12 @@ int main(int argc, char *argv[])
     char title[128];
     title[0] = '\0';
     int currentSlide = 0;
-    // to delete char slide[slideCount][(x+1)*(y+1)]; // leave enough space for top row of underscore and newline characters
-     // to delete slide[0][0] = '\0';
     Slide* slides = parseTXT(file, &slideCount, title); //to be used when parser.c is implemented
     // close file after parsing
     fclose(file); 
-    // initialize ncurses
-    initscr();
-    cbreak();
-    noecho();
-    clear();
+    setSlideCount(&slideCount);
+    initDisplay();
     while(1) {
-	    printw(title);
-	    printw("\n");
-	    printw(slides[currentSlide].content); //to be used when parser.c implemented
-        char keyInput = getch();
-        if (keyInput == 'q' || keyInput == 'Q') {
-            break;
-        }
-        if (keyInput == 'j' || keyInput == 'J') {
-            if (currentSlide != slideCount-1) {
-                currentSlide++;
-            }
-        }
-        if (keyInput == 'k' || keyInput == 'K') {
-            if (currentSlide != 0) {
-                currentSlide--;
-            }
-        }
-        clear();
+        displayLoop(&slides[currentSlide], &currentSlide, title);
     }
-    // end ncurses session
-    endwin();
-    exit(0);
 }
