@@ -10,7 +10,7 @@ DSS is in the very early stages of development. At this moment it can display th
 
 DSS's main goal is to display text slides in their raw format, so outside of this functionality there probably won't be many other features to note.
 
-DSS can be navigated using K/J for prev/next slide and Q for quit
+DSS can be navigated using `K`/`J` for prev/next slide, `g`/`G` for first/last slide, and `Q` for quit
 
 A few features that are planned include:
 + simple color formatting

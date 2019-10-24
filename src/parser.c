@@ -45,7 +45,7 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             } else {
                 fprintf(stderr, "improper slide declaration\n");
             }
-        } else if (strstr(buf, "{STARTSLIDE}")!=NULL) {
+        } else if (strstr(buf, "{STARTSLIDES}")!=NULL) {
             break;
         }
     }
@@ -53,7 +53,7 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     strcat(presTitle, globalTitle);
     Slide* slides = (Slide*)calloc(s, sizeof(Slide));
     slides[0].content[0] = '\0'; // erases junk characters
-    rewind(inFile);
+    // rewind(inFile);
     int i = 0;
     while(fgets(buf, 1000, inFile)!=NULL) {
         if (strstr(buf, "_____")!=NULL || strstr(buf, "|")!=NULL) { // finds line of slide
@@ -64,6 +64,8 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             slides[i].g = 0;
             slides[i].b = 0;
             i++;
+            if (i>=s) 
+                break;
             slides[i].content[0] = '\0';
         }
     }

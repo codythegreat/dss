@@ -2,6 +2,7 @@ title="A Sample Set of Slides for dss"
 areaX="50"
 areaY="16"
 slides="5"
+{STARTSLIDES}
 __________________________________________________
 |                  What is DSS?                  |
 |                                                |
@@ -91,3 +92,4 @@ __________________________________________________
 |                                                |
 |                                                |
 |_______Copyright 2019 Made By Cody Maxie________|
+{ENDSLIDE}

@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     setSlideCount(&slideCount);
     initDisplay();
     while(1) {
-        displayLoop(&slides[currentSlide], &currentSlide, title);
+        displayLoop(&slides[currentSlide], &currentSlide, title, argv[0]);
     }
 good:
     return EXIT_SUCCESS;
