@@ -43,41 +43,41 @@ void displayLoop(Slide *slide, int* slideNumber, char* title)
         case 'q':
         case 'Q':
             closeDisplay();
-	    break;
+            break;
         case 'j':
         case 'J':
-	case ' ':
+        case ' ':
             if (*slideNumber != slideCount-1) {
                 *slideNumber = *slideNumber + 1;
             }
-	    break;
+            break;
         case 'k':
         case 'K':
             if (*slideNumber != 0) {
                 *slideNumber = *slideNumber - 1;
             }
-	    break;
-        //case '9':
-        //case '8':
-        //case '7':
-        //case '6':
-        //case '5':
-        //case '4':
-        //case '3':
-        //case '2':
-        //case '1':
-	    //if (!(keyInput > slideCount)) {
-                //*slideNumber = keyInput - 1;
-	    //}
-	    //break;
+            break;
+        case '9':
+        case '8':
+        case '7':
+        case '6':
+        case '5':
+        case '4':
+        case '3':
+        case '2':
+        case '1':
+            if ((keyInput-48) <= slideCount) {
+                *slideNumber = keyInput - 49;
+            }
+            break;
         case 'g':
-	    *slideNumber = 0;
-	    break;
+            *slideNumber = 0;
+            break;
         case 'G':
-	    *slideNumber = slideCount - 1;
-	    break;
+            *slideNumber = slideCount - 1;
+            break;
         default:
-	    break;
+            break;
     }
     clear();
 }
