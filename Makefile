@@ -46,12 +46,14 @@ clean: tidy
 	$(RM) dss
 
 install: dss
-	$(PRE_INSTALL)
+	## TODO Determine what use the installation
+	## categories have.
+	#$(PRE_INSTALL)
 	$(INSTALL_PROGRAM) -d $(PREFIX)/bin
 
-	$(NORMAL_INSTALL)
+	#$(NORMAL_INSTALL)
 	$(INSTALL_PROGRAM) -m755 dss $(PREFIX)/bin
 
 uninstall:
-	$(NORMAL_UNINSTALL)
+	#$(NORMAL_UNINSTALL)
 	$(RM) $(PREFIX)/bin/dss
