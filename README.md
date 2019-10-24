@@ -2,7 +2,7 @@
 
 # DSS - Dead Simple Slides
 
-Dead Simple Slides (DSS) is a text/terminal based slide presentation tool that reads .txt files for for formatted slides. These slides are then displayed to the terminal.
+Dead Simple Slides (DSS) is a text/terminal based slide presentation tool that reads .txt files for formatted slides. These slides are then displayed to the terminal.
 
 DSS is in the very early stages of development. At this moment it can display the slides in the sample.txt files profided, but it can't do much else. 
 
