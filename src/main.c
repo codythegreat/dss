@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 #include "main.h"
 #include "parser.h"
 #include "display.h"
@@ -11,17 +12,15 @@ void usage() {
     fprintf(stderr, "%s", "Usage: dss [OPTIONS]... FILE\n");
     fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
     fprintf(stderr, "%s", "  -h     print this message and exit\n");
-    fprintf(stderr, "%s", "  -v     display the version number and copyright\n");
+    fprintf(stderr, "%s", "  -v     display version and copyright\n");
     fprintf(stderr, "%s", "  -x     change the slide width value (default 100)\n");
     fprintf(stderr, "%s", "  -y     change the slide height value (default 30)\n");
-    fprintf(stderr, "%s", "  -s     set the number of slides (default 15)\n");
-    exit(EXIT_SUCCESS);
+    /* fprintf(stderr, "%s", "  -s     set the number of slides (default 15)\n"); */
 }
 
 void version() {
     printf("dss %d.%d.%d\n", DSS_VERSION_MAJOR, DSS_VERSION_MINOR, DSS_VERSION_REVISION);
     printf("Copyright (C) 2019 Cody Maxie\n");
-    exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char *argv[])
@@ -33,11 +32,14 @@ int main(int argc, char *argv[])
     char ch;
 
     while ((ch=getopt(argc, argv, "hvx:y:s:"))!=EOF) {
+        if (optopt != 0)
+            goto bad;
+
         switch (ch)
         {
         case 'v':
             version();
-            break;
+            goto bad;
         case 'x':
             x = atoi(optarg);
             break;
@@ -48,30 +50,45 @@ int main(int argc, char *argv[])
             slideCount = atoi(optarg);
             break;
         case 'h':
+            usage();
+            goto good;
         default:
             usage();
-            break;
+            goto bad;
         }
     }
-    argc -= optind;
     argv += optind;
+
+    if (argc == 1) {
+        /* no args (other than options) */
+        fprintf(stderr, "%s: %s\n", PROGNAME, "missing file operand");
+        goto bad;
+    }
+
     // todo : assign area to x/y values
     FILE *file;
     file = fopen(argv[0], "r"); // open the file as read only
     if (!file) {
-        fprintf(stderr, "could not read file.");
-        return 1;
+        fprintf(stderr, "%s\n", "error: could not read file");
+        goto bad;
     }
 
-    char title[128];
+    char title[128]; // TODO can titles be dynamic?  Should they be?
+                     // Maybe we can determine the longest title
+                     // in the Scanner function?
     title[0] = '\0';
     int currentSlide = 0;
     Slide* slides = parseTXT(file, &slideCount, title); //to be used when parser.c is implemented
     // close file after parsing
-    fclose(file); 
+    fclose(file);
     setSlideCount(&slideCount);
     initDisplay();
     while(1) {
         displayLoop(&slides[currentSlide], &currentSlide, title);
     }
+good:
+    return EXIT_SUCCESS;
+bad:
+    return EXIT_FAILURE;
 }
+// vim: set ts=4 sts=4 sw=4:
