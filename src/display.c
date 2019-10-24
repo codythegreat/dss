@@ -20,8 +20,14 @@ void initDisplay()
 {
     // initialize ncurses
     initscr();
+    // if term supports color, enable
+    if (has_color()) {
+        start_color();
+    }
     cbreak();
     noecho();
+    // disables cursor
+    curs_set(0);
     clear();
 }
 
@@ -81,9 +87,6 @@ void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
             } else if (keyDigit2 == -1) {
                 keyDigit2 = keyInput - 48;
             }
-            //if ((keyInput-48) <= slideCount) {
-                //*slideNumber = keyInput - 49;
-            //}
             break;
         case 'g':
             *slideNumber = 0;
@@ -112,6 +115,19 @@ void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
                 *slideNumber = slideCount - 1;
             }
             break;
+	// case 't':
+	    // if (curColTheme == 2) {
+		// curColTheme = 0;
+		// if (COLORS == 256) {
+		    // int black = 16;
+		    // init_pair(curColTheme, foreGCols[curColTheme], black);
+		// } else {
+                    // int black = 0;
+		    // init_pair();
+		// }	
+		// curColTheme++;
+	    // }
+	    // break;
         default:
             break;
     }
