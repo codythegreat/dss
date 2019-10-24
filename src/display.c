@@ -10,6 +10,8 @@ int max_x;
 int max_y;
 short keyDigit1 = -1;
 short keyDigit2 = -1;
+short curColor = 1;
+
 
 void setSlideCount(int* slides)
 {
@@ -23,6 +25,10 @@ void initDisplay()
     // if term supports color, enable
     if (has_colors()) {
         start_color();
+        init_pair(1, COLOR_WHITE, COLOR_BLACK);
+        init_pair(2, COLOR_YELLOW, COLOR_BLUE);
+        init_pair(3, COLOR_CYAN, COLOR_BLUE);
+        init_pair(4, COLOR_BLACK, COLOR_WHITE);
     }
     cbreak();
     noecho();
@@ -115,19 +121,14 @@ void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
                 *slideNumber = slideCount - 1;
             }
             break;
-	// case 't':
-	    // if (curColTheme == 2) {
-		// curColTheme = 0;
-		// if (COLORS == 256) {
-		    // int black = 16;
-		    // init_pair(curColTheme, foreGCols[curColTheme], black);
-		// } else {
-                    // int black = 0;
-		    // init_pair();
-		// }	
-		// curColTheme++;
-	    // }
-	    // break;
+	    case 't':
+            if(has_colors()) {
+                wbkgd(stdscr, COLOR_PAIR(curColor));
+                curColor++;
+                if (curColor == 5) {
+                    curColor = 1;
+                }
+            }
         default:
             break;
     }
