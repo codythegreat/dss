@@ -5,10 +5,6 @@
 #include <unistd.h>
 #include "display.h"
 
-// holds value of last pressed key
-char prevPress[2] = "";
-short numberInMem = 0;
-char numberInput[4] = "";
 int slideCount;
 int max_x;
 int max_y;
@@ -37,7 +33,7 @@ void closeDisplay()
 
 void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
 {
-    // assigns screen x/y length
+    // assigns screen x/y length continually (incase of screen resize)
     getmaxyx(stdscr, max_y, max_x);
     printw(title);
     printw("\n");
