@@ -8,6 +8,8 @@
 int slideCount;
 int max_x;
 int max_y;
+short keyDigit1 = -1;
+short keyDigit2 = -1;
 
 void setSlideCount(int* slides)
 {
@@ -70,15 +72,45 @@ void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
         case '3':
         case '2':
         case '1':
-            if ((keyInput-48) <= slideCount) {
-                *slideNumber = keyInput - 49;
+        case '0':
+            if (keyDigit1 >= 1 && keyDigit2 >= 0) {
+                keyDigit1 = keyInput - 48;
+                keyDigit2 = -1;
+            } else if (keyDigit1 == -1 && keyInput != '0') {
+                keyDigit1 = keyInput - 48;
+            } else if (keyDigit2 == -1) {
+                keyDigit2 = keyInput - 48;
             }
+            //if ((keyInput-48) <= slideCount) {
+                //*slideNumber = keyInput - 49;
+            //}
             break;
         case 'g':
             *slideNumber = 0;
             break;
         case 'G':
-            *slideNumber = slideCount - 1;
+            if (keyDigit1 >= 0) {
+                if (keyDigit2 >= 0) { // todo: look into making sure 2 digits slides are found correctly
+                    char dest[3];
+                    if (keyDigit2 == 0) {
+                        sprintf(dest, "%i%i", keyDigit1-1, 9);
+                    } else {
+                        sprintf(dest, "%i%i", keyDigit1, keyDigit2-1);
+                    }
+                    if (atoi(dest)<=slideCount) {
+                        *slideNumber = atoi(dest);
+                        keyDigit1 = -1;
+                        keyDigit2 = -1;
+                    }
+                } else {
+                    if (keyDigit1<=slideCount) {
+                        *slideNumber = keyDigit1-1;
+                        keyDigit1 = -1;
+                    }
+                }
+            } else {
+                *slideNumber = slideCount - 1;
+            }
             break;
         default:
             break;
