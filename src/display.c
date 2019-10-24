@@ -21,7 +21,7 @@ void initDisplay()
     // initialize ncurses
     initscr();
     // if term supports color, enable
-    if (has_color()) {
+    if (has_colors()) {
         start_color();
     }
     cbreak();
