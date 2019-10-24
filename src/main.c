@@ -32,8 +32,13 @@ int main(int argc, char *argv[])
     char ch;
 
     while ((ch=getopt(argc, argv, "hvx:y:s:"))!=EOF) {
-        if (optopt != 0)
-            goto bad;
+        /* (am) XXX if we want the program to halt immediately upon
+        * encountering an unsupported option, we should
+        * uncomment this:
+        */
+
+        /* if (optopt != 0) */
+        /*     goto bad; */
 
         switch (ch)
         {
@@ -57,7 +62,7 @@ int main(int argc, char *argv[])
             goto bad;
         }
     }
-    argv += optind;
+    argv += optind; // TODO figure out why this is. -am
 
     if (argc == 1) {
         /* no args (other than options) */
@@ -67,15 +72,19 @@ int main(int argc, char *argv[])
 
     // todo : assign area to x/y values
     FILE *file;
+/* #if DSS_DEBUG */
+/*     fprintf(stderr, "%s: %s\n", "file", argv[0]); */
+/* #endif */
     file = fopen(argv[0], "r"); // open the file as read only
     if (!file) {
-        fprintf(stderr, "%s\n", "error: could not read file");
+        fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", argv[0]);
         goto bad;
     }
 
     char title[128]; // TODO can titles be dynamic?  Should they be?
                      // Maybe we can determine the longest title
                      // in the Scanner function?
+                     // -am
     title[0] = '\0';
     int currentSlide = 0;
     Slide* slides = parseTXT(file, &slideCount, title); //to be used when parser.c is implemented
