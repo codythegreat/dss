@@ -64,6 +64,8 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             slides[i].g = 0;
             slides[i].b = 0;
             i++;
+            if (i>=s) 
+                break;
             slides[i].content[0] = '\0';
         }
     }
