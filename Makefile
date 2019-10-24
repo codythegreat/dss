@@ -36,7 +36,7 @@ all: dss
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -I ./include $< -o $@
 
 dss: $(OBJS)
-	$(CC) $(OBJS) -o dss $(LDFLAGS)
+	$(CC) $(CFLAGS) $(OBJS) -o dss $(LDFLAGS)
 
 tidy:
 	$(RM) *.o
