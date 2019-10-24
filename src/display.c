@@ -39,7 +39,6 @@ void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
 {
     // assigns screen x/y length
     getmaxyx(stdscr, max_y, max_x);
-    printf("%i/%i\n", max_x, max_y);
     printw(title);
     printw("\n");
     printw(slide->content); //to be used when parser.c implemented
