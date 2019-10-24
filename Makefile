@@ -9,7 +9,7 @@ ifneq "$(DESTDIR)" ""
   PREFIX = $(DESTDIR)
 endif
 
-# Let's users pass custom options in
+# Lets users pass custom options in
 # without overwriting ours
 CFLAGS ?=
 CFLAGS += -Wall -Wextra
