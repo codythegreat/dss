@@ -10,8 +10,8 @@ DSS's main goal is to simply display a slide back exactly as it is formatted in 
 
 DSS is in the very early stages of development. We still have a lot of features to add, but so far we've added the following:
 + parsing of slides from a .txt file
-+ navigation with 'j'/'k'
-+ quiting with 'q'
++ navigation with `j`/`k`
++ quiting with `q`
 + jumping to first/last slide with `g`/`G`
 + jumping to a slide by number with `7G`
 + bookmarking slides (up to 5 bookmarks currently) with `b`
