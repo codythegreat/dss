@@ -11,6 +11,21 @@ int max_y;
 short keyDigit1 = -1;
 short keyDigit2 = -1;
 short curColor = 1;
+// register for bookmarks
+int reg;
+// holds slide and register
+short bookmarks[5][2] = {
+    {-1, 0},
+    {-1, 0},
+    {-1, 0},
+    {-1, 0},
+    {-1, 0}
+};
+//short bMark1[2] = ;
+//short bMark2[2] = {-1, 0};
+//short bMark3[2] = {-1, 0};
+//short bMark4[2] = {-1, 0};
+//short bMark5[2] = {-1, 0};
 
 
 void setSlideCount(int* slides)
@@ -57,6 +72,7 @@ void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
     sprintf(bottomRightCounter, "slide %i / %i", slide->number, slideCount);
     mvprintw(max_y-1, max_x-15, bottomRightCounter);
     int keyInput = getch();
+    int i = 0; // for loops
     switch(keyInput) {
         case 'q':
         case 'Q':
@@ -129,6 +145,24 @@ void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
                     curColor = 1;
                 }
             }
+        case 'b':
+            for (i=0;i<5;i++) {
+                if (bookmarks[i][0] == -1) {
+                    bookmarks[i][0] = *slideNumber;
+                    bookmarks[i][1] = getch();
+                    break;
+                }
+            }
+            break;
+        case 'B':
+            reg = getch();
+            for (i=0;i<5;i++) {
+                if (bookmarks[i][1] == reg) {
+                    *slideNumber = bookmarks[i][0];
+                    break;
+                }
+            }
+            break;
         default:
             break;
     }
