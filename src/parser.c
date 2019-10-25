@@ -56,6 +56,8 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             strcat(slides[i].content, buf);
         } else if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
             slides[i].number = i+1;
+	    slides[i].x = x;
+	    slides[i].y = y;
             slides[i].r = 0;
             slides[i].g = 0;
             slides[i].b = 0;
