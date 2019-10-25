@@ -65,12 +65,13 @@ int main(int argc, char *argv[])
     char title[128];
     title[0] = '\0';
     int currentSlide = 0;
-    Slide* slides = parseTXT(file, &slideCount, title); //to be used when parser.c is implemented
+    Slide* slides = parseTXT(file, &slideCount, title);
     // close file after parsing
     fclose(file); 
     setSlideCount(&slideCount);
     initDisplay();
-    while(1) {
+    while(1) { // todo: change this to a single function call
         displayLoop(&slides[currentSlide], &currentSlide, title, argv[0]);
     }
+    // todo: exit program here instead of display.c
 }

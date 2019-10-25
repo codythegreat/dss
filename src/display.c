@@ -59,7 +59,8 @@ void closeDisplay()
     exit(0);
 }
 
-
+// todo: create a while loop inside this function. when the while loop
+// is broken, return to main to handle freeing of slides, exit
 void displayLoop(Slide *slide, int* slideNumber, char* title, char* fileName)
 {
     // assigns screen x/y length continually (incase of screen resize)
