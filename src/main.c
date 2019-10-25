@@ -70,5 +70,6 @@ int main(int argc, char *argv[])
     fclose(file); 
     setSlideCount(&slideCount);
     displayLoop(slides, &currentSlide, title, argv[0]);
+    free(slides);
     exit(0);
 }
