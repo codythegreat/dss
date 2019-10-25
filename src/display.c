@@ -54,9 +54,15 @@ void displayLoop(Slide slides[], int* slideNumber, char* title, char* fileName)
     while(quitting == 0) {
         // assigns screen x/y length continually (incase of screen resize)
         getmaxyx(stdscr, max_y, max_x);
-        printw(title);
-        printw("\n");
-        printw(slides[*slideNumber].content);
+	// if the screen is too small/zoomed in, dispay a soft error
+	if (slides[*slideNumber].x > max_x-1 || slides[*slideNumber].y > max_y-3) {
+            printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
+	} else {
+           printw(title);
+           printw("\n");
+           printw(slides[*slideNumber].content);
+	}
+	// print bottom bar to screen
         mvprintw(max_y-1, 1, fileName);
         char bottomRightCounter[14];
         sprintf(bottomRightCounter, "slide %i / %i", slides[*slideNumber].number, slideCount);
