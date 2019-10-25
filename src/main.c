@@ -69,9 +69,6 @@ int main(int argc, char *argv[])
     // close file after parsing
     fclose(file); 
     setSlideCount(&slideCount);
-    initDisplay();
-    while(1) { // todo: change this to a single function call
-        displayLoop(&slides[currentSlide], &currentSlide, title, argv[0]);
-    }
-    // todo: exit program here instead of display.c
+    displayLoop(slides, &currentSlide, title, argv[0]);
+    exit(0);
 }
