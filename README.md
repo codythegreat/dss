@@ -4,18 +4,27 @@
 
 Dead Simple Slides (DSS) is a text/terminal based slide presentation tool that reads .txt files for formatted slides. These slides are then displayed to the terminal.
 
-DSS is in the very early stages of development. At this moment it can display the slides in the sample.txt files profided, but it can't do much else. 
+DSS's main goal is to simply display a slide back exactly as it is formatted in the .txt. This gives you the ultimate power of customizability. For use cases such as ASCII art this is preferrable to programs that have reserved symbols.
+
+### Features
+
+DSS is in the very early stages of development. We still have a lot of features to add, but so far we've added the following:
++ parsing of slides from a .txt file
++ navigation with 'j'/'k'
++ quiting with 'q'
++ jumping to first/last slide with `g`/`G`
++ jumping to a slide by number with `7G`
++ bookmarking slides (up to 5 bookmarks currently) with `b`
++ jumping to a bookmark with `B` and the key of the register
++ switching color themes with `t` (currently there are 4 themes, but more are planned to be added)
 
 ### Planned Features
 
-DSS's main goal is to display text slides in their raw format, so outside of this functionality there probably won't be many other features to note.
-
-DSS can be navigated using `K`/`J` for prev/next slide, `g`/`G` for first/last slide, and `Q` for quit
-
 A few features that are planned include:
-+ simple color formatting
++ greater color formatting options
 + url detection and selection with H/L
-+ bookmarking and jumping to bookmarks 
++ centered slide/title printing
++ quick fade animations (quick as in non-intrusive when rapidly switching through slides)
 
 ### Installation
 
@@ -39,8 +48,11 @@ Note that you will need to include `title`, `areaX`, `areaY`, and `slides` varia
 
 The current version of DSS supports slides consisting of up to 5000 characters. This translates to about 70x70. The sample files are 50x15 and 100x25.
 
+We are hoping to add a solution that would dynamically allocate memory for the slide's content.
+
 ### Contributing
 
 Contribution to the project is welcome and encouraged. If you'd like to contribute please follow these guidelines:
-1. If you are working on an issue, comment on the issue and reference it when making a merge request.
-2. If you can provide test resources for your fix/feature please do.
+1. Check out the issues page. I've added a few issues with helpful hints that might be a good place to start.
+2. If you are working on an issue, comment on the issue and reference it when making a merge request.
+3. If you can provide test resources for your fix/feature please do.
