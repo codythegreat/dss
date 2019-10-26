@@ -48,7 +48,7 @@ void initDisplay()
     clear();
 }
 
-void displayLoop(Slide slides[], int* slideNumber, char* title, char* fileName)
+void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
 {
     initDisplay();
     while(quitting == 0) {
@@ -60,7 +60,13 @@ void displayLoop(Slide slides[], int* slideNumber, char* title, char* fileName)
 	} else {
            printw(title);
            printw("\n");
-           printw(slides[*slideNumber].content);
+           // print all lines in slide
+           line *curLine = slides[*slideNumber].first;
+           while(curLine) {
+               printw(curLine->content);
+               line *temp = curLine->next;
+               curLine = temp;
+           }
 	}
 	// print bottom bar to screen
         mvprintw(max_y-1, 1, fileName);
