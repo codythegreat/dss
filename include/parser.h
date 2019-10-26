@@ -5,7 +5,7 @@ typedef struct
 {
     char content[5000];
     int number;
-    int r, g, b;
+    int x, y, r, g, b;
 } Slide;
 
 Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle);
