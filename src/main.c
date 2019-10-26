@@ -87,11 +87,15 @@ int main(int argc, char *argv[])
                      // -am
     title[0] = '\0';
     int currentSlide = 0;
-    Slide* slides = parseTXT(file, &slideCount, title);
+    slide* slides = parseTXT(file, &slideCount, title);
     // close file after parsing
     fclose(file);
     setSlideCount(&slideCount);
     displayLoop(slides, &currentSlide, title, argv[0]);
+    int i;
+    for (i=0;i<slideCount;i++) {
+        freeLines(slides[i].first);
+    }
     free(slides);
     return EXIT_SUCCESS;
 }
