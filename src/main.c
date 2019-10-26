@@ -38,13 +38,13 @@ int main(int argc, char *argv[])
         */
 
         /* if (optopt != 0) */
-        /*     return EXIT_FAILURE; */
+        /*     goto bad; */
 
         switch (ch)
         {
         case 'v':
             version();
-            return EXIT_SUCCESS;
+            goto bad;
         case 'x':
             x = atoi(optarg);
             break;
@@ -56,10 +56,10 @@ int main(int argc, char *argv[])
             break;
         case 'h':
             usage();
-            return EXIT_SUCCESS;
+            goto good;
         default:
             usage();
-            return EXIT_FAILURE;
+            goto bad;
         }
     }
     argv += optind; // TODO figure out why this is. -am
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     if (argc == 1) {
         /* no args (other than options) */
         fprintf(stderr, "%s: %s\n", PROGNAME, "missing file operand");
-        return EXIT_FAILURE;
+        goto bad;
     }
 
     // todo : assign area to x/y values
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     file = fopen(argv[0], "r"); // open the file as read only
     if (!file) {
         fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", argv[0]);
-        return EXIT_FAILURE;
+        goto bad;
     }
 
     char title[128]; // TODO can titles be dynamic?  Should they be?
@@ -87,12 +87,17 @@ int main(int argc, char *argv[])
                      // -am
     title[0] = '\0';
     int currentSlide = 0;
-    Slide* slides = parseTXT(file, &slideCount, title);
+    Slide* slides = parseTXT(file, &slideCount, title); //to be used when parser.c is implemented
     // close file after parsing
     fclose(file);
     setSlideCount(&slideCount);
-    displayLoop(slides, &currentSlide, title, argv[0]);
-    free(slides);
+    initDisplay();
+    while(1) {
+        displayLoop(&slides[currentSlide], &currentSlide, title, argv[0]);
+    }
+good:
     return EXIT_SUCCESS;
+bad:
+    return EXIT_FAILURE;
 }
 // vim: set ts=4 sts=4 sw=4:
