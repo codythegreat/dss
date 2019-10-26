@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "parser.h"
+#include "slides.h"
 
 // defaults
 int x = 100;
@@ -10,7 +11,7 @@ int s = 15;
 char *globalTitle;
 
 
-Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
+slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 {
     char buf[1000];
     while(fgets(buf, 1000, inFile)!=NULL) {
@@ -48,11 +49,18 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 
     // allocate memory to the heap for storing our array of slides
     // an array is used here to enable jumping to slides by number
-    Slide* slides = (Slide*)malloc(s * sizeof(Slide));
-    slides[0].content[0] = '\0'; // erases junk characters
+    // Slide* slides = (Slide*)malloc(s * sizeof(Slide)); original line
+    slide* slides = createSlideArray(s);
+    //slides[0].content[0] = '\0'; // erases junk characters
+    line *l = malloc(sizeof(line));
+    line *first = l;
+    l->content[0] = '\0';
     int i = 0;
     while(fgets(buf, 1000, inFile)!=NULL) {
         if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
+            slides[i].first = first;
+            l = malloc(sizeof(line));
+            first = l;
             slides[i].number = i+1;
 	        slides[i].x = x;
 	        slides[i].y = y;
@@ -62,9 +70,9 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             i++;
             if (i>=s) 
                 break;
-            slides[i].content[0] = '\0';
         } else { // finds line of slide
-            strcat(slides[i].content, buf);
+            strcat(l->content, buf);
+            l = nextLine(l);
         }
     }
     return slides;
