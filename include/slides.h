@@ -4,6 +4,7 @@
 typedef struct slide
 {
     int number;
+    int maxLen;
     int x, y, r, g, b;
     struct line *first;
 } slide;
