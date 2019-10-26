@@ -62,7 +62,13 @@ void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
            printw("\n");
            // print all lines in slide
            line *curLine = slides[*slideNumber].first;
+           int spaces = (max_x - slides[*slideNumber].maxLen) / 2;
+           printf("%i\n", spaces);
+           char spaceStr[spaces];
+           spaceStr[0] = '\0';
+           sprintf(spaceStr, "%s%*s", spaceStr, spaces, "");
            while(curLine) {
+               printw(spaceStr);
                printw(curLine->content);
                line *temp = curLine->next;
                curLine = temp;
@@ -118,7 +124,7 @@ void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
                 break;
             case 'G':
                 if (keyDigit1 >= 0) {
-                    if (keyDigit2 >= 0) { // todo: look into making sure 2 digits slides are found correctly
+                    if (keyDigit2 >= 0) {
                         char dest[3];
                         if (keyDigit2 == 0) {
                             sprintf(dest, "%i%i", keyDigit1-1, 9);
