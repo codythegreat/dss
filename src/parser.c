@@ -52,12 +52,10 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     slides[0].content[0] = '\0'; // erases junk characters
     int i = 0;
     while(fgets(buf, 1000, inFile)!=NULL) {
-        if (strstr(buf, "_____")!=NULL || strstr(buf, "|")!=NULL) { // finds line of slide
-            strcat(slides[i].content, buf);
-        } else if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
+        if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
             slides[i].number = i+1;
-	    slides[i].x = x;
-	    slides[i].y = y;
+	        slides[i].x = x;
+	        slides[i].y = y;
             slides[i].r = 0;
             slides[i].g = 0;
             slides[i].b = 0;
@@ -65,6 +63,8 @@ Slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             if (i>=s) 
                 break;
             slides[i].content[0] = '\0';
+        } else { // finds line of slide
+            strcat(slides[i].content, buf);
         }
     }
     return slides;
