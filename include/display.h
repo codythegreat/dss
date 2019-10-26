@@ -4,6 +4,6 @@
 
 void setSlideCount(int* slides);
 void initDisplay();
-void displayLoop(Slide slides[], int* slideNumber, char* title, char* fileName);
+void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName);
 
 #endif
