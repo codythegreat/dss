@@ -161,21 +161,17 @@ void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
             move(0,1);
             printw(title);
             printw("\n");
-            // move the cursor for vertical centering
-            move(((max_y-slides[*slideNumber].y)/2), 0);
-            // print all lines in slide
+
+            // for each line, move to the centered position and print the line
+            int currentLine = (max_y-slides[*slideNumber].y)/2;
             line *curLine = slides[*slideNumber].first;
-            // find the number of spaces required to center a slide, initialize and fill string of spaces
-            int spaces = (max_x - slides[*slideNumber].maxX) / 2;
-            char spaceStr[spaces];
-            spaceStr[0] = '\0';
-            sprintf(spaceStr, "%s%*s", spaceStr, spaces, "");
-            // print spaces, line, and move to next line
+            int i = 0;
             while(curLine) {
-                printw(spaceStr);
+                move(currentLine + i, (max_x - slides[*slideNumber].maxX) / 2);
                 printw(curLine->content);
                 line *temp = curLine->next;
                 curLine = temp;
+                i++;
            }
 	    }
 
