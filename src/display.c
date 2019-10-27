@@ -158,10 +158,11 @@ void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
 	    if (slides[*slideNumber].maxX> max_x-1 || slides[*slideNumber].y > max_y-3) {
             printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
 	    } else {
+            move(0,1);
             printw(title);
             printw("\n");
             // move the cursor for vertical centering
-            move((((max_y-slides[*slideNumber].y)/2)-1), 0);
+            move(((max_y-slides[*slideNumber].y)/2), 0);
             // print all lines in slide
             line *curLine = slides[*slideNumber].first;
             // find the number of spaces required to center a slide, initialize and fill string of spaces
