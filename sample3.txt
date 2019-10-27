@@ -1,5 +1,5 @@
 title="Alternative Formatting for DSS"
-slides="6"
+slides="7"
 {STARTSLIDES}
 
         DSS can assume many different formats!
@@ -89,4 +89,11 @@ I'm a short slide! Look at me!
 ]88,          _,,aaaaaa,_       I88 8"  8 ]P'  .d' 88 88' ,8' I[
 `888a,.  ,aadd88888888888bma.   )88,  ,]I I8, .d' )88a8B ,d8 aI
   "888888PP"'        `8""""""8   "888PP'  `888P'  `88P"88P"8m"
+{ENDSLIDE}
+  ▄      ▄   ▄█ ▄█▄    ████▄ ██▄   ▄███▄   
+   █      █  ██ █▀ ▀▄  █   █ █  █  █▀   ▀  
+█   █ ██   █ ██ █   ▀  █   █ █   █ ██▄▄    
+█   █ █ █  █ ▐█ █▄  ▄▀ ▀████ █  █  █▄   ▄▀ 
+█▄ ▄█ █  █ █  ▐ ▀███▀        ███▀  ▀███▀   
+ ▀▀▀  █   ██                               
 {ENDSLIDE}
