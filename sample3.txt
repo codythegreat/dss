@@ -1,0 +1,92 @@
+title="Alternative Formatting for DSS"
+slides="6"
+{STARTSLIDES}
+
+        DSS can assume many different formats!
+______________________________________________________
+
+    You do not have to follow any sort of styling
+    guidelines when writing slides for DSS. DSS
+    will simply display your slide exactly how you
+    format it in the .txt file (make sure you set 
+    the slides and title tags though!)
+
+{ENDSLIDE}
+
+        Here is another format that you could use
+
+    * Something
+    |
+    |_ Something else
+    |  |_ Yet another something
+    |  |_ Something: Electric Boogaloo
+    |
+    |_ Something else else
+
+    All of this is done by hand. You have the power
+    to alter the formatting to your liking.
+
+{ENDSLIDE}
+
+    Slides Can be short!
+
+I'm a short slide! Look at me!
+
+{ENDSLIDE}
+
+
+                 Slides can be long!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    I'm a long slide! Look at me! More content here!
+
+
+{ENDSLIDE}
+ _________________________________________________________
+|                                                         |
+|            Add an outside border if you Wish            |
+|                                                         |
+|        Take a look at some of the sample files          |
+|        For more slide formatting inspiration.           |
+|_________________________________________________________|
+:                                                         :
+:        Borders can use any symbol. You can make         :
+:        a border of dots, pipes, or # characters         :
+:        if you so desired.                               :
+:                                                         :
+:.........................................................:
+#                                                         #
+#            Another border you could try!                #
+#                                                         #
+#                                                         #
+#                                                         #
+###########################################################
+{ENDSLIDE}
+                  DSS handles ASCII art very well!
+
+         __                              ___   __        .ama     ,
+      ,d888a                          ,d88888888888ba.  ,88"I)   d
+     a88']8i                         a88".8"8)   `"8888:88  " _a8'
+   .d8P' PP                        .d8P'.8  d)      "8:88:baad8P'
+  ,d8P' ,ama,   .aa,  .ama.g ,mmm  d8P' 8  .8'        88):888P'
+ ,d88' d8[ "8..a8"88 ,8I"88[ I88' d88   ]IaI"        d8[         
+ a88' dP "bm8mP8'(8'.8I  8[      d88'    `"         .88          
+,88I ]8'  .d'.8     88' ,8' I[  ,88P ,ama    ,ama,  d8[  .ama.g
+[88' I8, .d' ]8,  ,88B ,d8 aI   (88',88"8)  d8[ "8. 88 ,8I"88[
+]88  `888P'  `8888" "88P"8m"    I88 88[ 8[ dP "bm8m88[.8I  8[
+]88,          _,,aaaaaa,_       I88 8"  8 ]P'  .d' 88 88' ,8' I[
+`888a,.  ,aadd88888888888bma.   )88,  ,]I I8, .d' )88a8B ,d8 aI
+  "888888PP"'        `8""""""8   "888PP'  `888P'  `88P"88P"8m"
+{ENDSLIDE}
