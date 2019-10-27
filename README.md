@@ -41,7 +41,9 @@ With the latest version of DSS you can simply run the program with a text file a
 
 `./dss sample.txt`
 
-Note that you will need to include `title`, `areaX`, `areaY`, and `slides` variables inside your txt file. See the sample files for more details.
+Note that you will need to include `title` and `slides` variables inside your txt file. See the sample files for more details. 
+
+Slides start after the `{STARTSLIDES}` tag, and the program iterates to the next slide when it sees the `{ENDSLIDE}`.
 
 ### Limitations
 
