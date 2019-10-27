@@ -43,12 +43,6 @@ With the latest version of DSS you can simply run the program with a text file a
 
 Note that you will need to include `title`, `areaX`, `areaY`, and `slides` variables inside your txt file. See the sample files for more details.
 
-### Limitations
-
-The current version of DSS supports slides consisting of up to 5000 characters. This translates to about 70x70. The sample files are 50x15 and 100x25.
-
-We are hoping to add a solution that would dynamically allocate memory for the slide's content.
-
 ### Contributing
 
 Contribution to the project is welcome and encouraged. If you'd like to contribute please follow these guidelines:
