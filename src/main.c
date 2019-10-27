@@ -13,8 +13,6 @@ void usage() {
     fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
     fprintf(stderr, "%s", "  -h     print this message and exit\n");
     fprintf(stderr, "%s", "  -v     display version and copyright information\n");
-    fprintf(stderr, "%s", "  -x     change the slide width value (default 100)\n");
-    fprintf(stderr, "%s", "  -y     change the slide height value (default 30)\n");
     /* fprintf(stderr, "%s", "  -s     set the number of slides (default 15)\n"); */
 }
 
@@ -25,8 +23,6 @@ void version() {
 
 int main(int argc, char *argv[])
 {
-    int x = 100; // default value. Practical solutions typically occupy something like 50x15
-    int y = 30;  // This should allow for plenty of slides without ever risking memory issues
     int slideCount = 15; // default value; should be changed with each file
 
     char ch;
@@ -45,12 +41,6 @@ int main(int argc, char *argv[])
         case 'v':
             version();
             return EXIT_SUCCESS;
-        case 'x':
-            x = atoi(optarg);
-            break;
-        case 'y':
-            y = atoi(optarg);
-            break;
         case 's':
             slideCount = atoi(optarg);
             break;

@@ -2,21 +2,10 @@
 #include <stdlib.h>
 #include "slides.h"
 
-
-
 slide* createSlideArray(int s) {
     slide* slides = (slide*)malloc(s * sizeof(slide));
     return slides;
 }
-
-// not currently in use
-//line *newLine() {
-    //line *n = malloc(sizeof(line));
-    //n->content[0] = '\0'; // fixes junk text
-    //n->prev = n->next = NULL;
-    //n->r = n->g = n->b = 0;
-    //return n;
-//}
 
 line *nextLine(line *prev) {
     line *n = malloc(sizeof(line));
