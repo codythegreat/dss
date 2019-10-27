@@ -1,9 +1,9 @@
-#include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <locale.h> 
 #include "main.h"
 #include "parser.h"
 #include "display.h"
@@ -54,6 +54,8 @@ int main(int argc, char *argv[])
     }
     argv += optind; // TODO figure out why this is. -am
 
+    // enables UTF-8 support if available on system
+    setlocale(LC_CTYPE, "");
     if (argc == 1) {
         /* no args (other than options) */
         fprintf(stderr, "%s: %s\n", PROGNAME, "missing file operand");
