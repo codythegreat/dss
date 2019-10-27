@@ -5,8 +5,6 @@
 #include "slides.h"
 
 // defaults
-int x;
-int y;
 int s;
 char *globalTitle;
 
@@ -21,18 +19,6 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
                 globalTitle = quoted;
             } else {
                 fprintf(stderr, "improper title\n");
-            }
-        } else if (strstr(buf, "areaX=")!=NULL) {
-            if (sscanf(buf, "%*[^\"]\"%d[^\"]\"", &x) == 1) {
-                continue;
-            } else {
-                fprintf(stderr, "improper area\n");
-            }
-        } else if (strstr(buf, "areaY=")!=NULL) {
-            if (sscanf(buf, "%*[^\"]\"%d[^\"]\"", &y) == 1) {
-                continue;
-            } else {
-                fprintf(stderr, "improper area\n");
             }
         } else if (strstr(buf, "slides=")!=NULL) {
             if (sscanf(buf, "%*[^\"]\"%d[^\"]\"", &s) == 1) {
