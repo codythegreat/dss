@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
     int slideCount = 15; // default value; should be changed with each file
 
     char ch;
-
     while ((ch=getopt(argc, argv, "hvx:y:s:"))!=EOF) {
         /* (am) XXX if we want the program to halt immediately upon
         * encountering an unsupported option, we should
@@ -54,13 +53,14 @@ int main(int argc, char *argv[])
     }
     argv += optind; // TODO figure out why this is. -am
 
-    // enables UTF-8 support if available on system
-    setlocale(LC_CTYPE, "");
     if (argc == 1) {
         /* no args (other than options) */
         fprintf(stderr, "%s: %s\n", PROGNAME, "missing file operand");
         return EXIT_FAILURE;
     }
+
+    // enables UTF-8 support if available on system
+    setlocale(LC_CTYPE, "");
 
     // todo : assign area to x/y values
     FILE *file;
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    char title[128]; // TODO can titles be dynamic?  Should they be?
+    char title[256]; // TODO can titles be dynamic?  Should they be?
                      // Maybe we can determine the longest title
                      // in the Scanner function?
                      // -am
