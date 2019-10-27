@@ -18,7 +18,7 @@ CPPFLAGS ?=
 CPPFLAGS += -DPROGNAME=\"dss\"
 
 LDFLAGS ?=
-LDFLAGS += -lncurses
+LDFLAGS += -lncursesw
 
 ifneq "$(DEBUG)" ""
   CFLAGS += -O0 -g -ggdb
