@@ -43,6 +43,12 @@ With the latest version of DSS you can simply run the program with a text file a
 
 Note that you will need to include `title`, `areaX`, `areaY`, and `slides` variables inside your txt file. See the sample files for more details.
 
+### Limitations
+
+DSS doesn't center UTF-8 characters properly. Slides with UTF-8 characters should display fine, but they may be off center.
+
+I'm working on a solution for this issue.
+
 ### Contributing
 
 Contribution to the project is welcome and encouraged. If you'd like to contribute please follow these guidelines:
