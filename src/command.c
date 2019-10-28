@@ -5,10 +5,14 @@
 #include "command.h"
 
 char userInput[100];
-int bottom;
+int bottomLine;
 
 command* parseCommand()
 {
+    // todo: change into switch with more cases/logic
+    // todo: text should be split by spaces, first 
+    // item is the verb, then subsequent to the verb
+    // is the subject(s)
     command* cmd = malloc(sizeof(struct command));
     if (strcmp(userInput, "q")==0) 
     {
@@ -20,17 +24,15 @@ command* parseCommand()
     return cmd;
 }
 
-void printCommand()
-{
-    move(bottom, 1);
-    clrtoeol();           // clear the line for printing
-    printw(":", userInput);
-}
 
 command* commandLoop(int *y)
 {
-    bottom = *y-1;
-    printCommand();
+    bottomLine = *y-1;
+    move(bottomLine, 1);
+    // clear to end of line for printing
+    clrtoeol();
+    printw(":");
+
     char keyPress;
     int currentCharacter = 0;
     bool typing = true;
@@ -39,25 +41,30 @@ command* commandLoop(int *y)
         keyPress = getch();
 	switch(keyPress)
 	{
-            case '\n':
+            case '\n':  // enter
                 typing = false;
                 break;
-            case 27:
+            case 27:    // esc
                 break;
-            case 127:
+	    case 127:   // back space  todo: test key input on mult systems
                 if (currentCharacter != 0) {
-                    mvdelch(bottom, 1+currentCharacter);
+                    // move back and delete character in place
+                    mvdelch(bottomLine, 1+currentCharacter);
                     currentCharacter--;
 	        }
 		break;
             default:
+	        // print the character to the screen
                 addch(keyPress);
+		// add the character to our userIn buffer
 	        userInput[currentCharacter] = keyPress;
 	        userInput[currentCharacter+1] = '\0';
 	        currentCharacter++;
 		break;
 	}
     }
+    // hide cursor
     curs_set(0);
+    // parse input into a command struct and return it
     return parseCommand();
 }
