@@ -24,6 +24,7 @@ short bookmarks[5][2] = {
     {-1, 0}
 };
 
+// todo: this should be a part of the main loop
 void setSlideCount(int* slides)
 {
     slideCount = *slides;
@@ -97,10 +98,10 @@ void handleKeyPress(int *slideNumber)
             if (keyDigit1 >= 0) {
                 if (keyDigit2 >= 0) {
                     char dest[3];
-                    if (keyDigit2 == 0) {
-                        sprintf(dest, "%i%i", keyDigit1-1, 9);
+                    if (keyDigit2 == 0) {                               // todo: more elegant solution for the below sprintf calls
+                        sprintf(dest, "%i%i", keyDigit1-1, 9);          // compiler will warn here due to length of string. safe to ignore.
                     } else {
-                        sprintf(dest, "%i%i", keyDigit1, keyDigit2-1);
+                        sprintf(dest, "%i%i", keyDigit1, keyDigit2-1);  // compiler will warn here due to length of string. safe to ignore.
                     }
                     if (atoi(dest)<=slideCount) {
                         *slideNumber = atoi(dest);
@@ -163,14 +164,14 @@ void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
             printw("\n");
 
             // for each line, move to the centered position and print the line
-            int currentLine = (max_y-slides[*slideNumber].y)/2;
-            line *curLine = slides[*slideNumber].first;
+            int yPosition = (max_y-slides[*slideNumber].y)/2;
+            line *currentLine = slides[*slideNumber].first;
             int i = 0;
-            while(curLine) {
-                move(currentLine + i, (max_x - slides[*slideNumber].maxX) / 2);
-                printw(curLine->content);
-                line *temp = curLine->next;
-                curLine = temp;
+            while(currentLine) {
+                move(yPosition + i, (max_x - slides[*slideNumber].maxX) / 2);
+                printw(currentLine->content);
+                line *temp = currentLine->next;
+                currentLine = temp;
                 i++;
            }
 	    }
