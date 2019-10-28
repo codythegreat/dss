@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "display.h"
+#include "command.h"
 
 int slideCount;
 int max_x;
@@ -54,10 +55,11 @@ void handleKeyPress(int *slideNumber)
     // get the keypress from user
     int keyInput = getch();
     int i = 0; // for loops
+    command *comm; // ':' case
     switch(keyInput) {
         case 'q':
         case 'Q':
-		    quitting = 1;
+            quitting = 1;
             break;
         case 'j':
         case 'J':
@@ -144,6 +146,18 @@ void handleKeyPress(int *slideNumber)
                 }
             }
             break;
+        case ':':
+	    comm = commandLoop(&max_y);
+	    if (comm->cmd == 0) {
+                move(max_y-1, 1);
+                clrtoeol();           // clear the line for printing
+                printw("Error: Not a Recognized command");
+                getch();
+	    } else if (comm->cmd == 1) {
+                quitting = 1;
+	    }
+	    free(comm);
+	    break;
         default:
             break;
     }
