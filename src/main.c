@@ -21,6 +21,18 @@ void version() {
     printf("Copyright (C) 2019 Cody Maxie\n");
 }
 
+// todo: possibly move to parser.c?
+FILE* openSlideFile(char *fileName)
+{
+    FILE *file;
+    file = fopen(fileName, "r"); // open the file as read only
+    if (!file) {
+        fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", fileName);
+        //return EXIT_FAILURE;
+    }
+    return file;
+}
+
 int main(int argc, char *argv[])
 {
     int slideCount = 15; // default value; should be changed with each file
@@ -62,16 +74,13 @@ int main(int argc, char *argv[])
     // enables UTF-8 support if available on system
     setlocale(LC_CTYPE, "");
 
-    // todo : assign area to x/y values
-    FILE *file;
 /* #if DSS_DEBUG */
 /*     fprintf(stderr, "%s: %s\n", "file", argv[0]); */
 /* #endif */
-    file = fopen(argv[0], "r"); // open the file as read only
-    if (!file) {
-        fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", argv[0]);
-        return EXIT_FAILURE;
-    }
+
+    char fileName[1000];
+    fileName[0] = '\0';
+    strcat(fileName, argv[0]);
 
     char title[256]; // TODO can titles be dynamic?  Should they be?
                      // Maybe we can determine the longest title
@@ -79,16 +88,29 @@ int main(int argc, char *argv[])
                      // -am
     title[0] = '\0';
     int currentSlide = 0;
-    slide* slides = parseTXT(file, &slideCount, title);
-    // close file after parsing
-    fclose(file);
-    setSlideCount(&slideCount);
-    displayLoop(slides, &currentSlide, title, argv[0]);
-    int i;
-    for (i=0;i<slideCount;i++) {
-        freeLines(slides[i].first);
-    }
-    free(slides);
+
+    // initialize the display
+    initDisplay();
+
+    int returnCode;
+    do
+    {
+        FILE *currentFile = openSlideFile(fileName);
+        // parse and return slides from txt file
+        slide *slides = parseTXT(currentFile, &slideCount, title);
+        // close the file
+        fclose(currentFile);
+        // set the slide count
+        setSlideCount(&slideCount);
+        // initiate display loop, when it returns store exit code
+        returnCode = displayLoop(slides, &currentSlide, title, fileName);
+        // free slides and lines
+        int i;
+        for (i=0;i<slideCount;i++) {
+            freeLines(slides[i].first);
+        }
+        free(slides);
+    } while (returnCode == 1);  // todo: something is not right with freeing, which is causing problems when attempting to open aonther file
     return EXIT_SUCCESS;
 }
 // vim: set ts=4 sts=4 sw=4:
