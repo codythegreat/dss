@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "display.h"
-#include "command.h"
+#include "parsecommand.h"
 
 int slideCount;
 int max_x;
@@ -12,7 +12,9 @@ int max_y;
 short keyDigit1 = -1;
 short keyDigit2 = -1;
 short curColor = 1;
-short quitting = 0; // if 1, return to main
+bool quitting = false;
+short exitCode = 0; // 0 - end program, 1 - open file, 2 - tabopen file
+char *nextFile;
 
 // register for bookmarks
 int reg;
@@ -59,7 +61,7 @@ void handleKeyPress(int *slideNumber)
     switch(keyInput) {
         case 'q':
         case 'Q':
-            quitting = 1;
+            quitting = true;
             break;
         case 'j':
         case 'J':
@@ -147,26 +149,67 @@ void handleKeyPress(int *slideNumber)
             }
             break;
         case ':':
-	    comm = commandLoop(&max_y);
-	    if (comm->cmd == 0) {
-                move(max_y-1, 1);
-                clrtoeol();           // clear the line for printing
-                printw("Error: Not a Recognized command");
-                getch();
-	    } else if (comm->cmd == 1) {
-                quitting = 1;
-	    }
-	    free(comm);
-	    break;
+	        comm = commandLoop(&max_y);
+            switch(comm->cmd) {
+                case 0: // bad input
+                    move(max_y-1, 1);
+                    clrtoeol();           // clear the line for printing
+                    printw("Error: Not a Recognized command");
+                    getch();
+                    break;
+                case 1: // quit
+                    quitting = true;
+                    break;
+                case 2: // open file
+                    move(max_y-1, 1);
+                    clrtoeol();           // clear the line for printing
+                    printw("command 'open' not yet available");
+                    getch();
+                    //quitting = true;
+                    //exitCode = 1;
+                    //nextFile = comm->arg[1];
+                    break;
+                case 3: // tab open file
+                    quitting = true;
+                    exitCode = 2;
+                    // todo: add logic for tab opening new file
+                    break;
+                case 4: // prints bookmarks
+                    move(max_y-6, 0);
+                    for (i = 0; i < 5; i++) {
+                        if (bookmarks[i][0] != -1)
+                        {
+                            printw(" slide %i - register %c\n", bookmarks[i][0]+1, bookmarks[i][1]);
+                        } else 
+                        {
+                            printw(" empty\n", i+1);
+                        }
+                    }
+                    getch();
+                    break;
+                case 5: // clears bookmarks
+                    for (i = 0; i < 5; i++) {
+                        bookmarks[i][0] = -1;
+                        bookmarks[i][1] = 0;
+                    }
+                    move(max_y-1, 1);
+                    // clear the line for printing
+                    clrtoeol(); 
+                    printw("Bookmarks cleared");
+                    getch();
+                    break;
+                default:
+                    break;
+                }
+	            break;
         default:
             break;
     }
 }
 
-void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
+int displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
 {
-    initDisplay();
-    while(quitting == 0) {
+    while(quitting == false) {
         // assigns screen x/y length continually (incase of screen resize)
         getmaxyx(stdscr, max_y, max_x);
 	    // if the screen is too small/zoomed in, dispay a soft error
@@ -203,6 +246,12 @@ void displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
         clear();
     }
 
-    // when quitting, end the ncurses session
-    endwin();
+    // when quitting, end the ncurses session or set next file name
+    if (exitCode == 1) {
+        fileName[0] = '\0';
+        strcat(fileName, nextFile);
+    } else {
+        endwin();
+    }
+    return exitCode;
 }
