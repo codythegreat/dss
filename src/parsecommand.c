@@ -34,6 +34,9 @@ command* parseCommand()
     } else if (strcmp(comm->arg[0], "bclear")==0)
     {
          comm->cmd = 5;
+    } else if (atoi(comm->arg[0])!=NULL)
+    {
+         comm->cmd = 6;
     } else 
     {
          comm->cmd = 0;
