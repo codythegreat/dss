@@ -198,6 +198,15 @@ void handleKeyPress(int *slideNumber)
                     printw("Bookmarks cleared");
                     getch();
                     break;
+                case 6: // jump to slide by number
+		    if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= slideCount)
+                        *slideNumber = atoi(comm->arg[0])-1;
+		    else
+                        move(max_y-1, 1);
+                        // clear the line for printing
+                        clrtoeol(); 
+                        printw("Number provided is not a slide. Expected 1 - %i", slideCount);
+                        getch();
                 default:
                     break;
                 }
