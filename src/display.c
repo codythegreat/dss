@@ -54,6 +54,70 @@ void printMessageBottomBar(char message[256])
     getch();
 }
 
+void handleCommandInput(int *slideNumber)
+{
+    command *comm;
+	comm = commandLoop(&max_y);
+    int i;
+    switch(comm->cmd) {
+        case 0: // bad input
+            printMessageBottomBar("Error: Not a Recognized command");
+            break;
+        case 1: // quit
+            quitting = true;
+            break;
+        case 2: // open file
+            printMessageBottomBar("command 'open' not yet available");
+            //quitting = true;
+            //exitCode = 1;
+            //nextFile = comm->arg[1];
+            break;
+        case 3: // bookmark current slide
+            // todo: handle if user doesn't add a register
+            for (i=0;i<5;i++) {
+                if (bookmarks[i][0] == -1) {
+                    bookmarks[i][0] = *slideNumber;
+                    bookmarks[i][1] = comm->arg[1][0];
+                    break;
+                }
+            }
+            break;
+        case 4: // prints bookmarks
+            move(max_y-6, 0);
+            for (i = 0; i < 5; i++) {
+                if (bookmarks[i][0] != -1)
+                {
+                    printw(" slide %i - register %c\n", bookmarks[i][0]+1, bookmarks[i][1]);
+                } else 
+                {
+                    printw(" empty\n", i+1);
+                }
+            }
+            getch();
+            break;
+        case 5: // clears bookmarks
+            for (i = 0; i < 5; i++) {
+                bookmarks[i][0] = -1;
+                bookmarks[i][1] = 0;
+            }
+            printMessageBottomBar("Bookmarks cleared");
+            break;
+        case 6: // jump to slide by number
+            if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= numOfSlides)
+            {
+                *slideNumber = atoi(comm->arg[0])-1;
+            }
+            else
+            {
+                char message[80];
+                sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
+                printMessageBottomBar(message);
+            }
+        default:
+            break;
+    }
+}
+
 void handleKeyPress(int *slideNumber)
 {
     // get the keypress from user
@@ -151,65 +215,8 @@ void handleKeyPress(int *slideNumber)
             }
             break;
         case ':':
-	        comm = commandLoop(&max_y);
-            switch(comm->cmd) {
-                case 0: // bad input
-		    printMessageBottomBar("Error: Not a Recognized command");
-                    break;
-                case 1: // quit
-                    quitting = true;
-                    break;
-                case 2: // open file
-		    printMessageBottomBar("command 'open' not yet available");
-                    //quitting = true;
-                    //exitCode = 1;
-                    //nextFile = comm->arg[1];
-                    break;
-                case 3: // bookmark current slide
-		    // todo: handle if user doesn't add a register
-                    for (i=0;i<5;i++) {
-                        if (bookmarks[i][0] == -1) {
-                            bookmarks[i][0] = *slideNumber;
-                            bookmarks[i][1] = comm->arg[1][0];
-                            break;
-                        }
-                    }
-                    break;
-                case 4: // prints bookmarks
-                    move(max_y-6, 0);
-                    for (i = 0; i < 5; i++) {
-                        if (bookmarks[i][0] != -1)
-                        {
-                            printw(" slide %i - register %c\n", bookmarks[i][0]+1, bookmarks[i][1]);
-                        } else 
-                        {
-                            printw(" empty\n", i+1);
-                        }
-                    }
-                    getch();
-                    break;
-                case 5: // clears bookmarks
-                    for (i = 0; i < 5; i++) {
-                        bookmarks[i][0] = -1;
-                        bookmarks[i][1] = 0;
-                    }
-		    printMessageBottomBar("Bookmarks cleared");
-                    break;
-                case 6: // jump to slide by number
-		    if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= numOfSlides)
-		    {
-                        *slideNumber = atoi(comm->arg[0])-1;
-		    }
-		    else
-		    {
-                        char message[80];
-			sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
-                        printMessageBottomBar(message);
-		    }
-                default:
-                    break;
-                }
-	            break;
+            handleCommandInput(slideNumber);
+	        break;
         default:
             break;
     }
