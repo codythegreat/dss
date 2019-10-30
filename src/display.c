@@ -52,6 +52,14 @@ void initDisplay()
     clear();
 }
 
+void printMessageBottomBar(char message[256])
+{
+    move(max_y-1, 1);
+    clrtoeol();
+    printw(message);
+    getch();
+}
+
 void handleKeyPress(int *slideNumber)
 {
     // get the keypress from user
@@ -152,19 +160,13 @@ void handleKeyPress(int *slideNumber)
 	        comm = commandLoop(&max_y);
             switch(comm->cmd) {
                 case 0: // bad input
-                    move(max_y-1, 1);
-                    clrtoeol();           // clear the line for printing
-                    printw("Error: Not a Recognized command");
-                    getch();
+		    printMessageBottomBar("Error: Not a Recognized command");
                     break;
                 case 1: // quit
                     quitting = true;
                     break;
                 case 2: // open file
-                    move(max_y-1, 1);
-                    clrtoeol();           // clear the line for printing
-                    printw("command 'open' not yet available");
-                    getch();
+		    printMessageBottomBar("command 'open' not yet available");
                     //quitting = true;
                     //exitCode = 1;
                     //nextFile = comm->arg[1];
@@ -192,11 +194,7 @@ void handleKeyPress(int *slideNumber)
                         bookmarks[i][0] = -1;
                         bookmarks[i][1] = 0;
                     }
-                    move(max_y-1, 1);
-                    // clear the line for printing
-                    clrtoeol(); 
-                    printw("Bookmarks cleared");
-                    getch();
+		    printMessageBottomBar("Bookmarks cleared");
                     break;
                 case 6: // jump to slide by number
 		    if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= slideCount)
@@ -205,11 +203,9 @@ void handleKeyPress(int *slideNumber)
 		    }
 		    else
 		    {
-                        move(max_y-1, 1);
-                        // clear the line for printing
-                        clrtoeol(); 
-                        printw("Number provided is not a slide. Expected 1 - %i", slideCount);
-                        getch();
+                        char message[80];
+			sprintf(message, "Number provided is not a slide. Expected 1 - %i", slideCount);
+                        printMessageBottomBar(message);
 		    }
                 default:
                     break;
