@@ -97,10 +97,8 @@ int main(int argc, char *argv[])
         slide *slides = parseTXT(currentFile, &slideCount, title);
         // close the file
         fclose(currentFile);
-        // set the slide count
-        setSlideCount(&slideCount);
         // initiate display loop, when it returns store exit code
-        returnCode = displayLoop(slides, &currentSlide, title, fileName);
+        returnCode = displayLoop(slides, &currentSlide, &slideCount, title, fileName);
         // free slides and lines
         int i;
         for (i=0;i<slideCount;i++) {

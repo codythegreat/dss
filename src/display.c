@@ -6,7 +6,7 @@
 #include "display.h"
 #include "parsecommand.h"
 
-int slideCount;
+int numOfSlides;
 int max_x;
 int max_y;
 short keyDigit1 = -1;
@@ -26,12 +26,6 @@ short bookmarks[5][2] = {
     {-1, 0},
     {-1, 0}
 };
-
-// todo: this should be a part of the main loop
-void setSlideCount(int* slides)
-{
-    slideCount = *slides;
-}
 
 void initDisplay()
 {
@@ -74,7 +68,7 @@ void handleKeyPress(int *slideNumber)
         case 'j':
         case 'J':
         case ' ':
-            if (*slideNumber != slideCount-1) {
+            if (*slideNumber != numOfSlides-1) {
                 *slideNumber = *slideNumber + 1;
             }
             break;
@@ -115,19 +109,19 @@ void handleKeyPress(int *slideNumber)
                     } else {
                         sprintf(dest, "%i%i", keyDigit1, keyDigit2-1);  // compiler will warn here due to length of string. safe to ignore.
                     }
-                    if (atoi(dest)<=slideCount) {
+                    if (atoi(dest)<=numOfSlides) {
                         *slideNumber = atoi(dest);
                         keyDigit1 = -1;
                         keyDigit2 = -1;
                     }
                 } else {
-                    if (keyDigit1<=slideCount) {
+                    if (keyDigit1<=numOfSlides) {
                         *slideNumber = keyDigit1-1;
                         keyDigit1 = -1;
                     }
                 }
             } else {
-                *slideNumber = slideCount - 1;
+                *slideNumber = numOfSlides - 1;
             }
             break;
 	    case 't': // change color if term has support
@@ -197,14 +191,14 @@ void handleKeyPress(int *slideNumber)
 		    printMessageBottomBar("Bookmarks cleared");
                     break;
                 case 6: // jump to slide by number
-		    if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= slideCount)
+		    if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= numOfSlides)
 		    {
                         *slideNumber = atoi(comm->arg[0])-1;
 		    }
 		    else
 		    {
                         char message[80];
-			sprintf(message, "Number provided is not a slide. Expected 1 - %i", slideCount);
+			sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
                         printMessageBottomBar(message);
 		    }
                 default:
@@ -216,9 +210,10 @@ void handleKeyPress(int *slideNumber)
     }
 }
 
-int displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
+int displayLoop(slide slides[], int* slideNumber, int* slideCount, char* title, char* fileName)
 {
     while(quitting == false) {
+        numOfSlides = *slideCount;
         // assigns screen x/y length continually (incase of screen resize)
         getmaxyx(stdscr, max_y, max_x);
 	    // if the screen is too small/zoomed in, dispay a soft error
@@ -245,7 +240,7 @@ int displayLoop(slide slides[], int* slideNumber, char* title, char* fileName)
 	    // print bottom bar to screen
         mvprintw(max_y-1, 1, fileName);
         char bottomRightCounter[14];
-        sprintf(bottomRightCounter, "slide %i / %i", slides[*slideNumber].number, slideCount);
+        sprintf(bottomRightCounter, "slide %i / %i", slides[*slideNumber].number, numOfSlides);
         mvprintw(max_y-1, max_x-13, bottomRightCounter);
 
         // handle key presses
