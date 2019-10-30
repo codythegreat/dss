@@ -130,14 +130,14 @@ void handleKeyPress(int *slideNumber)
                 *slideNumber = slideCount - 1;
             }
             break;
-	    case 't':
-            if(has_colors()) {
-                curColor++;
-                if (curColor == 5) {
-                    curColor = 1;
+	    case 't': // change color if term has support
+                if(has_colors()) {
+                    curColor++;
+                    if (curColor == 5)
+                        curColor = 1;
+                    wbkgd(stdscr, COLOR_PAIR(curColor));
                 }
-                wbkgd(stdscr, COLOR_PAIR(curColor));
-            }
+		break;
         case 'b':
             for (i=0;i<5;i++) {
                 if (bookmarks[i][0] == -1) {
