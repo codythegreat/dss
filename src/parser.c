@@ -53,7 +53,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     while(fgets(buf, 1000, inFile)!=NULL) {
 	// if at end, assign slide values and move to next
         if (strstr(buf, "{ENDSLIDE}")!=NULL) {
-	    // assign first of line linked list to current slide
+	    // assign first of line dub linked list to current slide
             slides[i].first = first;
 
             slides[i].number = i+1;
