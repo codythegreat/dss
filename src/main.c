@@ -13,7 +13,6 @@ void usage() {
     fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
     fprintf(stderr, "%s", "  -h     print this message and exit\n");
     fprintf(stderr, "%s", "  -v     display version and copyright information\n");
-    /* fprintf(stderr, "%s", "  -s     set the number of slides (default 15)\n"); */
 }
 
 void version() {
@@ -38,7 +37,7 @@ int main(int argc, char *argv[])
     int slideCount = 15; // default value; should be changed with each file
 
     char ch;
-    while ((ch=getopt(argc, argv, "hvx:y:s:"))!=EOF) {
+    while ((ch=getopt(argc, argv, "hv"))!=EOF) {
         /* (am) XXX if we want the program to halt immediately upon
         * encountering an unsupported option, we should
         * uncomment this:
@@ -52,9 +51,6 @@ int main(int argc, char *argv[])
         case 'v':
             version();
             return EXIT_SUCCESS;
-        case 's':
-            slideCount = atoi(optarg);
-            break;
         case 'h':
             usage();
             return EXIT_SUCCESS;
@@ -92,7 +88,8 @@ int main(int argc, char *argv[])
     // initialize the display
     initDisplay();
 
-    int returnCode;
+    //0-exit, 1-open new file
+    int returnCode; 
     do
     {
         FILE *currentFile = openSlideFile(fileName);
