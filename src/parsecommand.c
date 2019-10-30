@@ -36,6 +36,9 @@ command* parseCommand()
     } else if (strcmp(comm->arg[0], "open")==0)
     {
          comm->cmd = 2;
+    } else if (strcmp(comm->arg[0], "bmark")==0)
+    {
+         comm->cmd = 3;
     } else if (strcmp(comm->arg[0], "blist")==0)
     {
          comm->cmd = 4;
