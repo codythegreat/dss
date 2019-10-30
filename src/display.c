@@ -165,10 +165,15 @@ void handleKeyPress(int *slideNumber)
                     //exitCode = 1;
                     //nextFile = comm->arg[1];
                     break;
-                case 3: // tab open file
-                    quitting = true;
-                    exitCode = 2;
-                    // todo: add logic for tab opening new file
+                case 3: // bookmark current slide
+		    // todo: handle if user doesn't add a register
+                    for (i=0;i<5;i++) {
+                        if (bookmarks[i][0] == -1) {
+                            bookmarks[i][0] = *slideNumber;
+                            bookmarks[i][1] = comm->arg[1][0];
+                            break;
+                        }
+                    }
                     break;
                 case 4: // prints bookmarks
                     move(max_y-6, 0);
