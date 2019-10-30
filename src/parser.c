@@ -4,24 +4,27 @@
 #include "parser.h"
 #include "slides.h"
 
-// defaults
+// holds slide count
 int s;
-char *globalTitle;
 
 
 slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 {
-    char buf[1000]; // stores each line
+    // create a buffer for each line
+    char buf[1000];
+
+    // parse inFile for meta information
     while(fgets(buf, 1000, inFile)!=NULL) {
         if (strstr(buf, "title=")!=NULL) { // finds title line
-            char quoted[128];
+            char quoted[256];
             if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
-                globalTitle = quoted;
+		strcat(presTitle, quoted);
             } else {
                 fprintf(stderr, "improper title\n");
             }
         } else if (strstr(buf, "slides=")!=NULL) {
             if (sscanf(buf, "%*[^\"]\"%d[^\"]\"", &s) == 1) {
+                *slideCounter = s;
                 continue;
             } else {
                 fprintf(stderr, "improper slide declaration\n");
@@ -30,8 +33,6 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             break;
         }
     }
-    *slideCounter = s;
-    strcat(presTitle, globalTitle);
 
     // allocate memory to the heap for storing our array of slides
     // an array is used here to enable jumping to slides by number
@@ -47,30 +48,45 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     int curMaxX = 0;
     int curY = 0;
 
-    // continue itteration over file
+    // continue itteration over file starting after STARTSLIDES
     int i = 0;
     while(fgets(buf, 1000, inFile)!=NULL) {
-        if (strstr(buf, "{ENDSLIDE}")!=NULL) { // iterate to the next slide
+	// if at end, assign slide values and move to next
+        if (strstr(buf, "{ENDSLIDE}")!=NULL) {
+	    // assign first of line linked list to current slide
             slides[i].first = first;
-            l = malloc(sizeof(line));
-            first = l;
+
             slides[i].number = i+1;
+
             // assign curMaxX to x, reset variable
             slides[i].maxX = curMaxX;
             curMaxX = 0;
+
             // assign curY to y, reset variable
-	        slides[i].y = curY;
+            slides[i].y = curY;
             curY = 0;
+
+	    // assign r,g,b values (currently not a feature)
             slides[i].r = 0;
             slides[i].g = 0;
             slides[i].b = 0;
+
+	    // increment i to work with next slide
             i++;
-            if (i>=s) 
+            if (i==*slideCounter) 
                 break;
+
+	    // for next slide, mem alloc a new line
+            l = malloc(sizeof(line));
+            first = l;
+
         } else {
             // add buf to current line and itterate to the next
             strcat(l->content, buf);
             l = nextLine(l);
+
+	    // with each line, y increases
+            curY++;
 
             // update curMaxX only if line is longer that previous lines
             char end = '\n';
@@ -80,9 +96,9 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
                 if (n>curMaxX) {
                     curMaxX = n;
                 }
-                curY++;
             }
         }
     }
+    // return array of pointers to slides
     return slides;
 }
