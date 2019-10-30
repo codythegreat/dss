@@ -17,12 +17,14 @@ DSS is in the very early stages of development. We still have a lot of features 
 + bookmarking slides (up to 5 bookmarks currently) with `b`
 + jumping to a bookmark with `B` and the key of the register
 + switching color themes with `t` (currently there are 4 themes, but more are planned to be added)
++ Vim style command mode `:` for jumping to slides `:3`, quitting `:q`, and bookmark handling `:bmark/blist/bclear`
 
 ### Planned Features
 
 A few features that are planned include:
 + greater color formatting options
 + url detection and selection with H/L
++ markdown style text parsing (optional, enabled by flag)
 + quick fade animations (quick as in non-intrusive when rapidly switching through slides)
 
 ### Installation
