@@ -21,13 +21,13 @@ void version() {
 }
 
 // todo: possibly move to parser.c?
+// todo: error handling for if a file is not found/unreadable
 FILE* openSlideFile(char *fileName)
 {
     FILE *file;
     file = fopen(fileName, "r"); // open the file as read only
     if (!file) {
         fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", fileName);
-        //return EXIT_FAILURE;
     }
     return file;
 }
