@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     int currentSlide = 0;
 
     // initialize ncurses display
-    initDisplay();
+    int displayInitialized = 0;
 
     //0-exit, 1-open new file
     int returnCode; 
@@ -92,6 +92,11 @@ int main(int argc, char *argv[])
         if (!currentFile) {
             fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", fileName);
             return EXIT_FAILURE;
+        }
+
+        if (!displayInitialized) {
+            initDisplay();
+            displayInitialized = 1;
         }
 
         // parse and return slides from txt file
