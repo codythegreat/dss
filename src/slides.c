@@ -3,7 +3,7 @@
 #include "slides.h"
 
 slide* createSlideArray(int s) {
-    slide* slides = (slide*)malloc(s * sizeof(slide));
+    slide* slides = malloc(sizeof(struct slide)*s);
     return slides;
 }
 
@@ -22,10 +22,10 @@ void freeSlides(slide *slide[], int s) {
 }
 
 void freeLines(line *l) {
-    line *current;
+    line *next;
     while(l) {
-        current = l;
-        l = l->next;
-        free(current);
+        next = l->next;
+        free(l);
+        l = next;
     }
 }
