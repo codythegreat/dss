@@ -73,12 +73,19 @@ int main(int argc, char *argv[])
     title[0] = '\0';
     int currentSlide = 0;
 
-    int displayInitialized;
+    // initialize ncurses display
+    initDisplay();
 
     //0-exit, 1-open new file
     int returnCode; 
     do
     {
+        // if opening new file, reset vars from last loop
+        if (returnCode==1) {
+            title[0] = '\0';
+            currentSlide = 0;
+            returnCode = 0;
+        }
         // open the file, otherwise return error
         FILE *currentFile;
         currentFile = fopen(fileName, "r");
@@ -87,23 +94,21 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
 
-        if (!displayInitialized) {
-            // initialize the display
-            initDisplay();
-        }
         // parse and return slides from txt file
         slide *slides = parseTXT(currentFile, &slideCount, title);
         // close the file
         fclose(currentFile);
         // initiate display loop, when it returns store exit code
         returnCode = displayLoop(slides, &currentSlide, &slideCount, title, fileName);
+        
         // free slides and lines
         int i;
-        for (i=0;i<slideCount;i++) {
+        // todo: something is causing the below code to not function correctly when opening new file
+        for (i=0;i<slideCount;i++){
             freeLines(slides[i].first);
         }
         free(slides);
-    } while (returnCode == 1);  // todo: something is not right with freeing, which is causing problems when attempting to open aonther file
+    } while (returnCode == 1);
     return EXIT_SUCCESS;
 }
 // vim: set ts=4 sts=4 sw=4:
