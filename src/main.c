@@ -20,18 +20,6 @@ void version() {
     printf("Copyright (C) 2019 Cody Maxie\n");
 }
 
-// todo: possibly move to parser.c?
-// todo: error handling for if a file is not found/unreadable
-FILE* openSlideFile(char *fileName)
-{
-    FILE *file;
-    file = fopen(fileName, "r"); // open the file as read only
-    if (!file) {
-        fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", fileName);
-    }
-    return file;
-}
-
 int main(int argc, char *argv[])
 {
     int slideCount = 15; // default value; should be changed with each file
@@ -92,7 +80,13 @@ int main(int argc, char *argv[])
     int returnCode; 
     do
     {
-        FILE *currentFile = openSlideFile(fileName);
+        // open the file, otherwise return error
+        FILE *currentFile;
+        currentFile = fopen(fileName, "r");
+        if (!currentFile) {
+            fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", fileName);
+            return EXIT_FAILURE;
+        }
         // parse and return slides from txt file
         slide *slides = parseTXT(currentFile, &slideCount, title);
         // close the file
