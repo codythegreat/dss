@@ -13,7 +13,7 @@ short keyDigit1 = -1;
 short keyDigit2 = -1;
 short curColor = 1;
 bool quitting = false;
-short exitCode = 0; // 0 - end program, 1 - open file, 2 - tabopen file
+short openingFile = 0; // 0 - end program, 1 - open file, 2 - tabopen file
 char *nextFile;
 
 // register for bookmarks
@@ -27,7 +27,7 @@ short bookmarks[5][2] = {
     {-1, 0}
 };
 
-int initDisplay()
+void initDisplay()
 {
     // initialize ncurses
     initscr();
@@ -44,7 +44,6 @@ int initDisplay()
     // disables cursor
     curs_set(0);
     clear();
-    return 1;
 }
 
 void printMessageBottomBar(char message[256])
@@ -68,9 +67,10 @@ void handleCommandInput(int *slideNumber)
             quitting = true;
             break;
         case 2: // open file
+            // todo: add error handling for missing file arg
             printMessageBottomBar("command 'open' not yet available");
             //quitting = true;
-            //exitCode = 1;
+            //openingFile = 1;
             //nextFile = comm->arg[1];
             break;
         case 3: // bookmark current slide
@@ -263,12 +263,18 @@ int displayLoop(slide slides[], int* slideNumber, int* slideCount, char* title, 
         clear();
     }
 
-    // when quitting, end the ncurses session or set next file name
-    if (exitCode == 1) {
+    // reset quitting, open a new file or close program
+    quitting = false;
+    if (openingFile == 1) {
+        // set new file name to read
         fileName[0] = '\0';
         strcat(fileName, nextFile);
+        // reset value for next iteration, return 1 to open a new file
+        openingFile = 0;
+        return 1;
     } else {
+        // end the ncurses session, return 0 to cloe program
         endwin();
+        return 0;
     }
-    return exitCode;
 }
