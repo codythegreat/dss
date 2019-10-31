@@ -27,7 +27,7 @@ short bookmarks[5][2] = {
     {-1, 0}
 };
 
-void initDisplay()
+int initDisplay()
 {
     // initialize ncurses
     initscr();
@@ -44,6 +44,7 @@ void initDisplay()
     // disables cursor
     curs_set(0);
     clear();
+    return 1;
 }
 
 void printMessageBottomBar(char message[256])
