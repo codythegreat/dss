@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "slides.h"
 
-slide* createSlideArray(int s) {
-    slide* slides = malloc(sizeof(struct slide)*s);
+slide* createSlideArray(int numOfSlides) {
+    slide* slides = malloc(sizeof(struct slide)*numOfSlides);
     return slides;
 }
 
@@ -14,9 +14,9 @@ line *nextLine(line *prev) {
     return n;
 }
 
-void freeSlides(slide *slide[], int s) {
+void freeSlides(slide *slide[], int numOfSlides) {
     int i;
-    for (i=0;i<s;i++) {
+    for (i=0;i<numOfSlides;i++) {
         free(slide[i]);
     }
 }
