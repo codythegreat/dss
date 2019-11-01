@@ -6,20 +6,26 @@
 #include "display.h"
 #include "parsecommand.h"
 
-int numOfSlides;
-int max_x;
-int max_y;
-short keyDigit1 = -1;
-short keyDigit2 = -1;
-short curColor = 1;
-bool quitting = false;
-short openingFile = 0; // 0 - end program, 1 - open file, 2 - tabopen file
-char *nextFile;
+int numOfSlides; // total of slides
 
-// register for bookmarks
-int reg;
-// holds slide and register
-short bookmarks[5][2] = {
+int max_x; // ncurses character "res" x axis
+int max_y; // ncurses character "res" y axis
+
+short keyDigit1 = -1; // holds value of numerical inputs for
+short keyDigit2 = -1; // slide jumping
+
+short curColor = 1; // current color pair (theme)
+
+bool quitting = false; // if true, end display loop
+
+short openingFile = 0; // 0 - end program, 1 - open file, 2 - tabopen file
+
+char *nextFile; // next file name to open
+
+
+int bookmarkReg; // holds key to assign bookmark to
+
+short bookmarks[5][2] = { // holds slide and register
     {-1, 0},
     {-1, 0},
     {-1, 0},
@@ -39,7 +45,9 @@ void initDisplay()
         init_pair(3, COLOR_WHITE, COLOR_BLUE);
         init_pair(4, COLOR_BLACK, COLOR_WHITE);
     }
+    // disable line buffering
     cbreak();
+    // don't echo characters typed
     noecho();
     // disables cursor
     curs_set(0);
@@ -48,6 +56,7 @@ void initDisplay()
 
 void printMessageBottomBar(char message[256])
 {
+    // move to bottom line, clear to EOL, print, wait for input before returning
     move(max_y-1, 1);
     clrtoeol();
     printw(message);
@@ -124,7 +133,6 @@ void handleKeyPress(int *slideNumber)
     // get the keypress from user
     int keyInput = getch();
     int i = 0; // for loops
-    command *comm; // ':' case
     switch(keyInput) {
         case 'q':
         case 'Q':
@@ -207,9 +215,9 @@ void handleKeyPress(int *slideNumber)
             }
             break;
         case 'B':
-            reg = getch();
+            bookmarkReg = getch();
             for (i=0;i<5;i++) {
-                if (bookmarks[i][1] == reg) {
+                if (bookmarks[i][1] == bookmarkReg) {
                     *slideNumber = bookmarks[i][0];
                     break;
                 }
