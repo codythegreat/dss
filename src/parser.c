@@ -41,8 +41,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 
     // create a line pointer, l is for iterating while first is
     // the pointer used in each slide struct
-    line *l = malloc(sizeof(line));
-    memset(l, 0, sizeof(*l));
+    line *l = newLine();
     line *first = l;
     l->content[0] = '\0';
 
@@ -79,8 +78,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
                 break;
 
 	    // for next slide, mem alloc a new line
-            l = malloc(sizeof(line));
-            memset(l, 0, sizeof(*l));
+	    l = newLine();
             first = l;
 
         } else {
