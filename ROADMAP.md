@@ -12,26 +12,26 @@ Current version. Includes the following:
 ---
 
 + Basic markdown style formatting (optional, enabled/disabled by flag)
-+ vim-like command mode (file switching, theme switching, displaying bmark list)
++ Vim-like command mode (file switching, theme switching, displaying bmark list)
 
 ### 0.3
 ---
 
 + Specifying text color
 + URL detection/selection (key binding or command?)
-+ dual slide display mode
++ Dual slide display mode
 
 ### 0.4
 ---
 
-+ tabbed completion for command mode
-+ edit mode (go to the slide to edit, enter a command (something like `edit`) opens vim and placed cursor at that slide) 
++ Tabbed completion for command mode
++ Edit mode (go to the slide to edit, entering a command (something like `edit`) opens Vim and places the cursor at that slide) 
 
 ### 0.5
 ---
 
-+ support for other operating systems (possibly being moved up depending on development overhead)
-+ config file support (custom themes, settings)
++ Support for other operating systems (possibly being moved up depending on development overhead)
++ Config file support (custom themes, settings)
 
 ### 1.0
 ---
