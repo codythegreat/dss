@@ -65,7 +65,8 @@ void printMessageBottomBar(char message[256])
 
 void handleCommandInput(int *slideNumber)
 {
-    command *comm = commandLoop(&max_y); // get the user command
+    // get the user command and parse it into a command struct
+    command *comm = commandLoop(&max_y);
     int i; // for loops
     switch(comm->cmd) {
         case 0: // bad input
@@ -125,6 +126,9 @@ void handleCommandInput(int *slideNumber)
                 sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
                 printMessageBottomBar(message);
             }
+	// todo: command to display meta information
+	// todo: command to enable double mode
+	// todo: command to enable markdown mode
         default:
             break;
     }
@@ -137,18 +141,18 @@ void handleKeyPress(int *slideNumber)
     int i = 0; // for loops
     switch(keyInput) {
         case 'q':
-        case 'Q':
+        case 'Q': // end the session
             quitting = true;
             break;
         case 'j':
         case 'J':
-        case ' ':
+        case ' ': // next slide
             if (*slideNumber != numOfSlides-1) {
                 *slideNumber = *slideNumber + 1;
             }
             break;
         case 'k':
-        case 'K':
+        case 'K': // prev slide
             if (*slideNumber != 0) {
                 *slideNumber = *slideNumber - 1;
             }
@@ -162,7 +166,7 @@ void handleKeyPress(int *slideNumber)
         case '3':
         case '2':
         case '1':
-        case '0':
+        case '0': // digits are recorded and used later with 'G' to enable slide jumping
             if (keyDigit1 >= 1 && keyDigit2 >= 0) {
                 keyDigit1 = keyInput - 48;
                 keyDigit2 = -1;
@@ -172,10 +176,10 @@ void handleKeyPress(int *slideNumber)
                 keyDigit2 = keyInput - 48;
             }
             break;
-        case 'g':
+        case 'g': // go to first slide
             *slideNumber = 0;
             break;
-        case 'G':
+        case 'G': // go to slide specified from prior input, or end
             if (keyDigit1 >= 0) {
                 if (keyDigit2 >= 0) {
                     char dest[3];
@@ -207,7 +211,7 @@ void handleKeyPress(int *slideNumber)
                     wbkgd(stdscr, COLOR_PAIR(curColor));
                 }
 		break;
-        case 'b':
+        case 'b': // set a bookmark on cur slide
             for (i=0;i<5;i++) {
                 if (bookmarks[i][0] == -1) {
                     bookmarks[i][0] = *slideNumber;
@@ -216,7 +220,7 @@ void handleKeyPress(int *slideNumber)
                 }
             }
             break;
-        case 'B':
+        case 'B': // go to bookmark at following register
             bookmarkReg = getch();
             for (i=0;i<5;i++) {
                 if (bookmarks[i][1] == bookmarkReg) {
@@ -225,7 +229,7 @@ void handleKeyPress(int *slideNumber)
                 }
             }
             break;
-        case ':':
+        case ':': // enter command mode
             handleCommandInput(slideNumber);
 	        break;
         default:
