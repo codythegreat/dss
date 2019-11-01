@@ -90,6 +90,8 @@ int main(int argc, char *argv[])
         FILE *currentFile;
         currentFile = fopen(fileName, "r");
         if (!currentFile) {
+            if (displayInitialized)
+                endwin();
             fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", fileName);
             return EXIT_FAILURE;
         }
