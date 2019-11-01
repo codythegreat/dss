@@ -76,10 +76,10 @@ void handleCommandInput(int *slideNumber)
             break;
         case 2: // open file
             // todo: add error handling for missing file arg
-            printMessageBottomBar("command 'open' not yet available");
-            //quitting = true;
-            //openingFile = 1;
-            //nextFile = comm->arg[1];
+            //printMessageBottomBar("command 'open' not yet available");
+            quitting = true;
+            openingFile = 1;
+            nextFile = comm->arg[1];
             break;
         case 3: // bookmark current slide
             if (strlen(comm->arg[1])==0) {
