@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "slides.h"
+#include <string.h>
 
 slide* createSlideArray(int numOfSlides) {
     slide* slides = malloc(sizeof(struct slide)*numOfSlides);
@@ -9,6 +10,7 @@ slide* createSlideArray(int numOfSlides) {
 
 line *nextLine(line *prev) {
     line *n = malloc(sizeof(line));
+    memset(n, 0, sizeof(*n));
     n->prev = prev;
     prev->next = n;
     return n;
@@ -25,6 +27,7 @@ void freeLines(line *l) {
     line *next;
     while(l) {
         next = l->next;
+        memset(l, 0, sizeof(*l));
         free(l);
         l = next;
     }

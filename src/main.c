@@ -112,6 +112,7 @@ int main(int argc, char *argv[])
         for (i=0;i<slideCount;i++){
             freeLines(slides[i].first);
         }
+        memset(slides, 0, sizeof(*slides));
         free(slides);
     } while (returnCode == 1);
 

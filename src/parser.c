@@ -37,10 +37,12 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     // allocate memory to the heap for storing our array of slides
     // an array is used here to enable jumping to slides by number
     slide* slides = createSlideArray(s);
+    memset(slides, 0, sizeof(*slides));
 
     // create a line pointer, l is for iterating while first is
     // the pointer used in each slide struct
     line *l = malloc(sizeof(line));
+    memset(l, 0, sizeof(*l));
     line *first = l;
     l->content[0] = '\0';
 
@@ -78,6 +80,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 
 	    // for next slide, mem alloc a new line
             l = malloc(sizeof(line));
+            memset(l, 0, sizeof(*l));
             first = l;
 
         } else {
