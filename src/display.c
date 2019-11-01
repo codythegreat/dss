@@ -65,9 +65,8 @@ void printMessageBottomBar(char message[256])
 
 void handleCommandInput(int *slideNumber)
 {
-    command *comm;
-	comm = commandLoop(&max_y);
-    int i;
+    command *comm = commandLoop(&max_y); // get the user command
+    int i; // for loops
     switch(comm->cmd) {
         case 0: // bad input
             printMessageBottomBar("Error: Not a Recognized command");
@@ -83,7 +82,10 @@ void handleCommandInput(int *slideNumber)
             //nextFile = comm->arg[1];
             break;
         case 3: // bookmark current slide
-            // todo: handle if user doesn't add a register
+            if (strlen(comm->arg[1])==0) {
+                printMessageBottomBar("Missing register: type a key after bmark command");
+                break;
+            }
             for (i=0;i<5;i++) {
                 if (bookmarks[i][0] == -1) {
                     bookmarks[i][0] = *slideNumber;
