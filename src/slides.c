@@ -8,6 +8,12 @@ slide* createSlideArray(int numOfSlides) {
     return slides;
 }
 
+line *newLine() {
+    line *l = malloc(sizeof(line));
+    memset(l, 0, sizeof(*l));
+    return l;
+}
+
 line *nextLine(line *prev) {
     line *n = malloc(sizeof(line));
     memset(n, 0, sizeof(*n));
@@ -16,11 +22,9 @@ line *nextLine(line *prev) {
     return n;
 }
 
-void freeSlides(slide *slide[], int numOfSlides) {
-    int i;
-    for (i=0;i<numOfSlides;i++) {
-        free(slide[i]);
-    }
+void freeSlides(slide *slides[]) {
+    memset(slides, 0, sizeof(*slides));
+    free(slides);
 }
 
 void freeLines(line *l) {
