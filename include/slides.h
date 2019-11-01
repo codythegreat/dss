@@ -18,8 +18,9 @@ typedef struct line {
 } line;
 
 slide* createSlideArray(int s);
+line *newLine();
 line *nextLine(line *prev);
-void freeSlides(slide *slide[], int s);
+void freeSlides(slide *slide[]);
 void freeLines(line *first);
 
 #endif
