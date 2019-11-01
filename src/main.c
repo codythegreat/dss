@@ -22,7 +22,7 @@ void version() {
 
 int main(int argc, char *argv[])
 {
-    int slideCount = 15; // default value; should be changed with each file
+    int slideCount;
 
     char ch;
     while ((ch=getopt(argc, argv, "hv"))!=EOF) {
@@ -114,6 +114,7 @@ int main(int argc, char *argv[])
         }
         free(slides);
     } while (returnCode == 1);
+
     return EXIT_SUCCESS;
 }
 // vim: set ts=4 sts=4 sw=4:
