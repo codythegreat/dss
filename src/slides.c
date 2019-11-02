@@ -34,6 +34,7 @@ line *nextLine(line *prev) {
     memset(n, 0, sizeof(*n));
     n->prev = prev;
     prev->next = n;
+    n->next = NULL;
     return n;
 }
 
