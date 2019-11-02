@@ -8,6 +8,8 @@ typedef struct slide
     int y;
     int r, g, b;
     struct line *first;
+    struct slide *next;
+    struct slide *prev;
 } slide;
 
 typedef struct line {
@@ -18,9 +20,11 @@ typedef struct line {
 } line;
 
 slide* createSlideArray(int s);
+slide *newSlide();
+slide *nextSlide(slide *prev);
 line *newLine();
 line *nextLine(line *prev);
-void freeSlides(slide *slide[]);
+void freeSlides(slide *s);
 void freeLines(line *first);
 
 #endif
