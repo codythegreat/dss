@@ -1,5 +1,4 @@
 title="Alternative Formatting for DSS"
-slides="7"
 {STARTSLIDES}
 
         DSS can assume many different formats!
