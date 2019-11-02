@@ -63,7 +63,7 @@ void printMessageBottomBar(char message[256])
     getch();
 }
 
-void handleCommandInput(int *slideNumber)
+slide* handleCommandInput(slide *curSlide)
 {
     // get the user command and parse it into a command struct
     command *comm = commandLoop(&max_y);
@@ -77,7 +77,6 @@ void handleCommandInput(int *slideNumber)
             break;
         case 2: // open file
             // todo: add error handling for missing file arg
-            //printMessageBottomBar("command 'open' not yet available");
             quitting = true;
             openingFile = 1;
             nextFile = comm->arg[1];
@@ -89,7 +88,7 @@ void handleCommandInput(int *slideNumber)
             }
             for (i=0;i<5;i++) {
                 if (bookmarks[i][0] == -1) {
-                    bookmarks[i][0] = *slideNumber;
+                    bookmarks[i][0] = curSlide->number;
                     bookmarks[i][1] = comm->arg[1][0];
                     break;
                 }
@@ -100,7 +99,7 @@ void handleCommandInput(int *slideNumber)
             for (i = 0; i < 5; i++) {
                 if (bookmarks[i][0] != -1)
                 {
-                    printw(" slide %i - register %c\n", bookmarks[i][0]+1, bookmarks[i][1]);
+                    printw(" slide %i - register %c\n", bookmarks[i][0], bookmarks[i][1]);
                 } else 
                 {
                     printw(" empty\n", i+1);
@@ -118,7 +117,13 @@ void handleCommandInput(int *slideNumber)
         case 6: // jump to slide by number
             if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= numOfSlides)
             {
-                *slideNumber = atoi(comm->arg[0])-1;
+                while (curSlide->number!= atoi(comm->arg[0])) {
+                    if (curSlide->number < atoi(comm->arg[0])) {
+                        curSlide = curSlide->next;
+                    } else {
+                        curSlide = curSlide->prev;
+                    }
+                }
             }
             else
             {
@@ -126,15 +131,17 @@ void handleCommandInput(int *slideNumber)
                 sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
                 printMessageBottomBar(message);
             }
+            break;
 	// todo: command to display meta information
 	// todo: command to enable double mode
 	// todo: command to enable markdown mode
         default:
             break;
     }
+    return curSlide;
 }
 
-void handleKeyPress(int *slideNumber)
+slide* handleKeyPress(slide *curSlide)
 {
     // get the keypress from user
     int keyInput = getch();
@@ -147,15 +154,13 @@ void handleKeyPress(int *slideNumber)
         case 'j':
         case 'J':
         case ' ': // next slide
-            if (*slideNumber != numOfSlides-1) {
-                *slideNumber = *slideNumber + 1;
-            }
+            if (!curSlide->next==NULL)
+                curSlide = curSlide->next;
             break;
         case 'k':
         case 'K': // prev slide
-            if (*slideNumber != 0) {
-                *slideNumber = *slideNumber - 1;
-            }
+            if (!curSlide->prev==NULL)
+                curSlide = curSlide->prev;
             break;
         case '9':
         case '8':
@@ -177,30 +182,42 @@ void handleKeyPress(int *slideNumber)
             }
             break;
         case 'g': // go to first slide
-            *slideNumber = 0;
+            while (curSlide->number!=1) {
+                curSlide = curSlide->prev;
+            }
             break;
         case 'G': // go to slide specified from prior input, or end
             if (keyDigit1 >= 0) {
                 if (keyDigit2 >= 0) {
                     char dest[3];
-                    if (keyDigit2 == 0) {                               // todo: more elegant solution for the below sprintf calls
-                        sprintf(dest, "%i%i", keyDigit1-1, 9);          // compiler will warn here due to length of string. safe to ignore.
-                    } else {
-                        sprintf(dest, "%i%i", keyDigit1, keyDigit2-1);  // compiler will warn here due to length of string. safe to ignore.
-                    }
+                    sprintf(dest, "%i%i", keyDigit1, keyDigit2);  // compiler will warn here due to length of string. safe to ignore.
                     if (atoi(dest)<=numOfSlides) {
-                        *slideNumber = atoi(dest);
+                        while (curSlide->number!=atoi(dest)) {
+                            if (curSlide->number < atoi(dest)) {
+                                curSlide = curSlide->next;
+                            } else {
+                                curSlide = curSlide->prev;
+                            }
+                        }
                         keyDigit1 = -1;
                         keyDigit2 = -1;
                     }
                 } else {
                     if (keyDigit1<=numOfSlides) {
-                        *slideNumber = keyDigit1-1;
+                        while (curSlide->number!=keyDigit1) {
+                            if (curSlide->number < keyDigit1) {
+                                curSlide = curSlide->next;
+                            } else {
+                                curSlide = curSlide->prev;
+                            }
+                        }
                         keyDigit1 = -1;
                     }
                 }
             } else {
-                *slideNumber = numOfSlides - 1;
+                while (curSlide->number!=(numOfSlides)) {
+                    curSlide = curSlide->next;
+                }
             }
             break;
 	    case 't': // change color if term has support
@@ -214,7 +231,7 @@ void handleKeyPress(int *slideNumber)
         case 'b': // set a bookmark on cur slide
             for (i=0;i<5;i++) {
                 if (bookmarks[i][0] == -1) {
-                    bookmarks[i][0] = *slideNumber;
+                    bookmarks[i][0] = curSlide->number;
                     bookmarks[i][1] = getch();
                     break;
                 }
@@ -224,27 +241,34 @@ void handleKeyPress(int *slideNumber)
             bookmarkReg = getch();
             for (i=0;i<5;i++) {
                 if (bookmarks[i][1] == bookmarkReg) {
-                    *slideNumber = bookmarks[i][0];
+                    while (curSlide->number!=bookmarks[i][0]) {
+                        if (curSlide->number < bookmarks[i][0]) {
+                            curSlide = curSlide->next;
+                        } else {
+                            curSlide = curSlide->prev;
+                        }
+                    }
                     break;
                 }
             }
             break;
         case ':': // enter command mode
-            handleCommandInput(slideNumber);
+            curSlide = handleCommandInput(curSlide);
 	        break;
         default:
             break;
     }
+    return curSlide;
 }
 
-int displayLoop(slide slides[], int* slideNumber, int* slideCount, char* title, char* fileName)
+int displayLoop(slide *curSlide, int* slideNumber, int* slideCount, char* title, char* fileName)
 {
     while(quitting == false) {
         numOfSlides = *slideCount;
         // assigns screen x/y length continually (incase of screen resize)
         getmaxyx(stdscr, max_y, max_x);
 	    // if the screen is too small/zoomed in, dispay a soft error
-	    if (slides[*slideNumber].maxX> max_x-1 || slides[*slideNumber].y > max_y-3) {
+	    if (curSlide->maxX> max_x-1 || curSlide->y > max_y-3) {
             printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
 	    } else {
             move(0,1);
@@ -252,11 +276,11 @@ int displayLoop(slide slides[], int* slideNumber, int* slideCount, char* title, 
             printw("\n");
 
             // for each line, move to the centered position and print the line
-            int yPosition = (max_y-slides[*slideNumber].y)/2;
-            line *currentLine = slides[*slideNumber].first;
+            int yPosition = (max_y-curSlide->y)/2;
+            line *currentLine = curSlide->first;
             int i = 0;
             while(currentLine) {
-                move(yPosition + i, (max_x - slides[*slideNumber].maxX) / 2);
+                move(yPosition + i, (max_x - curSlide->maxX) / 2);
                 printw(currentLine->content);
                 line *temp = currentLine->next;
                 currentLine = temp;
@@ -267,11 +291,11 @@ int displayLoop(slide slides[], int* slideNumber, int* slideCount, char* title, 
 	    // print bottom bar to screen
         mvprintw(max_y-1, 1, fileName);
         char bottomRightCounter[14];
-        sprintf(bottomRightCounter, "slide %i / %i", slides[*slideNumber].number, numOfSlides);
+        sprintf(bottomRightCounter, "slide %i / %i", curSlide->number, numOfSlides);
         mvprintw(max_y-1, max_x-13, bottomRightCounter);
 
         // handle key presses
-        handleKeyPress(slideNumber);
+        curSlide = handleKeyPress(curSlide);
 
         // clear the screen for next loop to print
         clear();
