@@ -34,8 +34,8 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 
     // allocate memory to the heap for storing our array of slides
     // an array is used here to enable jumping to slides by number
-    slide* slides = createSlideArray(slideC);
-    memset(slides, 0, sizeof(*slides));
+    slide* beginning = newSlide();
+    slide* s = nextSlide(beginning);
 
     // create a line pointer, l is for iterating while first is
     // the pointer used in each slide struct
@@ -61,31 +61,28 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
         }
 	    // if at end, assign slide values and move to next
         if (strstr(buf, "{ENDSLIDE}")!=NULL) {
-	    // assign first of line dub linked list to current slide
-            slides[i].first = first;
-
-            slides[i].number = i+1;
-
-            // assign curMaxX to x, reset variable
-            slides[i].maxX = curMaxX;
+            if (i==0) {
+                beginning->first = first;
+                beginning->number = 1;
+                beginning->maxX = curMaxX;
+                beginning->y = curY;
+                beginning->r = beginning->g = beginning->b = 0;
+            } else {
+                s->first = first;
+                s->number = i+1;
+                s->maxX = curMaxX;
+                s->y = curY;
+                s->r = s->g = s->b = 0;
+                if (i+1!=slideC) {
+                    s = nextSlide(s);
+                }
+            }
             curMaxX = 0;
-
-            // assign curY to y, reset variable
-            slides[i].y = curY;
             curY = 0;
-
-	    // assign r,g,b values (currently not a feature)
-            slides[i].r = 0;
-            slides[i].g = 0;
-            slides[i].b = 0;
-
-	    // increment i to work with next slide
             i++;
-            if (i==slideC) 
+            if (i==slideC)
                 break;
-
-	    // for next slide, mem alloc a new line
-	    l = newLine();
+	        l = newLine();
             first = l;
 
         } else {
@@ -93,7 +90,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             strcat(l->content, buf);
             l = nextLine(l);
 
-	    // with each line, y increases
+	        // with each line, y increases
             curY++;
 
             // update curMaxX only if line is longer that previous lines
@@ -107,6 +104,6 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             }
         }
     }
-    // return array of pointers to slides
-    return slides;
+    // return first slide
+    return beginning;
 }
