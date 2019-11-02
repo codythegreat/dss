@@ -3,6 +3,6 @@
 #include "parser.h"
 
 void initDisplay();
-int displayLoop(slide slides[], int* slideNumber, int* slideCount, char* title, char* fileName);
+int displayLoop(slide *curSlide, int* slideNumber, int* slideCount, char* title, char* fileName);
 
 #endif
