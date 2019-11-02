@@ -65,6 +65,9 @@ command* commandLoop(int *y)
     // clear to end of line for printing
     clrtoeol();
     printw(":");
+    
+    // enable cursor
+    curs_set(1);
 
     // bool becomes false after enter is pressed
     bool typing = true;
