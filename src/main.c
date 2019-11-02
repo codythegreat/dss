@@ -102,19 +102,21 @@ int main(int argc, char *argv[])
         }
 
         // parse and return slides from txt file
-        slide *slides = parseTXT(currentFile, &slideCount, title);
+        slide *beg = parseTXT(currentFile, &slideCount, title);
         // close the file
         fclose(currentFile);
         // initiate display loop, when it returns store exit code
-        returnCode = displayLoop(slides, &currentSlide, &slideCount, title, fileName);
+        returnCode = displayLoop(beg, &currentSlide, &slideCount, title, fileName);
         
         // free slides and lines
         int i;
         // todo: something is causing the below code to not function correctly when opening new file
+        slide *first = beg;
         for (i=0;i<slideCount;i++){
-            freeLines(slides[i].first);
+            freeLines(beg->first);
+            beg = beg->next;
         }
-	freeSlides(slides);
+	    freeSlides(first);
     } while (returnCode == 1);
 
     return EXIT_SUCCESS;
