@@ -5,11 +5,14 @@
 #include "slides.h"
 
 // holds slide count
-int s;
+int slideC;
 
 
 slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 {
+    // reset slide counter to 0
+    slideC = 0;
+
     // create a buffer for each line
     char buf[1000];
 
@@ -18,25 +21,20 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
         if (strstr(buf, "title=")!=NULL) { // finds title line
             char quoted[256];
             if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
-		strcat(presTitle, quoted);
+		        strcat(presTitle, quoted);
             } else {
                 fprintf(stderr, "improper title\n");
             }
-        } else if (strstr(buf, "slides=")!=NULL) {
-            if (sscanf(buf, "%*[^\"]\"%d[^\"]\"", &s) == 1) {
-                *slideCounter = s;
-                continue;
-            } else {
-                fprintf(stderr, "improper slide declaration\n");
-            }
-        } else if (strstr(buf, "{STARTSLIDES}")!=NULL) {
-            break;
+        } else if (strstr(buf, "{ENDSLIDE}")!=NULL) {
+            slideC++;
         }
     }
+    rewind(inFile);
+    *slideCounter = slideC;
 
     // allocate memory to the heap for storing our array of slides
     // an array is used here to enable jumping to slides by number
-    slide* slides = createSlideArray(s);
+    slide* slides = createSlideArray(slideC);
     memset(slides, 0, sizeof(*slides));
 
     // create a line pointer, l is for iterating while first is
@@ -49,10 +47,19 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     int curMaxX = 0;
     int curY = 0;
 
+    int startSlides = 0; // when slides start, begin filling structs
+
     // continue itteration over file starting after STARTSLIDES
     int i = 0;
     while(fgets(buf, 1000, inFile)!=NULL) {
-	// if at end, assign slide values and move to next
+        if (strstr(buf, "{STARTSLIDES}")!=NULL) {
+            startSlides++;
+            continue;
+        }
+        if (startSlides==0) {
+            continue;
+        }
+	    // if at end, assign slide values and move to next
         if (strstr(buf, "{ENDSLIDE}")!=NULL) {
 	    // assign first of line dub linked list to current slide
             slides[i].first = first;
@@ -74,7 +81,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 
 	    // increment i to work with next slide
             i++;
-            if (i==*slideCounter) 
+            if (i==slideC) 
                 break;
 
 	    // for next slide, mem alloc a new line
