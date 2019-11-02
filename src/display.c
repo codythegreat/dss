@@ -60,7 +60,6 @@ void printMessageBottomBar(char message[256])
     move(max_y-1, 1);
     clrtoeol();
     printw(message);
-    getch();
 }
 
 slide* handleCommandInput(slide *curSlide)
@@ -71,6 +70,7 @@ slide* handleCommandInput(slide *curSlide)
     switch(comm->cmd) {
         case 0: // bad input
             printMessageBottomBar("Error: Not a Recognized command");
+            getch();
             break;
         case 1: // quit
             quitting = true;
@@ -84,6 +84,7 @@ slide* handleCommandInput(slide *curSlide)
         case 3: // bookmark current slide
             if (strlen(comm->arg[1])==0) {
                 printMessageBottomBar("Missing register: type a key after bmark command");
+                getch();
                 break;
             }
             for (i=0;i<5;i++) {
@@ -113,6 +114,7 @@ slide* handleCommandInput(slide *curSlide)
                 bookmarks[i][1] = 0;
             }
             printMessageBottomBar("Bookmarks cleared");
+            getch();
             break;
         case 6: // jump to slide by number
             if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= numOfSlides)
@@ -130,6 +132,7 @@ slide* handleCommandInput(slide *curSlide)
                 char message[80];
                 sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
                 printMessageBottomBar(message);
+                getch();
             }
             break;
 	// todo: command to display meta information
@@ -139,6 +142,92 @@ slide* handleCommandInput(slide *curSlide)
             break;
     }
     return curSlide;
+}
+
+slide* handleSearchInput(slide *curSlide) {
+    printMessageBottomBar("/");
+    //enable cursor
+    curs_set(1);
+    
+    // search criteria that the user inputs
+    char search[256];
+    search[0] = '\0';
+    // tracks character for keyPress to search
+    int currentCharacter = 0;
+
+    char keyPress;
+    bool typing = true;
+    while (typing)
+    {
+        keyPress = getch();
+	    switch(keyPress)
+	    {
+            case '\n':  // enter
+                typing = false;
+                break;
+            case 27:    // esc
+                break;
+            case 127:   // back space  todo: test key input on mult systems
+                if (currentCharacter != 0) {
+                    // move back and delete character in place
+                    mvdelch(max_y-1, 1+currentCharacter);
+                    currentCharacter--;
+	            }
+                break;
+            default:
+                // print the character to the screen
+                addch(keyPress);
+                // add the character to our userIn buffer
+                search[currentCharacter] = keyPress;
+                search[currentCharacter+1] = '\0';
+                currentCharacter++;
+    	        break;
+	    }
+    }
+    // hide cursor
+    curs_set(0);
+
+    // if no text provided, return
+    if (search[0]=='\0') {
+        printMessageBottomBar("Missing Search Argument");
+        getch();
+        return curSlide;
+    }
+
+    //initialize variables if not on last slide
+    slide *searching;
+    line *toSearch;
+    if (!curSlide->next==NULL) {
+        searching = curSlide->next;
+        toSearch = searching->first;
+    } else {
+        printMessageBottomBar("You are already at last slide.");
+        getch();
+        return curSlide;
+    }
+
+    // tracks if search has been found
+    bool found = false;
+    while(!found) {
+        // if on last line, get next slide and first line
+        if (toSearch==NULL) {
+            searching = searching->next;
+            if (searching == NULL) {
+                printMessageBottomBar("No result found");
+                getch();
+                return curSlide;
+            }
+            toSearch = searching->first;
+        }
+
+        if (strstr(toSearch->content, search)!=NULL) {
+            found = true;
+        } else {
+            toSearch = toSearch->next;
+        }
+    }
+    // return slide that match appears on
+    return searching;
 }
 
 slide* handleKeyPress(slide *curSlide)
@@ -255,6 +344,9 @@ slide* handleKeyPress(slide *curSlide)
         case ':': // enter command mode
             curSlide = handleCommandInput(curSlide);
 	        break;
+        case '/': // search
+            curSlide = handleSearchInput(curSlide);
+            break;
         default:
             break;
     }
