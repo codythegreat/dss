@@ -22,6 +22,10 @@ short openingFile = 0; // 0 - end program, 1 - open file, 2 - tabopen file
 
 char *nextFile; // next file name to open
 
+char lastSearchTerm[256]; // stores last used search for n/N searching
+int FORWARD = 1; // n
+int BACKWARD = 0; // N
+
 
 int bookmarkReg; // holds key to assign bookmark to
 
@@ -144,7 +148,7 @@ slide* handleCommandInput(slide *curSlide)
     return curSlide;
 }
 
-slide* handleSearchInput(slide *curSlide) {
+void handleSearchInput() {
     printMessageBottomBar("/");
     //enable cursor
     curs_set(1);
@@ -191,19 +195,35 @@ slide* handleSearchInput(slide *curSlide) {
     if (search[0]=='\0') {
         printMessageBottomBar("Missing Search Argument");
         getch();
-        return curSlide;
+        return;
     }
+    // set last search as search input
+    lastSearchTerm[0] = '\0';
+    strcat(lastSearchTerm, search);
+}
 
+slide* searchLastInput(int direction, slide* curSlide) {
     //initialize variables if not on last slide
     slide *searching;
     line *toSearch;
-    if (!curSlide->next==NULL) {
-        searching = curSlide->next;
-        toSearch = searching->first;
+    if (direction==1) {
+        if (!curSlide->next==NULL) {
+            searching = curSlide->next;
+            toSearch = searching->first;
+        } else {
+            printMessageBottomBar("You are already at last slide.");
+            getch();
+            return curSlide;
+        }
     } else {
-        printMessageBottomBar("You are already at last slide.");
-        getch();
-        return curSlide;
+        if (!curSlide->prev==NULL) {
+            searching = curSlide->prev;
+            toSearch = searching->first;
+        } else {
+            printMessageBottomBar("You are already at first slide.");
+            getch();
+            return curSlide;
+        }
     }
 
     // tracks if search has been found
@@ -211,7 +231,11 @@ slide* handleSearchInput(slide *curSlide) {
     while(!found) {
         // if on last line, get next slide and first line
         if (toSearch==NULL) {
-            searching = searching->next;
+            if (direction==1) {
+                searching = searching->next;
+            } else {
+                searching = searching->prev;
+            }
             if (searching == NULL) {
                 printMessageBottomBar("No result found");
                 getch();
@@ -220,7 +244,7 @@ slide* handleSearchInput(slide *curSlide) {
             toSearch = searching->first;
         }
 
-        if (strstr(toSearch->content, search)!=NULL) {
+        if (strstr(toSearch->content, lastSearchTerm)!=NULL) {
             found = true;
         } else {
             toSearch = toSearch->next;
@@ -345,7 +369,14 @@ slide* handleKeyPress(slide *curSlide)
             curSlide = handleCommandInput(curSlide);
 	        break;
         case '/': // search
-            curSlide = handleSearchInput(curSlide);
+            handleSearchInput();
+            curSlide = searchLastInput(FORWARD, curSlide);
+            break;
+        case 'n':
+            curSlide = searchLastInput(FORWARD, curSlide);
+            break;
+        case 'N':
+            curSlide = searchLastInput(BACKWARD, curSlide);
             break;
         default:
             break;
