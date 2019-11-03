@@ -17,6 +17,7 @@ DSS is in the very early stages of development. We still have a lot of features 
 + bookmarking slides (up to 5 bookmarks currently) with `b`
 + jumping to a bookmark with `B` and the key of the register
 + switching color themes with `t` (currently there are 4 themes, but more are planned to be added)
++ search for a slide by text using the `/` key. You can redo a search forward or backwards using `n` and `N`
 + Vim style command mode `:` for jumping to slides `:3`, quitting `:q`, bookmark handling `:bmark/blist/bclear`, and opening of new files `:open filename`.
 
 ### Planned Features
@@ -26,7 +27,6 @@ A few features that are planned include:
 + url detection and selection with H/L
 + markdown style text parsing (optional, enabled by flag)
 + quick fade animations (quick as in non-intrusive when rapidly switching through slides)
-+ searching (search will find first instance of search criteria on a prior/following slide)
 
 ### Installation
 
@@ -44,7 +44,7 @@ With the latest version of DSS you can simply run the program with a text file a
 
 `./dss sample.txt`
 
-Note that you will need to include `title` and `slides` variables inside your txt file. See the sample files for more details. 
+Note that you will need to include the `title` variable inside your txt file. See the sample files for more details. 
 
 Slides start after the `{STARTSLIDES}` tag, and the program iterates to the next slide when it sees the `{ENDSLIDE}`.
 
