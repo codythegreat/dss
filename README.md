@@ -36,7 +36,7 @@ cd into the directory and run the following command:
 
 or simply run the Makefile:
 
-`make install`
+`sudo make install`
 
 ### Usage
 
