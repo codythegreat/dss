@@ -45,9 +45,10 @@ void initDisplay()
     if (has_colors()) {
         start_color();
         init_pair(1, COLOR_WHITE, COLOR_BLACK);
-        init_pair(2, COLOR_GREEN, COLOR_YELLOW);
+        init_pair(2, COLOR_MAGENTA, COLOR_WHITE);
         init_pair(3, COLOR_WHITE, COLOR_BLUE);
         init_pair(4, COLOR_BLACK, COLOR_WHITE);
+        init_pair(5, COLOR_BLACK, COLOR_CYAN);
     }
     // disable line buffering
     cbreak();
@@ -336,7 +337,7 @@ slide* handleKeyPress(slide *curSlide)
 	    case 't': // change color if term has support
                 if(has_colors()) {
                     curColor++;
-                    if (curColor == 5)
+                    if (curColor == 6)
                         curColor = 1;
                     wbkgd(stdscr, COLOR_PAIR(curColor));
                 }
