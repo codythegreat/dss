@@ -341,7 +341,12 @@ slide* handleKeyPress(slide *curSlide)
                         }
                         keyDigit1 = -1;
                         keyDigit2 = -1;
-                    }
+                    } else {
+                        char message[80];
+                        sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
+                        printMessageBottomBar(message);
+			getch();
+		    }
                 } else {
                     if (keyDigit1<=numOfSlides) {
                         while (curSlide->number!=keyDigit1) {
@@ -352,7 +357,12 @@ slide* handleKeyPress(slide *curSlide)
                             }
                         }
                         keyDigit1 = -1;
-                    }
+                    } else {
+                        char message[80];
+                        sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
+                        printMessageBottomBar(message);
+			getch();
+		    }
                 }
             } else {
                 while (curSlide->number!=(numOfSlides)) {
