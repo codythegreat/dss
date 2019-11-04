@@ -1,8 +1,6 @@
 ### 0.1
 ---
 
-Current version. Includes the following:
-
 + Basic navigation commands (`j`, `k`, `g`, `b`, `G`, `B`)
 + Basic txt file parsing (finding of title, slides, number of slides)
 + Basic themeing
@@ -10,6 +8,8 @@ Current version. Includes the following:
 
 ### 0.2
 ---
+
+Current version. Includes previous version features plus the following:
 
 + Vim-like command mode (file switching, theme switching, displaying bmark list)
 + Vim-like search mode (use `/` to initiate a search, and `n`/`N` to search forward and backwards)
