@@ -71,6 +71,11 @@ void printMessageBottomBar(char message[256])
 
 slide* handleCommand(slide *curSlide)
 {
+    // if lastCommand is empty, return
+    if (lastCommand[0] == '\0') {
+        return curSlide;
+    }
+
     // parse lastCommand into an instance of command struct
     command *comm = parseCommand(lastCommand);
     int i; // for loops
@@ -176,6 +181,7 @@ void parseUserInput(char *modeChar, char buffer[1000]) {
                 typing = false;
                 break;
             case 27:    // esc
+		typing = false;
                 break;
             case 127:   // back space  todo: test key input on mult systems
                 if (currentCharacter != 0) {
@@ -209,6 +215,10 @@ void parseUserInput(char *modeChar, char buffer[1000]) {
 }
 
 slide* searchLastInput(int direction, slide* curSlide) {
+    // if lastSearchTerm empty, return
+    if (lastSearchTerm[0] == '\0') {
+        return curSlide;
+    }
     //initialize variables if not on last slide
     slide *searching;
     line *toSearch;
