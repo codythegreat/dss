@@ -226,8 +226,10 @@ int parseUserInput(char *modeChar, char buffer[1000]) {
 }
 
 slide* searchLastInput(int direction, slide* curSlide) {
-    // if lastSearchTerm empty, return
+    // if lastSearchTerm empty, print error and return
     if (lastSearchTerm[0] == '\0') {
+        printMessageBottomBar("Error: initialize a search with the '/' key");
+        getch();
         return curSlide;
     }
     //initialize variables if not on last slide
