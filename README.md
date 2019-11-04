@@ -30,13 +30,15 @@ A few features that are planned include:
 
 ### Installation
 
-cd into the directory and run the following command:
+cd into the cloned directory and run the following:
 
-`gcc -I ./include src/main.c -o dss -lncurses`
-
-or simply run the Makefile:
+To install globally:
 
 `sudo make install`
+
+To compile into an executable inside the directory:
+
+`make`
 
 ### Usage
 
