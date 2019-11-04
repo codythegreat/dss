@@ -8,6 +8,7 @@
 #include "parser.h"
 #include "display.h"
 
+// 'h' arg
 void usage() {
     fprintf(stderr, "%s", "Usage: dss [OPTIONS]... FILE\n");
     fprintf(stderr, "%s", "A dead simple slide tool for the terminal.\n\n");
@@ -15,25 +16,17 @@ void usage() {
     fprintf(stderr, "%s", "  -v     display version and copyright information\n");
 }
 
+// 'v' arg
 void version() {
     printf("dss %d.%d.%d\n", DSS_VERSION_MAJOR, DSS_VERSION_MINOR, DSS_VERSION_REVISION);
     printf("Copyright (C) 2019 Cody Maxie\n");
 }
 
 int main(int argc, char *argv[])
-{
-    int slideCount;
-
+{	
+    // parse flags
     char ch;
     while ((ch=getopt(argc, argv, "hv"))!=EOF) {
-        /* (am) XXX if we want the program to halt immediately upon
-        * encountering an unsupported option, we should
-        * uncomment this:
-        */
-
-        /* if (optopt != 0) */
-        /*     return EXIT_FAILURE; */
-
         switch (ch)
         {
         case 'v':
@@ -47,7 +40,7 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
     }
-    argv += optind; // TODO figure out why this is. -am
+    argv += optind;
 
     if (argc == 1) {
         /* no args (other than options) */
@@ -62,18 +55,19 @@ int main(int argc, char *argv[])
 /*     fprintf(stderr, "%s: %s\n", "file", argv[0]); */
 /* #endif */
 
+    // file name of arg or file to be opened
     char fileName[1000];
     fileName[0] = '\0';
     strcat(fileName, argv[0]);
 
-    char title[256]; // TODO can titles be dynamic?  Should they be?
-                     // Maybe we can determine the longest title
-                     // in the Scanner function?
-                     // -am
+    // holds presentation title
+    char title[256];
     title[0] = '\0';
-    int currentSlide = 0;
 
-    // initialize ncurses display
+    // # of slides
+    int slideCount; 
+
+    // tracks if ncurses is initialized
     int displayInitialized = 0;
 
     //0-exit, 1-open new file
@@ -83,7 +77,6 @@ int main(int argc, char *argv[])
         // if opening new file, reset vars from last loop
         if (returnCode==1) {
             title[0] = '\0';
-            currentSlide = 0;
             returnCode = 0;
         }
         // open the file, otherwise return error
@@ -105,18 +98,18 @@ int main(int argc, char *argv[])
         slide *beg = parseTXT(currentFile, &slideCount, title);
         // close the file
         fclose(currentFile);
+
         // initiate display loop, when it returns store exit code
-        returnCode = displayLoop(beg, &currentSlide, &slideCount, title, fileName);
+        returnCode = displayLoop(beg, &slideCount, title, fileName);
         
         // free slides and lines
         int i;
-        // todo: something is causing the below code to not function correctly when opening new file
         slide *first = beg;
         for (i=0;i<slideCount;i++){
             freeLines(beg->first);
             beg = beg->next;
         }
-	    freeSlides(first);
+        freeSlides(first);
     } while (returnCode == 1);
 
     return EXIT_SUCCESS;
