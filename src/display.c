@@ -401,7 +401,7 @@ slide* handleKeyPress(slide *curSlide)
     return curSlide;
 }
 
-int displayLoop(slide *curSlide, int* slideNumber, int* slideCount, char* title, char* fileName)
+int displayLoop(slide *curSlide, int* slideCount, char* title, char* fileName)
 {
     while(quitting == false) {
         numOfSlides = *slideCount;
