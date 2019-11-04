@@ -15,6 +15,6 @@ typedef struct command {
 // bclear    5 - bookmark clear
 // n         7 - jump to slide
 
-command* commandLoop(int *y);
+command* parseCommand(char commandInput[1000]);
 
 #endif
