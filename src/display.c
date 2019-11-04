@@ -22,9 +22,9 @@ short openingFile = 0; // 0 - end program, 1 - open file, 2 - tabopen file
 
 char *nextFile; // next file name to open
 
-char lastCommand[1000]; // stores last user inputed command
+char lastCommand[1000] = {'\0'}; // stores last user inputed command
 
-char lastSearchTerm[1000]; // stores last used search for n/N searching
+char lastSearchTerm[1000] = {'\0'}; // stores last used search for n/N searching
 int FORWARD = 1; // n
 int BACKWARD = 0; // N
 
@@ -159,7 +159,7 @@ slide* handleCommand(slide *curSlide)
 // prints input to the bottom of the screen, each
 // char is appended to tmp, when enter is 
 // pressed, tmp is assigned to the buffer
-void parseUserInput(char *modeChar, char buffer[1000]) {
+int parseUserInput(char *modeChar, char buffer[1000]) {
     printMessageBottomBar(modeChar);
     //enable cursor
     curs_set(1);
@@ -207,11 +207,12 @@ void parseUserInput(char *modeChar, char buffer[1000]) {
     if (tmp[0]=='\0') {
         printMessageBottomBar("Missing Argument");
         getch();
-        return;
+        return 0;
     }
     // buffer is cleared and tmp is concatenated to it
     buffer[0] = '\0';
     strcat(buffer, tmp);
+    return 1;
 }
 
 slide* searchLastInput(int direction, slide* curSlide) {
@@ -382,12 +383,14 @@ slide* handleKeyPress(slide *curSlide)
             }
             break;
         case ':': // parse user input and execute inputted command
-	    parseUserInput(":", lastCommand);
-            curSlide = handleCommand(curSlide);
-	        break;
+	    if (parseUserInput(":", lastCommand)) {
+                curSlide = handleCommand(curSlide);
+	    }
+            break;
         case '/': // parse user input and perform a forward search
-            parseUserInput("/", lastSearchTerm);
-            curSlide = searchLastInput(FORWARD, curSlide);
+            if (parseUserInput("/", lastSearchTerm)) {
+                curSlide = searchLastInput(FORWARD, curSlide);
+	    }
             break;
         case 'n': // forward search last input
             curSlide = searchLastInput(FORWARD, curSlide);
