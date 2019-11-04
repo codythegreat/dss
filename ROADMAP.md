@@ -11,8 +11,8 @@ Current version. Includes the following:
 ### 0.2
 ---
 
-+ Basic markdown style formatting (optional, enabled/disabled by flag)
 + Vim-like command mode (file switching, theme switching, displaying bmark list)
++ Vim-like search mode (use `/` to initiate a search, and `n`/`N` to search forward and backwards)
 
 ### 0.3
 ---
@@ -26,6 +26,7 @@ Current version. Includes the following:
 
 + Tabbed completion for command mode
 + Edit mode (go to the slide to edit, entering a command (something like `edit`) opens Vim and places the cursor at that slide) 
++ Basic markdown style formatting (optional, enabled/disabled by flag)
 
 ### 0.5
 ---
