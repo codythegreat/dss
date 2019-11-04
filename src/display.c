@@ -22,7 +22,9 @@ short openingFile = 0; // 0 - end program, 1 - open file, 2 - tabopen file
 
 char *nextFile; // next file name to open
 
-char lastSearchTerm[256]; // stores last used search for n/N searching
+char lastCommand[1000]; // stores last user inputed command
+
+char lastSearchTerm[1000]; // stores last used search for n/N searching
 int FORWARD = 1; // n
 int BACKWARD = 0; // N
 
@@ -67,10 +69,10 @@ void printMessageBottomBar(char message[256])
     printw(message);
 }
 
-slide* handleCommandInput(slide *curSlide)
+slide* handleCommand(slide *curSlide)
 {
-    // get the user command and parse it into a command struct
-    command *comm = commandLoop(&max_y);
+    // parse lastCommand into an instance of command struct
+    command *comm = parseCommand(lastCommand);
     int i; // for loops
     switch(comm->cmd) {
         case 0: // bad input
@@ -149,14 +151,17 @@ slide* handleCommandInput(slide *curSlide)
     return curSlide;
 }
 
-void handleSearchInput() {
-    printMessageBottomBar("/");
+// prints input to the bottom of the screen, each
+// char is appended to tmp, when enter is 
+// pressed, tmp is assigned to the buffer
+void parseUserInput(char *modeChar, char buffer[1000]) {
+    printMessageBottomBar(modeChar);
     //enable cursor
     curs_set(1);
     
     // search criteria that the user inputs
-    char search[256];
-    search[0] = '\0';
+    char tmp[1000];
+    tmp[0] = '\0';
     // tracks character for keyPress to search
     int currentCharacter = 0;
 
@@ -183,8 +188,8 @@ void handleSearchInput() {
                 // print the character to the screen
                 addch(keyPress);
                 // add the character to our userIn buffer
-                search[currentCharacter] = keyPress;
-                search[currentCharacter+1] = '\0';
+                tmp[currentCharacter] = keyPress;
+                tmp[currentCharacter+1] = '\0';
                 currentCharacter++;
     	        break;
 	    }
@@ -193,14 +198,14 @@ void handleSearchInput() {
     curs_set(0);
 
     // if no text provided, return
-    if (search[0]=='\0') {
-        printMessageBottomBar("Missing Search Argument");
+    if (tmp[0]=='\0') {
+        printMessageBottomBar("Missing Argument");
         getch();
         return;
     }
-    // set last search as search input
-    lastSearchTerm[0] = '\0';
-    strcat(lastSearchTerm, search);
+    // buffer is cleared and tmp is concatenated to it
+    buffer[0] = '\0';
+    strcat(buffer, tmp);
 }
 
 slide* searchLastInput(int direction, slide* curSlide) {
@@ -366,17 +371,18 @@ slide* handleKeyPress(slide *curSlide)
                 }
             }
             break;
-        case ':': // enter command mode
-            curSlide = handleCommandInput(curSlide);
+        case ':': // parse user input and execute inputted command
+	    parseUserInput(":", lastCommand);
+            curSlide = handleCommand(curSlide);
 	        break;
-        case '/': // search
-            handleSearchInput();
+        case '/': // parse user input and perform a forward search
+            parseUserInput("/", lastSearchTerm);
             curSlide = searchLastInput(FORWARD, curSlide);
             break;
-        case 'n':
+        case 'n': // forward search last input
             curSlide = searchLastInput(FORWARD, curSlide);
             break;
-        case 'N':
+        case 'N': // backward search last input
             curSlide = searchLastInput(BACKWARD, curSlide);
             break;
         default:
