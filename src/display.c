@@ -39,6 +39,14 @@ short bookmarks[5][2] = { // holds slide and register
     {-1, 0}
 };
 
+void clearBookmarks() {
+    int i;
+    for (i = 0; i < 5; i++) {
+        bookmarks[i][0] = -1;
+        bookmarks[i][1] = 0;
+    }
+}
+
 void initDisplay()
 {
     // initialize ncurses
@@ -88,10 +96,15 @@ slide* handleCommand(slide *curSlide)
             quitting = true;
             break;
         case 2: // open file
-            // todo: add error handling for missing file arg
-            quitting = true;
-            openingFile = 1;
-            nextFile = comm->arg[1];
+	    if (strlen(comm->arg[1])>0) {
+	        clearBookmarks();
+                quitting = true;
+                openingFile = 1;
+                nextFile = comm->arg[1];
+	    } else {
+                printMessageBottomBar("Missing file argument");
+		getch();
+	    }
             break;
         case 3: // bookmark current slide
             if (strlen(comm->arg[1])==0) {
@@ -121,10 +134,7 @@ slide* handleCommand(slide *curSlide)
             getch();
             break;
         case 5: // clears bookmarks
-            for (i = 0; i < 5; i++) {
-                bookmarks[i][0] = -1;
-                bookmarks[i][1] = 0;
-            }
+	    clearBookmarks();
             printMessageBottomBar("Bookmarks cleared");
             getch();
             break;
