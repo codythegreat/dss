@@ -31,19 +31,12 @@ int BACKWARD = 0; // N
 
 int bookmarkReg; // holds key to assign bookmark to
 
-short bookmarks[5][2] = { // holds slide and register
-    {-1, 0},
-    {-1, 0},
-    {-1, 0},
-    {-1, 0},
-    {-1, 0}
-};
+short bookmarks[128] = {-1}; // each index represents an ascii key
 
 void clearBookmarks() {
     int i;
-    for (i = 0; i < 5; i++) {
-        bookmarks[i][0] = -1;
-        bookmarks[i][1] = 0;
+    for (i = 0; i < 128; i++) {
+        bookmarks[i] = -1;
     }
 }
 
@@ -119,23 +112,14 @@ slide* handleCommand(slide *curSlide)
                 getch();
                 break;
             }
-            for (i=0;i<5;i++) {
-                if (bookmarks[i][0] == -1) {
-                    bookmarks[i][0] = curSlide->number;
-                    bookmarks[i][1] = comm->arg[1][0];
-                    break;
-                }
-            }
+	    bookmarks[comm->arg[1][0]] = curSlide->number;
             break;
         case 4: // prints bookmarks
-            move(max_y-6, 0);
-            for (i = 0; i < 5; i++) {
-                if (bookmarks[i][0] != -1)
+            move(2, 0);
+            for (i = 0; i < 128; i++) {
+                if (bookmarks[i] >= 1)
                 {
-                    printw(" slide %i - register %c\n", bookmarks[i][0], bookmarks[i][1]);
-                } else 
-                {
-                    printw(" empty\n", i+1);
+                    printw(" slide %i - register %c\n", bookmarks[i], i);
                 }
             }
             getch();
@@ -379,28 +363,23 @@ slide* handleKeyPress(slide *curSlide)
                 }
 		break;
         case 'b': // set a bookmark on cur slide
-            for (i=0;i<5;i++) {
-                if (bookmarks[i][0] == -1) {
-                    bookmarks[i][0] = curSlide->number;
-                    bookmarks[i][1] = getch();
-                    break;
-                }
-            }
+	    bookmarkReg = getch();
+	    bookmarks[bookmarkReg] = curSlide->number;
             break;
         case 'B': // go to bookmark at following register
             bookmarkReg = getch();
-            for (i=0;i<5;i++) {
-                if (bookmarks[i][1] == bookmarkReg) {
-                    while (curSlide->number!=bookmarks[i][0]) {
-                        if (curSlide->number < bookmarks[i][0]) {
-                            curSlide = curSlide->next;
-                        } else {
-                            curSlide = curSlide->prev;
-                        }
+	    if (bookmarks[bookmarkReg] >= 1) {
+                while (curSlide->number != bookmarks[bookmarkReg]) {
+                    if (curSlide->number < bookmarks[bookmarkReg]) {
+                        curSlide = curSlide->next;
+                    } else {
+                        curSlide = curSlide->prev;
                     }
-                    break;
-                }
-            }
+		}
+	    } else {
+		printMessageBottomBar("Not a registered bookmark");
+		getch();
+	    }
             break;
         case ':': // parse user input and execute inputted command
 	    if (parseUserInput(":", lastCommand)) {
