@@ -77,6 +77,13 @@ void printMessageBottomBar(char message[256])
     printw(message);
 }
 
+void printSlideNumberInputError() {
+    char message[80];
+    sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
+    printMessageBottomBar(message);
+    getch();
+}
+
 slide* handleCommand(slide *curSlide)
 {
     // if lastCommand is empty, return
@@ -151,10 +158,7 @@ slide* handleCommand(slide *curSlide)
             }
             else
             {
-                char message[80];
-                sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
-                printMessageBottomBar(message);
-                getch();
+                printSlideNumberInputError();
             }
             break;
 	// todo: command to display meta information
@@ -344,10 +348,7 @@ slide* handleKeyPress(slide *curSlide)
                         keyDigit1 = -1;
                         keyDigit2 = -1;
                     } else {
-                        char message[80];
-                        sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
-                        printMessageBottomBar(message);
-			getch();
+                        printSlideNumberInputError();
 		    }
                 } else {
                     if (keyDigit1<=numOfSlides) {
@@ -360,10 +361,7 @@ slide* handleKeyPress(slide *curSlide)
                         }
                         keyDigit1 = -1;
                     } else {
-                        char message[80];
-                        sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
-                        printMessageBottomBar(message);
-			getch();
+                        printSlideNumberInputError();
 		    }
                 }
             } else {
