@@ -453,9 +453,9 @@ int displayLoop(slide *curSlide, int* slideCount, char* title, char* fileName)
 
 	    // print bottom bar to screen
         mvprintw(max_y-1, 1, fileName);
-        char bottomRightCounter[14];
-        sprintf(bottomRightCounter, "slide %i / %i", curSlide->number, numOfSlides);
-        mvprintw(max_y-1, max_x-13, bottomRightCounter);
+        char bottomRightCounter[10];
+        sprintf(bottomRightCounter, "%i / %i", curSlide->number, numOfSlides);
+        mvprintw(max_y-1, max_x-9, bottomRightCounter);
 
         // handle key presses
         curSlide = handleKeyPress(curSlide);
