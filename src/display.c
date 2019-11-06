@@ -189,8 +189,13 @@ slide* handleCommand(slide *curSlide)
                 printSlideNumberInputError();
             }
             break;
+        case 7:
+	    if (!doubleSlideDisplayMode)
+	        doubleSlideDisplayMode = 1;
+	    else
+                doubleSlideDisplayMode = 0;
+	    break;
 	// todo: command to display meta information
-	// todo: command to enable double mode
 	// todo: command to enable markdown mode
         default:
             break;
@@ -228,7 +233,7 @@ int parseUserInput(char *modeChar, char buffer[1000]) {
             case 127:   // back space  todo: test key input on mult systems
                 if (currentCharacter != 0) {
                     // move back and delete character in place
-                    mvdelch(max_y-1, 1+currentCharacter);
+                    mvdelch(max_y-1, currentCharacter);
                     currentCharacter--;
 	            }
                 break;
