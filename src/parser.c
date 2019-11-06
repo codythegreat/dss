@@ -86,15 +86,19 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             first = l;
 
         } else {
+            // replace new line character with string terminator character
+	    char *endLine;
+	    endLine = strchr(buf, '\n');
+	    *endLine = '\0';
             // add buf to current line and itterate to the next
             strcat(l->content, buf);
             l = nextLine(l);
 
-	        // with each line, y increases
+            // with each line, y increases
             curY++;
 
             // update curMaxX only if line is longer that previous lines
-            char end = '\n';
+            char end = '\0';
             char *ptr = strchr(buf, end);
             if (ptr) {
                 int n = ptr - buf;
