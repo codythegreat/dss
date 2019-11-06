@@ -190,7 +190,7 @@ slide* handleCommand(slide *curSlide)
             }
             break;
         case 7:
-	    if (!doubleSlideDisplayMode)
+	    if (!doubleSlideDisplayMode && numOfSlides>1)
 	        doubleSlideDisplayMode = 1;
 	    else
                 doubleSlideDisplayMode = 0;
@@ -430,10 +430,10 @@ slide* handleKeyPress(slide *curSlide)
 	    }
             break;
         case 'd':
-	    if (doubleSlideDisplayMode==1) {
-                doubleSlideDisplayMode = 0;
-	    } else {
+	    if (!doubleSlideDisplayMode && numOfSlides>1) {
                 doubleSlideDisplayMode = 1;
+	    } else {
+                doubleSlideDisplayMode = 0;
 	    }
 	    break;
         case ':': // parse user input and execute inputted command
