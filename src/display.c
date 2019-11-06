@@ -402,14 +402,16 @@ slide* handleKeyPress(slide *curSlide)
                 }
             }
             break;
-	    case 't': // change color if term has support
-                if(has_colors()) {
-                    curColor++;
-                    if (curColor == 6)
-                        curColor = 1;
-                    wbkgd(stdscr, COLOR_PAIR(curColor));
+        case 't': // change color if term has support
+            if(has_colors()) {
+                curColor++;
+                if (curColor == 6) {
+                    curColor = 1;
                 }
-		break;
+                // sets the screen to the new color pair 
+                wbkgd(stdscr, COLOR_PAIR(curColor));
+            }
+            break;
         case 'b': // set a bookmark on cur slide
 	    bookmarkReg = getch();
 	    bookmarks[bookmarkReg] = curSlide->number;
@@ -522,7 +524,7 @@ int displayLoop(slide *curSlide, int* slideCount, char* title, char* fileName)
         openingFile = 0;
         return 1;
     } else {
-        // end the ncurses session, return 0 to cloe program
+        // end the ncurses session, return 0 to close program
         endwin();
         return 0;
     }
