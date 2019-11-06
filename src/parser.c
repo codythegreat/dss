@@ -35,7 +35,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     // allocate memory to the heap for storing our array of slides
     // an array is used here to enable jumping to slides by number
     slide* beginning = newSlide();
-    slide* s = nextSlide(beginning);
+    slide* s;
 
     // create a line pointer, l is for iterating while first is
     // the pointer used in each slide struct
@@ -67,6 +67,10 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
                 beginning->maxX = curMaxX;
                 beginning->y = curY;
                 beginning->r = beginning->g = beginning->b = 0;
+		if (slideC>1) {
+                    s = nextSlide(beginning);
+		}
+
             } else {
                 s->first = first;
                 s->number = i+1;
@@ -82,7 +86,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             i++;
             if (i==slideC)
                 break;
-	        l = newLine();
+	    l = newLine();
             first = l;
 
         } else {
