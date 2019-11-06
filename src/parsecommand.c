@@ -42,6 +42,9 @@ command* parseCommand(char commandInput[1000])
     } else if (atoi(comm->arg[0])!=NULL)
     {
          comm->cmd = 6;
+    } else if (strcmp(comm->arg[0], "double")==0)
+    {
+         comm->cmd = 7;
     } else 
     {
          comm->cmd = 0;
