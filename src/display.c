@@ -319,7 +319,6 @@ slide* handleKeyPress(slide *curSlide)
 {
     // get the keypress from user
     int keyInput = getch();
-    int i = 0; // for loops
     switch(keyInput) {
         case 'q':
         case 'Q': // end the session
