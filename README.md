@@ -8,7 +8,7 @@ DSS's main goal is to simply display a slide back exactly as it is formatted in 
 
 ### Features
 
-DSS is in the very early stages of development. We still have a lot of features to add, but so far we've added the following:
+DSS is in the very early stages of development. Here are the features available in the v0.2.0 release:
 + parsing of slides from a .txt file, slide centering, and bottom bar with slide counter
 + navigation with `j`/`k`
 + quiting with `q`
@@ -19,6 +19,9 @@ DSS is in the very early stages of development. We still have a lot of features 
 + switching color themes with `t` (currently there are 4 themes, but more are planned to be added)
 + search for a slide by text using the `/` key. You can redo a search forward or backwards using `n` and `N`
 + Vim style command mode `:` for jumping to slides `:3`, quitting `:q`, bookmark handling `:bmark/blist/bclear`, and opening of new files `:open filename`.
+
+Extra features available in the Master branch (may be unstable. please use the release version for a more stable experience.)
++ `d` enables double slide mode where two slides are displayed at once (similarly to pages in a book)
 
 ### Planned Features
 
