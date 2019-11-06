@@ -22,6 +22,8 @@ short openingFile = 0; // 0 - end program, 1 - open file, 2 - tabopen file
 
 char *nextFile; // next file name to open
 
+int doubleSlideDisplayMode = 0; // used for displaying two slides at once
+
 char lastCommand[1000] = {'\0'}; // stores last user inputed command
 
 char lastSearchTerm[1000] = {'\0'}; // stores last used search for n/N searching
@@ -65,7 +67,7 @@ void initDisplay()
 void printMessageBottomBar(char message[256])
 {
     // move to bottom line, clear to EOL, print, wait for input before returning
-    move(max_y-1, 1);
+    move(max_y-1, 0);
     clrtoeol();
     printw(message);
 }
@@ -75,6 +77,48 @@ void printSlideNumberInputError() {
     sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
     printMessageBottomBar(message);
     getch();
+}
+
+void printSingleSlideView(slide *curSlide) {
+    // for each line, move to the centered position and print the line
+    int yPosition = (max_y-curSlide->y)/2;
+    line *currentLine = curSlide->first;
+    int i = 0;
+    while(currentLine) {
+        move(yPosition + i, (max_x - curSlide->maxX) / 2);
+        printw(currentLine->content);
+        line *temp = currentLine->next;
+        currentLine = temp;
+        i++;
+   }
+}
+
+// prints two slides centered on each half of the screen
+void printDoubleSlideView(slide *curSlide) {
+    // get the starting y position
+    int yPosition = (max_y-curSlide->y)/2;
+    // start with the first line and print 
+    line *currentLine = curSlide->first;
+    int i = 0;
+    while(currentLine) {
+        move(yPosition + i, ((max_x/2) - curSlide->maxX) / 2);
+        printw(currentLine->content);
+        line *temp = currentLine->next;
+        currentLine = temp;
+        i++;
+    }
+    // reset y position, i and currentLine for next slide
+    yPosition = (max_y - curSlide->next->y)/2;
+    i = 0;
+    currentLine = curSlide->next->first;
+    // print the next slide
+    while(currentLine) {
+        move(yPosition + i, ((max_x/2) + ((max_x/2) - curSlide->next->maxX) / 2)); 
+	printw(currentLine->content);
+        line *temp = currentLine->next;
+        currentLine = temp;
+        i++;
+    }
 }
 
 slide* handleCommand(slide *curSlide)
@@ -119,7 +163,7 @@ slide* handleCommand(slide *curSlide)
             for (i = 0; i < 128; i++) {
                 if (bookmarks[i] >= 1)
                 {
-                    printw(" slide %i - register %c\n", bookmarks[i], i);
+                    printw("slide %i - register %c\n", bookmarks[i], i);
                 }
             }
             getch();
@@ -381,6 +425,13 @@ slide* handleKeyPress(slide *curSlide)
 		getch();
 	    }
             break;
+        case 'd':
+	    if (doubleSlideDisplayMode==1) {
+                doubleSlideDisplayMode = 0;
+	    } else {
+                doubleSlideDisplayMode = 1;
+	    }
+	    break;
         case ':': // parse user input and execute inputted command
 	    if (parseUserInput(":", lastCommand)) {
                 curSlide = handleCommand(curSlide);
@@ -407,34 +458,48 @@ int displayLoop(slide *curSlide, int* slideCount, char* title, char* fileName)
 {
     while(quitting == false) {
         numOfSlides = *slideCount;
+
         // assigns screen x/y length continually (incase of screen resize)
         getmaxyx(stdscr, max_y, max_x);
-	    // if the screen is too small/zoomed in, dispay a soft error
-	    if (curSlide->maxX> max_x-1 || curSlide->y > max_y-3) {
-            printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
-	    } else {
-            move(0,1);
+
+	// print the title if terminal is big enough
+	if (strlen(title)>max_x) {
+            printw("Terminal too small for title");
+	} else {
             printw(title);
             printw("\n");
+	}
 
-            // for each line, move to the centered position and print the line
-            int yPosition = (max_y-curSlide->y)/2;
-            line *currentLine = curSlide->first;
-            int i = 0;
-            while(currentLine) {
-                move(yPosition + i, (max_x - curSlide->maxX) / 2);
-                printw(currentLine->content);
-                line *temp = currentLine->next;
-                currentLine = temp;
-                i++;
-           }
+	// if the screen is too small/zoomed in, dispay a soft error
+	// otherwise, print the slide(s)
+	if (doubleSlideDisplayMode==0) {
+	    if (curSlide->maxX> max_x-1 || curSlide->y > max_y-3) {
+                printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
+	    } else {
+                printSingleSlideView(curSlide);
 	    }
-
-	    // print bottom bar to screen
-        mvprintw(max_y-1, 1, fileName);
-        char bottomRightCounter[10];
-        sprintf(bottomRightCounter, "%i / %i", curSlide->number, numOfSlides);
-        mvprintw(max_y-1, max_x-9, bottomRightCounter);
+	} else {
+            // always stay one slide less than numOfSlides so that two slides can be printed
+            if (curSlide->number == numOfSlides) {
+                curSlide = curSlide->prev;
+	    }
+	    // todo: if statement is ugle
+	    if (curSlide->maxX + curSlide->next->maxX > max_x-2 || curSlide->y + curSlide->next->y > (max_y*2)-3) {
+                printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
+	    } else {
+                printDoubleSlideView(curSlide);
+	    }
+	}
+	
+	// print bottom bar to screen
+        mvprintw(max_y-1, 0, fileName);
+        char bottomRightCounter[20];
+	if (!doubleSlideDisplayMode) {
+            sprintf(bottomRightCounter, "%i / %i", curSlide->number, numOfSlides);
+	} else {
+            sprintf(bottomRightCounter, "%i-%i / %i", curSlide->number,curSlide->number+1, numOfSlides);
+	}
+        mvprintw(max_y-1, max_x-strlen(bottomRightCounter), bottomRightCounter);
 
         // handle key presses
         curSlide = handleKeyPress(curSlide);
