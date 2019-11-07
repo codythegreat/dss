@@ -30,17 +30,8 @@ char lastSearchTerm[1000] = {'\0'}; // stores last used search for n/N searching
 int FORWARD = 1; // n
 int BACKWARD = 0; // N
 
-
 int bookmarkReg; // holds key to assign bookmark to
-
 short bookmarks[128] = {-1}; // each index represents an ascii key
-
-void clearBookmarks() {
-    int i;
-    for (i = 0; i < 128; i++) {
-        bookmarks[i] = -1;
-    }
-}
 
 void initDisplay()
 {
@@ -121,6 +112,22 @@ slide* findSlideAtNumber(int number, slide *curSlide) {
     return curSlide;
 }
 
+void clearBookmarks() {
+    int i;
+    for (i = 0; i < 128; i++) {
+        bookmarks[i] = -1;
+    }
+}
+
+slide* jumpToSlideAtBookmark(int key, slide *curSlide) {
+    if (bookmarks[key] >= 1) {
+        curSlide = findSlideAtNumber(bookmarks[key], curSlide);
+    } else {
+        printMessageBottomBar("Not a registered bookmark");
+        getch();
+    }
+    return curSlide;
+}
 
 slide* handleCommand(slide *curSlide)
 {
@@ -141,15 +148,15 @@ slide* handleCommand(slide *curSlide)
             quitting = true;
             break;
         case 2: // open file
-	    if (strlen(comm->arg[1])>0) {
-	        clearBookmarks();
+            if (strlen(comm->arg[1])>0) {
+                clearBookmarks();
                 quitting = true;
                 openingFile = 1;
                 nextFile = comm->arg[1];
-	    } else {
+            } else {
                 printMessageBottomBar("Missing file argument");
-		getch();
-	    }
+                getch();
+            }
             break;
         case 3: // bookmark current slide
             if (strlen(comm->arg[1])==0) {
@@ -157,7 +164,7 @@ slide* handleCommand(slide *curSlide)
                 getch();
                 break;
             }
-	    bookmarks[comm->arg[1][0]] = curSlide->number;
+            bookmarks[(int)comm->arg[1][0]] = curSlide->number;
             break;
         case 4: // prints bookmarks
             move(2, 0);
@@ -170,7 +177,7 @@ slide* handleCommand(slide *curSlide)
             getch();
             break;
         case 5: // clears bookmarks
-	    clearBookmarks();
+            clearBookmarks();
             printMessageBottomBar("Bookmarks cleared");
             getch();
             break;
@@ -184,14 +191,17 @@ slide* handleCommand(slide *curSlide)
                 printSlideNumberInputError();
             }
             break;
-        case 7: // toggle double slide mode
-	        if (!doubleSlideDisplayMode && numOfSlides>1)
-	            doubleSlideDisplayMode = 1;
-	        else
+        case 7:
+            curSlide = jumpToSlideAtBookmark((int)comm->arg[0][0], curSlide);
+            break;
+        case 8: // toggle double slide mode
+                if (!doubleSlideDisplayMode && numOfSlides>1)
+                    doubleSlideDisplayMode = 1;
+                else
                 doubleSlideDisplayMode = 0;
-	        break;
-	// todo: command to display meta information
-	// todo: command to enable markdown mode
+                break;
+        // todo: command to display meta information
+        // todo: command to enable markdown mode
         default:
             break;
     }
@@ -218,20 +228,20 @@ int parseUserInput(char *modeChar, char buffer[1000]) {
     while (typing)
     {
         keyPress = getch();
-	    switch(keyPress)
-	    {
+            switch(keyPress)
+            {
             case '\n':  // enter
                 typing = false;
                 break;
             case 27:    // esc
-		return 0;
+                return 0;
                 break;
             case 127:   // back space  todo: test key input on mult systems
                 if (currentCharacter != 0) {
                     // move back and delete character in place
                     mvdelch(max_y-1, currentCharacter);
                     currentCharacter--;
-	            }
+                    }
                 break;
             default:
                 // print the character to the screen
@@ -240,8 +250,8 @@ int parseUserInput(char *modeChar, char buffer[1000]) {
                 tmp[currentCharacter] = keyPress;
                 tmp[currentCharacter+1] = '\0';
                 currentCharacter++;
-    	        break;
-	    }
+                    break;
+            }
     }
     // hide cursor
     curs_set(0);
@@ -379,40 +389,29 @@ slide* handleKeyPress(slide *curSlide)
             }
             break;
         case 'b': // set a bookmark on cur slide
-	        bookmarkReg = getch();
-	        bookmarks[bookmarkReg] = curSlide->number;
+            bookmarkReg = getch();
+            bookmarks[bookmarkReg] = curSlide->number;
             break;
         case 'B': // go to bookmark at following register
             bookmarkReg = getch();
-	        if (bookmarks[bookmarkReg] >= 1) {
-                while (curSlide->number != bookmarks[bookmarkReg]) {
-                    if (curSlide->number < bookmarks[bookmarkReg]) {
-                        curSlide = curSlide->next;
-                    } else {
-                        curSlide = curSlide->prev;
-                    }
-		        }
-	        } else {
-		    printMessageBottomBar("Not a registered bookmark");
-		    getch();
-	        }
+            curSlide = jumpToSlideAtBookmark(bookmarkReg, curSlide);
             break;
         case 'd':
-	        if (!doubleSlideDisplayMode && numOfSlides>1) {
+                if (!doubleSlideDisplayMode && numOfSlides>1) {
                 doubleSlideDisplayMode = 1;
-	        } else {
+                } else {
                 doubleSlideDisplayMode = 0;
-	        }
-	        break;
+                }
+                break;
         case ':': // parse user input and execute inputted command
-	        if (parseUserInput(":", lastCommand)) {
+                if (parseUserInput(":", lastCommand)) {
                 curSlide = handleCommand(curSlide);
-	        }
+                }
             break;
         case '/': // parse user input and perform a forward search
             if (parseUserInput("/", lastSearchTerm)) {
                 curSlide = searchLastInput(FORWARD, curSlide);
-	        }
+                }
             break;
         case 'n': // forward search last input
             curSlide = searchLastInput(FORWARD, curSlide);
@@ -434,52 +433,53 @@ int displayLoop(slide *curSlide, int* slideCount, char* title, char* fileName)
         // assigns screen x/y length continually (incase of screen resize)
         getmaxyx(stdscr, max_y, max_x);
 
-	// print the title if terminal is big enough
-	if (strlen(title)>max_x) {
+        // print the title if terminal is big enough
+        if (strlen(title)>max_x) {
             printw("Terminal too small for title");
-	} else {
+        } else {
             printw(title);
             printw("\n");
-	}
-
-	// if the screen is too small/zoomed in, dispay a soft error
-	// otherwise, print the slide(s)
-	if (doubleSlideDisplayMode==0) {
-	    if (curSlide->maxX> max_x-1 || curSlide->y > max_y-2) {
-            printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
-	    } else {
-            printSlideAtPosition((max_x - curSlide->maxX) / 2, (max_y-curSlide->y)/2, curSlide);
-	    }
-	} else {
-        // always stay one slide less than numOfSlides so that two slides can be printed
-        if (curSlide->number == numOfSlides) {
-            curSlide = curSlide->prev;
-	    }
-        
-        // find max y length of both slides
-        int maxYLenBetweenSlides;
-        if (curSlide->y > curSlide->next->y) {
-            maxYLenBetweenSlides = curSlide->y;
-        } else {
-            maxYLenBetweenSlides = curSlide->next->y;
         }
-	    // todo: if statement is ugly
-	    if (curSlide->maxX + curSlide->next->maxX > max_x-2 || maxYLenBetweenSlides > max_y-2) {
+
+        // if the screen is too small/zoomed in, dispay a soft error
+        // otherwise, print the slide(s)
+        if (doubleSlideDisplayMode==0) {
+            if (curSlide->maxX> max_x-1 || curSlide->y > max_y-2) {
             printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
-	    } else {
-            printSlideAtPosition(((max_x/2) - curSlide->maxX) / 2, (max_y-curSlide->y)/2, curSlide);
-            printSlideAtPosition(((max_x/2) + ((max_x/2) - curSlide->next->maxX) / 2), (max_y-curSlide->next->y)/2, curSlide->next);
-	    }
-	}
-	
-	// print bottom bar to screen
+            } else {
+            printSlideAtPosition((max_x - curSlide->maxX) / 2, (max_y-curSlide->y)/2, curSlide);
+            }
+        } else {
+            // always stay one slide less than numOfSlides so that two slides can be printed
+            if (curSlide->number == numOfSlides) {
+                curSlide = curSlide->prev;
+            }
+            
+            // find max y length of both slides
+            int maxYLenBetweenSlides;
+            if (curSlide->y > curSlide->next->y) {
+                maxYLenBetweenSlides = curSlide->y;
+            } else {
+                maxYLenBetweenSlides = curSlide->next->y;
+            }
+
+            // todo: if statement is ugly
+            if (curSlide->maxX + curSlide->next->maxX > max_x-2 || maxYLenBetweenSlides > max_y-2) {
+                printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
+            } else {
+                printSlideAtPosition(((max_x/2) - curSlide->maxX) / 2, (max_y-curSlide->y)/2, curSlide);
+                printSlideAtPosition(((max_x/2) + ((max_x/2) - curSlide->next->maxX) / 2), (max_y-curSlide->next->y)/2, curSlide->next);
+            }
+        }
+        
+        // print bottom bar to screen
         mvprintw(max_y-1, 0, fileName);
         char bottomRightCounter[20];
-	if (!doubleSlideDisplayMode) {
+        if (!doubleSlideDisplayMode) {
             sprintf(bottomRightCounter, "%i / %i", curSlide->number, numOfSlides);
-	} else {
+        } else {
             sprintf(bottomRightCounter, "%i-%i / %i", curSlide->number,curSlide->number+1, numOfSlides);
-	}
+        }
         mvprintw(max_y-1, max_x-strlen(bottomRightCounter), bottomRightCounter);
 
         // handle key presses
