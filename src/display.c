@@ -11,8 +11,8 @@ int numOfSlides; // total of slides
 int max_x; // ncurses character "res" x axis
 int max_y; // ncurses character "res" y axis
 
-short keyDigit1 = -1; // holds value of numerical inputs for
-short keyDigit2 = -1; // slide jumping
+char slideNumberInputBuffer[10] = {'\0'}; // buffer for jumping to slides by number
+int destination; // stores converted slide number for jumping
 
 short curColor = 1; // current color pair (theme)
 
@@ -77,6 +77,36 @@ void printSlideNumberInputError() {
     sprintf(message, "Number provided is not a slide. Expected 1 - %i", numOfSlides);
     printMessageBottomBar(message);
     getch();
+}
+
+// todo: can this be more memory efficient?
+void addKeyToNumericalBuffer(int key, char buffer[]) {
+    char c[10];
+    sprintf(c, "%d", key-48);
+    strcat(buffer, c);
+}
+
+int parseSlideNumberInput(char buffer[]) {
+    if (atoi(buffer) > 0 && atoi(buffer) <= numOfSlides) {
+        return atoi(buffer);
+    } else {
+        return 0;
+    }
+}
+
+slide* findSlideAtNumber(int number, slide *curSlide) {
+    if (number > numOfSlides || number < 1) {
+        return curSlide;
+    }
+
+    while (curSlide->number!= number) {
+        if (curSlide->number < number) {
+            curSlide = curSlide->next;
+        } else {
+            curSlide = curSlide->prev;
+        }
+    }
+    return curSlide;
 }
 
 void printSingleSlideView(slide *curSlide) {
@@ -174,27 +204,21 @@ slide* handleCommand(slide *curSlide)
             getch();
             break;
         case 6: // jump to slide by number
-            if (atoi(comm->arg[0]) > 0 && atoi(comm->arg[0]) <= numOfSlides)
-            {
-                while (curSlide->number!= atoi(comm->arg[0])) {
-                    if (curSlide->number < atoi(comm->arg[0])) {
-                        curSlide = curSlide->next;
-                    } else {
-                        curSlide = curSlide->prev;
-                    }
-                }
+            destination = parseSlideNumberInput(comm->arg[0]);
+            if (destination) {
+                curSlide = findSlideAtNumber(destination, curSlide);
             }
             else
             {
                 printSlideNumberInputError();
             }
             break;
-        case 7:
-	    if (!doubleSlideDisplayMode && numOfSlides>1)
-	        doubleSlideDisplayMode = 1;
-	    else
+        case 7: // toggle double slide mode
+	        if (!doubleSlideDisplayMode && numOfSlides>1)
+	            doubleSlideDisplayMode = 1;
+	        else
                 doubleSlideDisplayMode = 0;
-	    break;
+	        break;
 	// todo: command to display meta information
 	// todo: command to enable markdown mode
         default:
@@ -202,6 +226,7 @@ slide* handleCommand(slide *curSlide)
     }
     return curSlide;
 }
+
 
 // prints input to the bottom of the screen, each
 // char is appended to tmp, when enter is 
@@ -350,51 +375,21 @@ slide* handleKeyPress(slide *curSlide)
         case '2':
         case '1':
         case '0': // digits are recorded and used later with 'G' to enable slide jumping
-            if (keyDigit1 >= 1 && keyDigit2 >= 0) {
-                keyDigit1 = keyInput - 48;
-                keyDigit2 = -1;
-            } else if (keyDigit1 == -1 && keyInput != '0') {
-                keyDigit1 = keyInput - 48;
-            } else if (keyDigit2 == -1) {
-                keyDigit2 = keyInput - 48;
-            }
+            addKeyToNumericalBuffer(keyInput, slideNumberInputBuffer);
             break;
         case 'g': // go to first slide
             while (curSlide->number!=1) {
                 curSlide = curSlide->prev;
             }
             break;
-        case 'G': // go to slide specified from prior input, or end
-            if (keyDigit1 >= 0) {
-                if (keyDigit2 >= 0) {
-                    char dest[3];
-                    sprintf(dest, "%i%i", keyDigit1, keyDigit2);  // compiler will warn here due to length of string. safe to ignore.
-                    if (atoi(dest)<=numOfSlides) {
-                        while (curSlide->number!=atoi(dest)) {
-                            if (curSlide->number < atoi(dest)) {
-                                curSlide = curSlide->next;
-                            } else {
-                                curSlide = curSlide->prev;
-                            }
-                        }
-                        keyDigit1 = -1;
-                        keyDigit2 = -1;
-                    } else {
-                        printSlideNumberInputError();
-		    }
+        case 'G': // go to slide specified from prior input, or last slide
+            if (strlen(slideNumberInputBuffer)>0) {
+                destination = parseSlideNumberInput(slideNumberInputBuffer);
+                if (destination) {
+                    curSlide = findSlideAtNumber(destination, curSlide);
+                    slideNumberInputBuffer[0] = '\0';
                 } else {
-                    if (keyDigit1<=numOfSlides) {
-                        while (curSlide->number!=keyDigit1) {
-                            if (curSlide->number < keyDigit1) {
-                                curSlide = curSlide->next;
-                            } else {
-                                curSlide = curSlide->prev;
-                            }
-                        }
-                        keyDigit1 = -1;
-                    } else {
-                        printSlideNumberInputError();
-		    }
+                    printSlideNumberInputError();
                 }
             } else {
                 while (curSlide->number!=(numOfSlides)) {
@@ -413,40 +408,40 @@ slide* handleKeyPress(slide *curSlide)
             }
             break;
         case 'b': // set a bookmark on cur slide
-	    bookmarkReg = getch();
-	    bookmarks[bookmarkReg] = curSlide->number;
+	        bookmarkReg = getch();
+	        bookmarks[bookmarkReg] = curSlide->number;
             break;
         case 'B': // go to bookmark at following register
             bookmarkReg = getch();
-	    if (bookmarks[bookmarkReg] >= 1) {
+	        if (bookmarks[bookmarkReg] >= 1) {
                 while (curSlide->number != bookmarks[bookmarkReg]) {
                     if (curSlide->number < bookmarks[bookmarkReg]) {
                         curSlide = curSlide->next;
                     } else {
                         curSlide = curSlide->prev;
                     }
-		}
-	    } else {
-		printMessageBottomBar("Not a registered bookmark");
-		getch();
-	    }
+		        }
+	        } else {
+		    printMessageBottomBar("Not a registered bookmark");
+		    getch();
+	        }
             break;
         case 'd':
-	    if (!doubleSlideDisplayMode && numOfSlides>1) {
+	        if (!doubleSlideDisplayMode && numOfSlides>1) {
                 doubleSlideDisplayMode = 1;
-	    } else {
+	        } else {
                 doubleSlideDisplayMode = 0;
-	    }
-	    break;
+	        }
+	        break;
         case ':': // parse user input and execute inputted command
-	    if (parseUserInput(":", lastCommand)) {
+	        if (parseUserInput(":", lastCommand)) {
                 curSlide = handleCommand(curSlide);
-	    }
+	        }
             break;
         case '/': // parse user input and perform a forward search
             if (parseUserInput("/", lastSearchTerm)) {
                 curSlide = searchLastInput(FORWARD, curSlide);
-	    }
+	        }
             break;
         case 'n': // forward search last input
             curSlide = searchLastInput(FORWARD, curSlide);
