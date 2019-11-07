@@ -19,7 +19,6 @@ typedef struct line {
     struct line *next;
 } line;
 
-slide* createSlideArray(int s);
 slide *newSlide();
 slide *nextSlide(slide *prev);
 line *newLine();

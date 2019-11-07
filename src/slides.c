@@ -3,11 +3,6 @@
 #include "slides.h"
 #include <string.h>
 
-slide* createSlideArray(int numOfSlides) {
-    slide* slides = malloc(sizeof(struct slide)*numOfSlides);
-    return slides;
-}
-
 slide *newSlide() {
     slide *s = malloc(sizeof(slide));
     memset(s, 0, sizeof(*s));
