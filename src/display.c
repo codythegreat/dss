@@ -445,7 +445,7 @@ int displayLoop(slide *curSlide, int* slideCount, char* title, char* fileName)
 	// if the screen is too small/zoomed in, dispay a soft error
 	// otherwise, print the slide(s)
 	if (doubleSlideDisplayMode==0) {
-	    if (curSlide->maxX> max_x-1 || curSlide->y > max_y-3) {
+	    if (curSlide->maxX> max_x-1 || curSlide->y > max_y-2) {
             printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
 	    } else {
             printSlideAtPosition((max_x - curSlide->maxX) / 2, (max_y-curSlide->y)/2, curSlide);
@@ -455,8 +455,16 @@ int displayLoop(slide *curSlide, int* slideCount, char* title, char* fileName)
         if (curSlide->number == numOfSlides) {
             curSlide = curSlide->prev;
 	    }
-	    // todo: if statement is ugle
-	    if (curSlide->maxX + curSlide->next->maxX > max_x-2 || curSlide->y + curSlide->next->y > (max_y*2)-3) {
+        
+        // find max y length of both slides
+        int maxYLenBetweenSlides;
+        if (curSlide->y > curSlide->next->y) {
+            maxYLenBetweenSlides = curSlide->y;
+        } else {
+            maxYLenBetweenSlides = curSlide->next->y;
+        }
+	    // todo: if statement is ugly
+	    if (curSlide->maxX + curSlide->next->maxX > max_x-2 || maxYLenBetweenSlides > max_y-2) {
             printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
 	    } else {
             printSlideAtPosition(((max_x/2) - curSlide->maxX) / 2, (max_y-curSlide->y)/2, curSlide);
