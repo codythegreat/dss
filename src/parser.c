@@ -7,7 +7,6 @@
 // holds slide count
 int slideC;
 
-
 slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 {
     // reset slide counter to 0
@@ -32,13 +31,13 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     rewind(inFile);
     *slideCounter = slideC;
 
-    // allocate memory to the heap for storing our array of slides
-    // an array is used here to enable jumping to slides by number
-    slide* beginning = newSlide();
-    slide* s;
+    // create slide pointers, s is for iterating while 
+    // beginning will be the first slide and return val
+    slide *s = newSlide();
+    slide *beginning = s;
 
-    // create a line pointer, l is for iterating while first is
-    // the pointer used in each slide struct
+    // create line pointers, l is for iterating while 
+    // first is the pointer used in each slide struct
     line *l = newLine();
     line *first = l;
     l->content[0] = '\0';
@@ -47,7 +46,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     int curMaxX = 0;
     int curY = 0;
 
-    int startSlides = 0; // when slides start, begin filling structs
+    int startSlides = 0; // when {STARTSLIDES} encounterd, set as 1
 
     // continue itteration over file starting after STARTSLIDES
     int i = 0;
@@ -59,27 +58,15 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
         if (startSlides==0) {
             continue;
         }
-	    // if at end, assign slide values and move to next
+	// if at end of slide, assign slide values and move to next
         if (strstr(buf, "{ENDSLIDE}")!=NULL) {
-            if (i==0) {
-                beginning->first = first;
-                beginning->number = 1;
-                beginning->maxX = curMaxX;
-                beginning->y = curY;
-                beginning->r = beginning->g = beginning->b = 0;
-		if (slideC>1) {
-                    s = nextSlide(beginning);
-		}
-
-            } else {
-                s->first = first;
-                s->number = i+1;
-                s->maxX = curMaxX;
-                s->y = curY;
-                s->r = s->g = s->b = 0;
-                if (i+1!=slideC) {
-                    s = nextSlide(s);
-                }
+            s->first = first;
+            s->number = i+1;
+            s->maxX = curMaxX;
+            s->y = curY;
+            s->r = s->g = s->b = 0;
+            if (i+1!=slideC) {
+                s = nextSlide(s);
             }
             curMaxX = 0;
             curY = 0;
