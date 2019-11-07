@@ -27,25 +27,36 @@ command* parseCommand(char commandInput[1000])
     if (strcmp(comm->arg[0], "q")==0) 
     {
          comm->cmd = 1;
-    } else if (strcmp(comm->arg[0], "open")==0)
+    } 
+    else if (strcmp(comm->arg[0], "open")==0)
     {
          comm->cmd = 2;
-    } else if (strcmp(comm->arg[0], "bmark")==0)
+    } 
+    else if (strcmp(comm->arg[0], "bmark")==0)
     {
          comm->cmd = 3;
-    } else if (strcmp(comm->arg[0], "blist")==0)
+    } 
+    else if (strcmp(comm->arg[0], "blist")==0)
     {
          comm->cmd = 4;
-    } else if (strcmp(comm->arg[0], "bclear")==0)
+    } 
+    else if (strcmp(comm->arg[0], "bclear")==0)
     {
          comm->cmd = 5;
-    } else if (atoi(comm->arg[0])!=NULL)
+    } 
+    else if (atoi(comm->arg[0])!=NULL)
     {
          comm->cmd = 6;
-    } else if (strcmp(comm->arg[0], "double")==0)
+    } 
+    else if (strlen(comm->arg[0])==1 && atoi(comm->arg[0])==NULL)
     {
          comm->cmd = 7;
-    } else 
+    } 
+    else if (strcmp(comm->arg[0], "double")==0)
+    {
+         comm->cmd = 8;
+    } 
+    else 
     {
          comm->cmd = 0;
     }
