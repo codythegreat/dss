@@ -64,6 +64,18 @@ void initDisplay()
     clear();
 }
 
+void printSlideAtPosition(int x, int y, slide *printing) {
+    line *currentLine = printing->first;
+    int i = 0;
+    while(currentLine) {
+        move(y + i, x);
+        printw(currentLine->content);
+        line *temp = currentLine->next;
+        currentLine = temp;
+        i++;
+   }
+}
+
 void printMessageBottomBar(char message[256])
 {
     // move to bottom line, clear to EOL, print, wait for input before returning
@@ -109,47 +121,6 @@ slide* findSlideAtNumber(int number, slide *curSlide) {
     return curSlide;
 }
 
-void printSingleSlideView(slide *curSlide) {
-    // for each line, move to the centered position and print the line
-    int yPosition = (max_y-curSlide->y)/2;
-    line *currentLine = curSlide->first;
-    int i = 0;
-    while(currentLine) {
-        move(yPosition + i, (max_x - curSlide->maxX) / 2);
-        printw(currentLine->content);
-        line *temp = currentLine->next;
-        currentLine = temp;
-        i++;
-   }
-}
-
-// prints two slides centered on each half of the screen
-void printDoubleSlideView(slide *curSlide) {
-    // get the starting y position
-    int yPosition = (max_y-curSlide->y)/2;
-    // start with the first line and print 
-    line *currentLine = curSlide->first;
-    int i = 0;
-    while(currentLine) {
-        move(yPosition + i, ((max_x/2) - curSlide->maxX) / 2);
-        printw(currentLine->content);
-        line *temp = currentLine->next;
-        currentLine = temp;
-        i++;
-    }
-    // reset y position, i and currentLine for next slide
-    yPosition = (max_y - curSlide->next->y)/2;
-    i = 0;
-    currentLine = curSlide->next->first;
-    // print the next slide
-    while(currentLine) {
-        move(yPosition + i, ((max_x/2) + ((max_x/2) - curSlide->next->maxX) / 2)); 
-	printw(currentLine->content);
-        line *temp = currentLine->next;
-        currentLine = temp;
-        i++;
-    }
-}
 
 slide* handleCommand(slide *curSlide)
 {
@@ -475,20 +446,21 @@ int displayLoop(slide *curSlide, int* slideCount, char* title, char* fileName)
 	// otherwise, print the slide(s)
 	if (doubleSlideDisplayMode==0) {
 	    if (curSlide->maxX> max_x-1 || curSlide->y > max_y-3) {
-                printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
+            printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
 	    } else {
-                printSingleSlideView(curSlide);
+            printSlideAtPosition((max_x - curSlide->maxX) / 2, (max_y-curSlide->y)/2, curSlide);
 	    }
 	} else {
-            // always stay one slide less than numOfSlides so that two slides can be printed
-            if (curSlide->number == numOfSlides) {
-                curSlide = curSlide->prev;
+        // always stay one slide less than numOfSlides so that two slides can be printed
+        if (curSlide->number == numOfSlides) {
+            curSlide = curSlide->prev;
 	    }
 	    // todo: if statement is ugle
 	    if (curSlide->maxX + curSlide->next->maxX > max_x-2 || curSlide->y + curSlide->next->y > (max_y*2)-3) {
-                printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
+            printw("terminal size/zoom error: Please resize or zoom out the terminal to display the slide.");
 	    } else {
-                printDoubleSlideView(curSlide);
+            printSlideAtPosition(((max_x/2) - curSlide->maxX) / 2, (max_y-curSlide->y)/2, curSlide);
+            printSlideAtPosition(((max_x/2) + ((max_x/2) - curSlide->next->maxX) / 2), (max_y-curSlide->next->y)/2, curSlide->next);
 	    }
 	}
 	
