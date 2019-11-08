@@ -326,6 +326,7 @@ int parseUserInput(char *modeChar, char buffer[1000]) {
                 typing = false;
                 break;
             case 27:    // esc
+                curs_set(0);
                 return 0;
                 break;
             case 127:   // back space  todo: test key input on mult systems
