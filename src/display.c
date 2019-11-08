@@ -60,10 +60,14 @@ void printSlideAtPosition(int x, int y, slide *printing) {
     int i = 0;
     while(currentLine) {
         move(y + i, x);
+        if (currentLine->colorPair!=0) {
+            attron(COLOR_PAIR(currentLine->colorPair));
+        }
         printw(currentLine->content);
         line *temp = currentLine->next;
         currentLine = temp;
         i++;
+        attron(COLOR_PAIR(curColor));
    }
 }
 
