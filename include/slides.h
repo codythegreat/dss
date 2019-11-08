@@ -6,7 +6,7 @@ typedef struct slide
     int number;
     int maxX;
     int y;
-    int r, g, b;
+    int colorPair;
     struct line *first;
     struct slide *next;
     struct slide *prev;
@@ -14,7 +14,7 @@ typedef struct slide
 
 typedef struct line {
     char content[256]; // number subject to change
-    int r, g, b;
+    int colorPair;
     struct line *prev;
     struct line *next;
 } line;
