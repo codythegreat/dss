@@ -14,7 +14,7 @@ int max_y; // ncurses character "res" y axis
 char slideNumberInputBuffer[10] = {'\0'}; // buffer for jumping to slides by number
 int destination; // stores converted slide number for jumping
 
-short curColor = 1; // current color pair (theme)
+short curColor = 7; // current color pair (theme)
 
 bool quitting = false; // if true, end display loop
 
