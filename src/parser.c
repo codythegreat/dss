@@ -78,17 +78,23 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 
         } else {
             // if line contains color tag, get value and set l->colorPair
-	    // todo : better tag (maybe {COLOR_N})
+            // todo : better tag (maybe {COLOR_N})
             if (strstr(buf, "COLOR=")!=NULL) {
                 int colorNumber = 1;
                 if (sscanf(buf, "%*[^\"]\"%2d[^\"]\"", &colorNumber) == 1) {
-                    l->colorPair = colorNumber;
-		            char *colPtr;
-                    if (colorNumber>=10)
-                        colPtr = strchr(buf, '\n')-10;
-                    else
-		                colPtr = strchr(buf, '\n')-9;
-		            *colPtr = '\n';
+                    if (colorNumber >= 1 && colorNumber <= 56) {
+                        l->colorPair = colorNumber;
+		                char *colPtr;
+                        if (colorNumber>=10) {
+                            colPtr = strchr(buf, '\n')-10;
+                        } else {
+                            colPtr = strchr(buf, '\n')-9;
+                        }
+                        *colPtr = '\n';
+                    } else {
+                        fprintf(stderr, "slide %d, line %d - bad color value\n", i+1, curY+1);
+                        getc(stdin);
+                    }
                 }
             }
             // replace new line character with string terminator character
