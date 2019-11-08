@@ -20,8 +20,10 @@ DSS is in the very early stages of development. Here are the features available 
 + search for a slide by text using the `/` key. You can redo a search forward or backwards using `n` and `N`
 + Vim style command mode `:` for jumping to slides `:3`, quitting `:q`, bookmark handling `:bmark/blist/bclear`, jumping to bookmarks `:[register]`, and opening of new files `:open filename`.
 
-Extra features available in the Master branch (may be unstable. please use the release version for a more stable experience.)
+Extra features available in the Master branch (**may be unstable. please use the release version for a more stable experience.**)
 + `d` enables double slide mode where two slides are displayed at once (similarly to pages in a book)
++ `t` cycles foreground colors while `T` cycles background colors (56 possible pairs)
++ rudimentary per-line coloring using `COLOR="n"` tag where `n` is a value between 1-56
 
 ### Planned Features
 
