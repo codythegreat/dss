@@ -64,7 +64,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             s->number = i+1;
             s->maxX = curMaxX;
             s->y = curY;
-            s->r = s->g = s->b = 0;
+            s->colorPair = 0;
             if (i+1!=slideC) {
                 s = nextSlide(s);
             }
@@ -77,10 +77,17 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             first = l;
 
         } else {
+            // if line contains color tag, get value and set l->colorPair
+            if (strstr(buf, "COLOR=")!=NULL) {
+                int colorNumber = 1;
+                if (sscanf(buf, "%*[^\"]\"%1d[^\"]\"", &colorNumber) == 1) {
+                    l->colorPair = colorNumber;
+                }
+            }
             // replace new line character with string terminator character
-	    char *endLine;
-	    endLine = strchr(buf, '\n');
-	    *endLine = '\0';
+            char *endLine;
+            endLine = strchr(buf, '\n');
+            *endLine = '\0';
             // add buf to current line and itterate to the next
             strcat(l->content, buf);
             l = nextLine(l);
