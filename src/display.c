@@ -146,17 +146,33 @@ void initDisplay()
 void printSlideAtPosition(int x, int y, slide *printing) {
     line *currentLine = printing->first;
     int i = 0;
+    int spaces;
     while(currentLine) {
+        // move to start position of printing
         move(y + i, x);
+
+        // if line has a color value, switch to that color
         if (currentLine->colorPair!=0) {
             attron(COLOR_PAIR(currentLine->colorPair));
         }
+
+        // print the line
         printw(currentLine->content);
+
+        // add spaces to EOL up to len of longest line
+        for (spaces=0;spaces<(printing->maxX-strlen(currentLine->content));spaces++) {
+            printw(" ");
+        }
+
+        // switch back to global color
+        attron(COLOR_PAIR(curColor));
+
+        // increment to the next line
         line *temp = currentLine->next;
         currentLine = temp;
+
         i++;
-        attron(COLOR_PAIR(curColor));
-   }
+    }
 }
 
 void printMessageBottomBar(char message[256])
