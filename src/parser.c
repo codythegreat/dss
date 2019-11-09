@@ -7,6 +7,43 @@
 // holds slide count
 int slideC;
 
+// todo : better tag (maybe {COLOR_N})
+void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
+    // find color tag inside buffer
+    char *colPtr;
+    colPtr = strstr(buf, "COLOR=\"");
+    
+    // if tag exists, get and assign value, then remove tag
+    if (colPtr!=NULL) {
+        // get the tag's value
+        int colorNumber = 0;
+        colorNumber = atoi(colPtr+7);
+
+        if (colorNumber >= 1 && colorNumber <= 56) {
+            // assign the tag's value to the line's colorPair
+            l->colorPair = colorNumber;
+
+            // remove the tag from buf by shifting each character up over the tag
+            char currentChar;
+            int i=0;
+            do {
+                if (colorNumber>=10) {
+                    currentChar = *(colPtr + (10+i));
+                } else {
+                    currentChar = *(colPtr + (9+i));
+                }
+                buf[(colPtr-&buf[0])+i] = currentChar;
+                i++;
+            } while (currentChar!='\n');
+        
+        // if number is bad, print a soft error
+        } else {
+            fprintf(stderr, "slide %d, line %d - bad color value\n", slideNumber, lineNumber);
+            getc(stdin);
+        }
+    }
+}
+
 slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 {
     // reset slide counter to 0
@@ -77,26 +114,8 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             first = l;
 
         } else {
-            // if line contains color tag, get value and set l->colorPair
-            // todo : better tag (maybe {COLOR_N})
-            if (strstr(buf, "COLOR=")!=NULL) {
-                int colorNumber = 1;
-                if (sscanf(buf, "%*[^\"]\"%2d[^\"]\"", &colorNumber) == 1) {
-                    if (colorNumber >= 1 && colorNumber <= 56) {
-                        l->colorPair = colorNumber;
-		                char *colPtr;
-                        if (colorNumber>=10) {
-                            colPtr = strchr(buf, '\n')-10;
-                        } else {
-                            colPtr = strchr(buf, '\n')-9;
-                        }
-                        *colPtr = '\n';
-                    } else {
-                        fprintf(stderr, "slide %d, line %d - bad color value\n", i+1, curY+1);
-                        getc(stdin);
-                    }
-                }
-            }
+            // if line contains color tag, get color value and set l->colorPair
+            handleColorTag(buf, l, i+1, curY+1);
             // replace new line character with string terminator character
             char *endLine;
             endLine = strchr(buf, '\n');
