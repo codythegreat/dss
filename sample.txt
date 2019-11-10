@@ -1,92 +1,69 @@
 title="A Sample Set of Slides for dss"
 {STARTSLIDES}
-__________________________________________________
-|                  What is DSS?                  |
-|                                                |
-|                                                |
-|         DSS is a terminal .txt slide           |
-|         tool that uses premade .txt            |
-|         files similar to this one.             |
-|                                                |
-|         DSS has an advantage in that           |
-|         You can format and control             |
-|         exactly how the slide looks            |
-|                                                |
-|         DSS slides are simply sections         |
-|         of a text document that can            |
-|         be easily cycled through               |
-|                                                |
-|________________________________________________|
+         What is DSS?         
+                              
+                              
+DSS is a terminal .txt slide  
+tool that uses premade .txt   
+files similar to this one.    
+                              
+DSS has an advantage in that  
+You can format and control    
+exactly how the slide looks   
+                              
+DSS slides are simply sections
+of a text document that can   
+be easily cycled through      
 {ENDSLIDE}
-__________________________________________________
-|           But Why should I use DSS?            |
-|                                                |
-|                                                |
-|                                                |
-|      Reasons to use DSS:                       |
-|                                                |
-|       * It is minimal, foss goodness           |
-|                                                |
-|       * Creating slides is dead simple         |
-|                                                |
-|       * You have unlimited customizability     |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|________________________________________________|
+      But Why should I use DSS?      
+                                     
+                                     
+Reasons to use DSS:                  
+                                     
+ * It is minimal, foss goodness      COLOR="2"
+                                     
+ * Creating slides is dead simple    COLOR="2"
+                                     
+ * You have unlimited customizabilityCOLOR="2"
 {ENDSLIDE}
-__________________________________________________
-|       What Else Should I Know About DSS?       |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|     With DSS you can enjoy increased           |
-|     productivity[0], vim-like bindings,        |
-|     terminal accessability, and if that        |
-|     is not enough, we offer a 30-day money     |
-|     back guarantee!                            |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|[0] Increased productivity not guaranteed       |
-|[1] We don't actually offer money back__________|
+   What Else Should I Know About DSS?    
+                                         
+                                         
+With DSS you can enjoy increased         
+productivity[0], vim-like bindings,      
+terminal accessability, and if that      
+is not enough, we offer a 30-day money   
+back guarantee[1]!                          
+                                         
+                                         
+[0] Increased productivity not guaranteed
+[1] We don't actually offer money back  
 {ENDSLIDE}
-__________________________________________________
-|            Can I help support DSS?             |
-|                                                |
-|                                                |
-|     _____________________________________      |
-|     |                                   |      |
-|     |    We appreciate contributions!   |      |
-|     |___________________________________|      |
-|                                                |
-|                                                |
-|      If you think that you can provide a       |
-|      usefull fix or feature to the project     |
-|      please see the contributing section       |
-|      of the readme.                            |
-|                                                |
-|                                                |
-|________________________________________________|
+       Can I help support DSS?        
+                                      
+COLOR="35" 
+     We appreciate contributions!COLOR="35" 
+COLOR="35" 
+                                      
+                                      
+ If you think that you can provide a  
+ usefull fix or feature to the project
+ please see the contributing section  
+ of the readme.                       
 {ENDSLIDE}
-__________________________________________________
-|                                                |
-|                 ____  _____ _____              |
-|                / __ \/ ___// ___/              |
-|               / / / /\__ \ \__ \               |
-|              / /_/ /___/ /___/ /               |
-|             /_____//____//____/                |
-|                                                |
-|          github.com/codythegreat/dss           |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|_______Copyright 2019 Made By Cody Maxie________|
+          ____  _____ _____      COLOR="2"
+         / __ \/ ___// ___/      COLOR="3"
+        / / / /\__ \ \__ \       COLOR="4"
+       / /_/ /___/ /___/ /       COLOR="5"
+      /_____//____//____/        COLOR="6"
+                                 
+   github.com/codythegreat/dss   
+                                 
+                                 
+                                 
+                                 
+                                 
+                                 
+                                 
+Copyright 2019 Made By Cody Maxie
 {ENDSLIDE}
