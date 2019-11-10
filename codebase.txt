@@ -27,3 +27,27 @@ Entry point --> main.c[1]           main.c[4] --> display.c[5]--> <-----------
 [6] parsecommand.c provides logic for building command structs which are used 
     in the ":" mode
 {ENDSLIDE}
+main.cCOLOR="3"
+
+    * parsing is handled immediatly, 'v' and 'h' flags used for version and
+      usage information. Otherwise we'll get the filename here
+
+    * setlocale() is used to enable UTF-8 support (also the reason why we
+      use -lncursesw flag in the Makefile)
+
+    * after setting a few variables, we'll attempt to open the file at the
+      file name given. after this we'll initialize the display.
+
+    * We build our slide structs from the opened file by calling parseTXT.
+      the line structs will also be built for each slide here. pointer to
+      the first slide is returned. after this the file is closed
+
+    * displayLoop is called now. it'll return a code that is used to signal
+      main to open and parse a new file.
+
+    * freeing of lines and slides occurs right at the end of the do while
+      loop. 
+
+    * If no file is to be opened, we simply end the loop and return 
+      EXIT_SUCCESS.
+{ENDSLIDE}
