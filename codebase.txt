@@ -1,0 +1,29 @@
+title="Understanding the codebase of DSS"
+{STARTSLIDES}
+High Level Map of logic flowCOLOR="3"
+                                       <-------------------------
+                                      |                          |
+Entry point --> main.c[1]           main.c[4] --> display.c[5]--> <-----------
+                 |                    |             |                         |
+                  -->   parser.c[2]-->               --> parsecommand.c[6] -->
+                         |       |
+                          --> slides.c[3] 
+
+
+[1] Parse user inputs, initialize ncurses, set up variables
+
+[2] Begin parsing the input text file into slide/line structs
+
+[3] slides.c provides functions for generating and freeing slide/line structs
+
+[4] slides are returned to main.c where they are sent to the displayLoop
+    function. on return main.c will check to see if a file is to be open. 
+    this logic is in the do while loop at the bottom of main.c
+
+[5] display.c will print the tile, slide(s) and bottom bar, from here the loop
+    will continuously ckeck user input and perform actions based on that input.
+    eventually the loop will return to main.c.
+
+[6] parsecommand.c provides logic for building command structs which are used 
+    in the ":" mode
+{ENDSLIDE}
