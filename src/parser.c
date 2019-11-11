@@ -7,6 +7,9 @@
 // holds slide count
 int slideC;
 
+// tracks links assigned to slide
+int linkCounter = 0;
+
 // todo : better tag (maybe {COLOR_N})
 void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
     // find color tag inside buffer
@@ -40,6 +43,49 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
         } else {
             fprintf(stderr, "slide %d, line %d - bad color value\n", slideNumber, lineNumber);
             getc(stdin);
+        }
+    }
+}
+
+void handleMarkdownStyleLink(char buf[1000], slide *s, line *l, int slideNumber, int lineNumber) {
+    // test to see if string may contain a link
+    char *linkPtr = strchr(buf, '[');
+    if (linkPtr!=NULL) {
+        // assign each character between and including first last
+        char *firstChar = linkPtr;
+        char *lastChar;
+
+        // evaluate each character to see where title ends
+        while (*linkPtr!='\n' && *linkPtr!='\0') {
+            linkPtr+=1;
+            // ] marks end of title, go back one character and break
+            if (*linkPtr==']') {
+                lastChar = linkPtr-1;
+                break;
+            }
+        }
+        // if next char is ( then build link title and url
+        linkPtr+=1;
+        if (*linkPtr=='(') {
+            // TODO build the title
+            firstChar = linkPtr+1;
+            while (*linkPtr!='\n' && *linkPtr!='\0') {
+                linkPtr++;
+                if (*linkPtr==')') {
+                    lastChar = linkPtr-1;
+                    break;
+                }
+            }
+
+            // iterate over each character in the link and assign it to link[linkCounter]
+            int currentCharacter = 0;
+            do {
+                s->links[linkCounter][currentCharacter] = *firstChar;
+                firstChar +=1;
+                currentCharacter++;
+            } while (!(firstChar>lastChar));
+            s->links[linkCounter][currentCharacter+1]='\0';
+            linkCounter++;
         }
     }
 }
@@ -84,6 +130,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     int curY = 0;
 
     int startSlides = 0; // when {STARTSLIDES} encounterd, set as 1
+    
 
     // continue itteration over file starting after STARTSLIDES
     int i = 0;
@@ -110,12 +157,16 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             i++;
             if (i==slideC)
                 break;
-	    l = newLine();
+    	    l = newLine();
             first = l;
+            linkCounter = 0;
 
         } else {
             // if line contains color tag, get color value and set l->colorPair
             handleColorTag(buf, l, i+1, curY+1);
+
+            // if line contains a link, add it to the slide's links
+            handleMarkdownStyleLink(buf,s,l,i+1,curY+1);
             // replace new line character with string terminator character
             char *endLine;
             endLine = strchr(buf, '\n');
