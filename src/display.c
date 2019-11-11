@@ -435,6 +435,35 @@ slide* searchLastInput(int direction, slide* curSlide) {
     return searching;
 }
 
+void printLinksOnSlide(slide *curSlide) {
+    int i;
+    move(2, 0);
+    for (i=0;i<10;i++) {
+        if (strlen(curSlide->links[i])==0)
+            return;
+        printw("%d - %s\n",i, curSlide->links[i]);
+    }
+    getch();
+}
+
+void openLinkAtIndex(int index, slide *curSlide) {
+    if (index >= 0 && index < 10 && strlen(curSlide->links[index])>0) {
+        // build a command that will open link in def browser
+        char systemCommand[1000];
+        strcat(systemCommand, "xdg-open ");
+        strcat(systemCommand, curSlide->links[index]);
+        // send any output to /dev/null (instead of stdout)
+        strcat(systemCommand, " >/dev/null 2>&1");
+        // if the command fails, display a soft error
+        if (system(systemCommand)==-1) {
+            printMessageBottomBar("failed to open link - format: [Google](https://www.google.com) note: http[s]:// is required");
+        }
+    } else {
+        printMessageBottomBar("index given does not contain a link");
+        getch();
+    }
+}
+
 slide* handleKeyPress(slide *curSlide)
 {
     // get the keypress from user
@@ -528,6 +557,10 @@ slide* handleKeyPress(slide *curSlide)
         case 'N': // backward search last input
             curSlide = searchLastInput(BACKWARD, curSlide);
             break;
+        case 'l':
+            // todo: print the links with indexes
+            printLinksOnSlide(curSlide);
+            openLinkAtIndex(getch()-48, curSlide);
         default:
             break;
     }
