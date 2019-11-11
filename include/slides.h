@@ -7,13 +7,14 @@ typedef struct slide
     int maxX;
     int y;
     int colorPair;
+    char links[10][1000]; // todo can this be dynamic?
     struct line *first;
     struct slide *next;
     struct slide *prev;
 } slide;
 
 typedef struct line {
-    char content[256]; // number subject to change
+    char content[256]; // todo can this be dynamic?
     int colorPair;
     struct line *prev;
     struct line *next;
