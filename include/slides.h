@@ -1,5 +1,6 @@
 #if !defined( SLIDES_H )
 #define SLIDES_H
+#include "mdlink.h"
 
 typedef struct slide
 {
@@ -7,10 +8,10 @@ typedef struct slide
     int maxX;
     int y;
     int colorPair;
-    char links[10][1000]; // todo can this be dynamic?
     struct line *first;
     struct slide *next;
     struct slide *prev;
+    struct mdlink *link;
 } slide;
 
 typedef struct line {
