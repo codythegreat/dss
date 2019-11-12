@@ -46,8 +46,8 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
     }
 }
 
-void handleMarkdownStyleLink(char buf[1000], slide *s, line *l, int slideNumber, int lineNumber) {
-    // test to see if string may contain a link
+void handleMarkdownStyleLink(char buf[1000], slide *s) {
+    // points to first char '[' in link
     char *linkPtr = strchr(buf, '[');
     if (linkPtr!=NULL) {
         // assign each character between and including first last
@@ -63,6 +63,7 @@ void handleMarkdownStyleLink(char buf[1000], slide *s, line *l, int slideNumber,
                 break;
             }
         }
+
         // if next char is ( then build link title and url
         linkPtr+=1;
         if (*linkPtr=='(') {
@@ -194,7 +195,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             handleColorTag(buf, l, i+1, curY+1);
 
             // if line contains a link, add it to the slide's links
-            handleMarkdownStyleLink(buf,s,l,i+1,curY+1);
+            handleMarkdownStyleLink(buf,s);
             // replace new line character with string terminator character
             char *endLine;
             endLine = strchr(buf, '\n');
