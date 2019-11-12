@@ -46,20 +46,21 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
     }
 }
 
+// searches for a link in the buffer and parses it into mdlink struct
 void handleMarkdownStyleLink(char buf[1000], slide *s) {
     // points to first char '[' in link
     char *linkPtr = strchr(buf, '[');
     if (linkPtr!=NULL) {
-        // assign each character between and including first last
-        char *firstChar = linkPtr;
-        char *lastChar;
+        // holds first/last char addresses in title
+        char *titleStart = linkPtr;
+        char *titleEnd;
 
         // evaluate each character to see where title ends
         while (*linkPtr!='\n' && *linkPtr!='\0') {
             linkPtr+=1;
             // ] marks end of title, go back one character and break
             if (*linkPtr==']') {
-                lastChar = linkPtr-1;
+                titleEnd = linkPtr-1;
                 break;
             }
         }
@@ -69,34 +70,34 @@ void handleMarkdownStyleLink(char buf[1000], slide *s) {
         if (*linkPtr=='(') {
 
             // create the title by assigning each character to it
-            int currentCharacter = 0;
+            int currentPosition = 0;
             char titleBuffer[256];
+            
             do {
-                titleBuffer[currentCharacter] = *firstChar;
-                firstChar +=1;
-                currentCharacter++;
-            } while (!(firstChar>lastChar));
-            titleBuffer[currentCharacter]='\0';
+                titleBuffer[currentPosition] = *(titleStart+currentPosition);
+                currentPosition++;
+            } while (!(titleStart+currentPosition>titleEnd));
+            titleBuffer[currentPosition]='\0';
 
-            // get the first and last character of the url
-            firstChar = linkPtr+1;
+            // holds first last char addresses in url
+            char *urlStart = linkPtr+1;
+            char *urlEnd;
             while (*linkPtr!='\n' && *linkPtr!='\0') {
                 linkPtr++;
                 if (*linkPtr==')') {
-                    lastChar = linkPtr-1;
+                    urlEnd = linkPtr-1;
                     break;
                 }
             }
 
             // create the url
-            currentCharacter = 0;
+            currentPosition = 0;
             char urlBuffer[1000];
             do {
-                urlBuffer[currentCharacter] = *firstChar;
-                firstChar +=1;
-                currentCharacter++;
-            } while (!(firstChar>lastChar));
-            urlBuffer[currentCharacter]='\0';
+                urlBuffer[currentPosition] = *(urlStart+currentPosition);
+                currentPosition++;
+            } while (!(urlStart+currentPosition>urlEnd));
+            urlBuffer[currentPosition]='\0';
 
             // create link
             mdlink *l;
