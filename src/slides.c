@@ -6,6 +6,7 @@
 slide *newSlide() {
     slide *s = malloc(sizeof(slide));
     memset(s, 0, sizeof(*s));
+    s->link = NULL;
     return s;
 }
 
@@ -15,6 +16,7 @@ slide *nextSlide(slide *prev) {
     n->prev = prev;
     prev->next = n;
     n->next = NULL;
+    n->link = NULL;
     return n;
 }
 
