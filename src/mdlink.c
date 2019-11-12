@@ -33,6 +33,12 @@ mdlink *appendLink(mdlink *first) {
     return nextLink(l);
 }
 
-void freeLinks(mdlink *first) {
-    free(first);
+void freeLinks(mdlink *l) {
+    mdlink *next;
+    while(l) {
+        next = l->next;
+        memset(l, 0, sizeof(*l));
+        free(l);
+        l = next;
+    }
 }
