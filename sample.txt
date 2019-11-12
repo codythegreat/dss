@@ -20,11 +20,11 @@ of a text document that can be
                                      
 Reasons to use DSS:                  
                                      
- * It is minimal, foss goodness      COLOR="2"
+ * It is minimal, foss goodness      COLOR="gB"
                                      
- * Creating slides is dead simple    COLOR="2"
+ * Creating slides is dead simple    COLOR="gB"
                                      
- * You have unlimited customizabilityCOLOR="2"
+ * You have unlimited customizabilityCOLOR="gB"
 {ENDSLIDE}
    What Else Should I Know About DSS?    
                                          
@@ -41,9 +41,9 @@ Reasons to use DSS:
 {ENDSLIDE}
        Can I help support DSS?       
                                      
-COLOR="35" 
-     We appreciate contributions!COLOR="35" 
-COLOR="35" 
+COLOR="wb" 
+     We appreciate contributions!COLOR="wb" 
+COLOR="wb" 
                                      
                                      
  If you think that you can provide a 
@@ -51,11 +51,11 @@ usefull fix or feature to the project
  please see the contributing section 
            of the readme.            
 {ENDSLIDE}
-COLOR="2"               ____  _____ _____            
-COLOR="3"              / __ \/ ___// ___/            
-COLOR="4"             / / / /\__ \ \__ \             
-COLOR="5"            / /_/ /___/ /___/ /             
-COLOR="6"           /_____//____//____/              
+COLOR="rB"               ____  _____ _____            
+COLOR="yB"              / __ \/ ___// ___/            
+COLOR="gB"             / / / /\__ \ \__ \             
+COLOR="cB"            / /_/ /___/ /___/ /             
+COLOR="bB"           /_____//____//____/              
                                 
 [github](https://github.com/codythegreat/dss)
    [my website](https://www.codymaxie.com)
@@ -67,4 +67,5 @@ COLOR="6"           /_____//____//____/
                                  
                                  
      Copyright 2019 Made By Cody Maxie
+
 {ENDSLIDE}

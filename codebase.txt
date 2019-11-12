@@ -1,6 +1,6 @@
 title="Understanding the codebase of DSS"
 {STARTSLIDES}
-High Level Map of logic flowCOLOR="3"
+High Level Map of logic flowCOLOR="yB"
                                        <-------------------------
                                       |                          |
 Entry point --> main.c[1]           main.c[4] --> display.c[5]--> <-----------
@@ -27,7 +27,7 @@ Entry point --> main.c[1]           main.c[4] --> display.c[5]--> <-----------
 [6] parsecommand.c provides logic for building command structs which are used 
     in the ":" mode
 {ENDSLIDE}
-main.cCOLOR="3"
+main.cCOLOR="yB"
 
     * parsing is handled immediatly, 'v' and 'h' flags used for version and
       usage information. Otherwise we'll get the filename here
