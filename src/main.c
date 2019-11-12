@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
         slide *first = beg;
         for (i=0;i<slideCount;i++){
             freeLines(beg->first);
+            freeLinks(beg->link);
             beg = beg->next;
         }
         freeSlides(first);
