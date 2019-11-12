@@ -7,14 +7,15 @@ Entry point --> main.c[1]           main.c[4] --> display.c[5]--> <-----------
                  |                    |             |                         |
                   -->   parser.c[2]-->               --> parsecommand.c[6] -->
                          |       |
-                          --> slides.c[3] 
+                          --> slides.c/mdlink.c[3] 
 
 
 [1] Parse user inputs, initialize ncurses, set up variables
 
 [2] Begin parsing the input text file into slide/line structs
 
-[3] slides.c provides functions for generating and freeing slide/line structs
+[3] slides.c provides functions for generating and freeing slide/line structs.
+    mdlink.c provides functions for generating and freeing mdlink structs.
 
 [4] slides are returned to main.c where they are sent to the displayLoop
     function. on return main.c will check to see if a file is to be open. 
@@ -50,4 +51,23 @@ main.cCOLOR="yB"
 
     * If no file is to be opened, we simply end the loop and return 
       EXIT_SUCCESS.
+{ENDSLIDE}
+parser.cCOLOR="yB"
+
+    * parseTXT function will first comb the input file for meta information
+      (title, number of slides, etc)
+
+    * File is rewound (this is currently required due to the nature of how
+      slides are counted.)
+
+    * slide/line structs are created (see slides.c), we then begin combing
+      the file after the STARTSLIDES tag
+
+    * if a color tag or link (see mdlink.c) is detected, parse those. 
+      Otherwise assign continuously build up line structs for each slide.
+
+    * at ENDSLIDE tag, build the slide and begin parsing lines again for
+      next slide
+
+    * return pointer to first slide
 {ENDSLIDE}
