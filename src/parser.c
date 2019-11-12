@@ -3,12 +3,11 @@
 #include <string.h>
 #include "parser.h"
 #include "slides.h"
+#include "mdlink.h"
 
 // holds slide count
 int slideC;
 
-// tracks links assigned to slide
-int linkCounter = 0;
 
 // todo : better tag (maybe {COLOR_N})
 void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
@@ -67,7 +66,18 @@ void handleMarkdownStyleLink(char buf[1000], slide *s, line *l, int slideNumber,
         // if next char is ( then build link title and url
         linkPtr+=1;
         if (*linkPtr=='(') {
-            // TODO build the title
+
+            // create the title by assigning each character to it
+            int currentCharacter = 0;
+            char titleBuffer[256];
+            do {
+                titleBuffer[currentCharacter] = *firstChar;
+                firstChar +=1;
+                currentCharacter++;
+            } while (!(firstChar>lastChar));
+            titleBuffer[currentCharacter]='\0';
+
+            // get the first and last character of the url
             firstChar = linkPtr+1;
             while (*linkPtr!='\n' && *linkPtr!='\0') {
                 linkPtr++;
@@ -77,15 +87,28 @@ void handleMarkdownStyleLink(char buf[1000], slide *s, line *l, int slideNumber,
                 }
             }
 
-            // iterate over each character in the link and assign it to link[linkCounter]
-            int currentCharacter = 0;
+            // create the url
+            currentCharacter = 0;
+            char urlBuffer[1000];
             do {
-                s->links[linkCounter][currentCharacter] = *firstChar;
+                urlBuffer[currentCharacter] = *firstChar;
                 firstChar +=1;
                 currentCharacter++;
             } while (!(firstChar>lastChar));
-            s->links[linkCounter][currentCharacter+1]='\0';
-            linkCounter++;
+            urlBuffer[currentCharacter]='\0';
+
+            // create link
+            mdlink *l;
+            if (s->link !=NULL) {
+                l = appendLink(s->link);
+            } else {
+                l = newLink();
+                s->link = l;
+            }
+
+            // assign values to the link
+            strcat(l->title, titleBuffer);
+            strcat(l->url, urlBuffer);
         }
     }
 }
@@ -159,7 +182,6 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
                 break;
     	    l = newLine();
             first = l;
-            linkCounter = 0;
 
         } else {
             // if line contains color tag, get color value and set l->colorPair
