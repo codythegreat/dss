@@ -108,7 +108,13 @@ void handleMarkdownStyleLink(char buf[1000], slide *s, line *l, int slideNumber,
 
             // assign values to the link
             strcat(l->title, titleBuffer);
-            strcat(l->url, urlBuffer);
+            // make sure that http in url before assigning as value to struct
+            if (strstr(urlBuffer, "http://") || strstr(urlBuffer, "https://")) {
+                strcat(l->url, urlBuffer);
+            } else {
+                strcat(l->url, "https://");
+                strcat(l->url, urlBuffer);
+            }
         }
     }
 }
