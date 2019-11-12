@@ -436,32 +436,35 @@ slide* searchLastInput(int direction, slide* curSlide) {
 }
 
 void printLinksOnSlide(slide *curSlide) {
-    int i;
     move(2, 0);
-    for (i=0;i<10;i++) {
-        if (strlen(curSlide->links[i])==0)
-            return;
-        printw("%d - %s\n",i, curSlide->links[i]);
+    mdlink *l = curSlide->link;
+    while (l) {
+        printw("%d - %s\n",l->index, l->url);
+        l = l->next;
     }
-    getch();
 }
 
 void openLinkAtIndex(int index, slide *curSlide) {
-    if (index >= 0 && index < 10 && strlen(curSlide->links[index])>0) {
-        // build a command that will open link in def browser
-        char systemCommand[1000];
-        strcat(systemCommand, "xdg-open ");
-        strcat(systemCommand, curSlide->links[index]);
-        // send any output to /dev/null (instead of stdout)
-        strcat(systemCommand, " >/dev/null 2>&1");
-        // if the command fails, display a soft error
-        if (system(systemCommand)==-1) {
-            printMessageBottomBar("failed to open link - format: [Google](https://www.google.com) note: http[s]:// is required");
+    mdlink *l = curSlide->link;
+    while (l) {
+        if (index == l->index) {
+            // build a command that will open link in def browser
+            char systemCommand[1000];
+            strcat(systemCommand, "xdg-open ");
+            strcat(systemCommand, l->url);
+            // send any output to /dev/null (instead of stdout)
+            strcat(systemCommand, " >/dev/null 2>&1");
+            // if the command fails, display a soft error
+            printMessageBottomBar(systemCommand);
+            getch();
+            system(systemCommand);
+            return;
+        } else {
+            l = l->next;
         }
-    } else {
-        printMessageBottomBar("index given does not contain a link");
-        getch();
     }
+    printMessageBottomBar("index given does not contain a link");
+    getch();
 }
 
 slide* handleKeyPress(slide *curSlide)
