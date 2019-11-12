@@ -8,9 +8,23 @@
 // holds slide count
 int slideC;
 
+void printColorValueError(int slideNumber, int lineNumber) {
+    fprintf(stderr, "slide %d, line %d - bad color value\n", slideNumber, lineNumber);
+    getc(stdin);
+}
 
-// todo : better tag (maybe {COLOR_N})
 void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
+    // stores coresponding tag to color values
+    char colValues[8][2] = {
+        {'B', '0'},
+        {'r', '1'},
+        {'g', '2'},
+        {'y', '3'},
+        {'b', '4'},
+        {'m', '5'},
+        {'c', '6'},
+        {'w', '7'},
+    };
     // find color tag inside buffer
     char *colPtr;
     colPtr = strstr(buf, "COLOR=\"");
@@ -18,8 +32,32 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
     // if tag exists, get and assign value, then remove tag
     if (colPtr!=NULL) {
         // get the tag's value
+        int foreground = 0;
+        int background = 0;
+        int i;
+        for (i=0;i<8;i++) {
+            if (colValues[i][0] == *(colPtr+7)) {
+                foreground = colValues[i][1]-48;
+            }
+            if (colValues[i][0] == *(colPtr+8)) {
+                background = colValues[i][1]-48;
+            }
+        }
+        // error if user put same bg/fg color
+        if (background==foreground) {
+            printColorValueError(slideNumber, lineNumber);
+            return;
+        }
+
         int colorNumber = 0;
-        colorNumber = atoi(colPtr+7);
+        // set bg color
+        colorNumber = 1 + (background*7);
+        // set fg color
+        if (foreground>background) {
+            colorNumber+=foreground-1;
+        } else {
+            colorNumber+=foreground;
+        }
 
         if (colorNumber >= 1 && colorNumber <= 56) {
             // assign the tag's value to the line's colorPair
@@ -29,19 +67,15 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
             char currentChar;
             int i=0;
             do {
-                if (colorNumber>=10) {
-                    currentChar = *(colPtr + (10+i));
-                } else {
-                    currentChar = *(colPtr + (9+i));
-                }
+                currentChar = *(colPtr + (10+i));
                 buf[(colPtr-&buf[0])+i] = currentChar;
                 i++;
             } while (currentChar!='\n');
         
         // if number is bad, print a soft error
         } else {
-            fprintf(stderr, "slide %d, line %d - bad color value\n", slideNumber, lineNumber);
-            getc(stdin);
+            printColorValueError(slideNumber, lineNumber);
+            return;
         }
     }
 }
