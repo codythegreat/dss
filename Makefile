@@ -1,4 +1,4 @@
-SRCS = src/main.c src/parser.c src/display.c src/slides.c src/parsecommand.c
+SRCS = src/main.c src/parser.c src/display.c src/slides.c src/parsecommand.c src/mdlink.c
 OBJS = $(SRCS:.c=.o)
 
 PREFIX ?= /usr/local
