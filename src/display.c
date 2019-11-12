@@ -33,6 +33,7 @@ int BACKWARD = 0; // N
 int bookmarkReg; // holds key to assign bookmark to
 short bookmarks[128] = {-1}; // each index represents an ascii key
 
+// TODO: can this be handled better?
 const int FGBGCOLORPAIRS[56][2] = {
     {1, 0},
     {2, 0},
@@ -146,7 +147,7 @@ void initDisplay()
 void printSlideAtPosition(int x, int y, slide *printing) {
     line *currentLine = printing->first;
     int i = 0;
-    int spaces;
+    int spaces; // TODO: should this be size_t? compiler gives warning
     while(currentLine) {
         // move to start position of printing
         move(y + i, x);
@@ -559,9 +560,22 @@ slide* handleKeyPress(slide *curSlide)
             curSlide = searchLastInput(BACKWARD, curSlide);
             break;
         case 'l':
-            // todo: print the links with indexes
-            printLinksOnSlide(curSlide);
-            openLinkAtIndex(getch()-48, curSlide);
+            // TODO: handle > 9 link indexes
+            if (curSlide->link!=NULL) {
+                printLinksOnSlide(curSlide);
+                openLinkAtIndex(getch()-48, curSlide);
+            } else {
+                if (doubleSlideDisplayMode) {
+                    if (curSlide->next->link!=NULL) {
+                        printLinksOnSlide(curSlide->next);
+                        openLinkAtIndex(getch()-48, curSlide->next);
+                    }
+                } else {
+                    printMessageBottomBar("No links detected on this slide");
+                    getch();
+                }
+            }
+            break;
         default:
             break;
     }
