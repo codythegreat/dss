@@ -455,8 +455,6 @@ void openLinkAtIndex(int index, slide *curSlide) {
             // send any output to /dev/null (instead of stdout)
             strcat(systemCommand, " >/dev/null 2>&1");
             // if the command fails, display a soft error
-            printMessageBottomBar(systemCommand);
-            getch();
             system(systemCommand);
             return;
         } else {
