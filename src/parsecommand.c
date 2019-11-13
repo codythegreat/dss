@@ -64,6 +64,10 @@ command* parseCommand(char commandInput[1000])
     {
          comm->cmd = 10;
     } 
+    else if (strcmp(comm->arg[0], "linecolor")==0)
+    {
+         comm->cmd = 11;
+    } 
     else 
     {
          comm->cmd = 0;
