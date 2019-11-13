@@ -32,8 +32,8 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
     // if tag exists, get and assign value, then remove tag
     if (colPtr!=NULL) {
         // get the tag's value
-        int foreground = 0;
-        int background = 0;
+        int foreground = -1;
+        int background = -1;
         int i;
         for (i=0;i<8;i++) {
             if (colValues[i][0] == *(colPtr+7)) {
@@ -43,8 +43,8 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
                 background = colValues[i][1]-48;
             }
         }
-        // error if user put same bg/fg color
-        if (background==foreground) {
+        // soft error if bad fg/bg values in tag
+        if (foreground==-1 || background==-1 || background==foreground) {
             printColorValueError(slideNumber, lineNumber);
             return;
         }
