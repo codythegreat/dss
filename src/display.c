@@ -24,6 +24,8 @@ char *nextFile; // next file name to open
 
 int doubleSlideDisplayMode = 0; // used for displaying two slides at once
 
+int lineColorMode = 1; // 1 - enable color tags, 0 - disable  changes with :nocolor
+
 char lastCommand[1000] = {'\0'}; // stores last user inputed command
 
 char lastSearchTerm[1000] = {'\0'}; // stores last used search for n/N searching
@@ -153,7 +155,7 @@ void printSlideAtPosition(int x, int y, slide *printing) {
         move(y + i, x);
 
         // if line has a color value, switch to that color
-        if (currentLine->colorPair!=0) {
+        if (lineColorMode && currentLine->colorPair!=0) {
             attron(COLOR_PAIR(currentLine->colorPair));
         }
 
@@ -364,6 +366,13 @@ slide* handleCommand(slide *curSlide)
                     printMessageBottomBar("No links detected on this slide");
                     getch();
                 }
+            }
+            break;
+        case 11: // toggle line coloring via colortags
+            if (lineColorMode) {
+                lineColorMode=0;
+            } else {
+                lineColorMode=1;
             }
             break;
         // todo: command to display meta information
