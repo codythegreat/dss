@@ -17,8 +17,8 @@ Current version. Includes previous version features plus the following:
 ### 0.3
 ---
 
-+ Specifying text color
-+ URL detection/selection (key binding or command?)
++ Specifying line color
++ URL detection/selection (key binding and command)
 + Dual slide display mode
 
 ### 0.4
