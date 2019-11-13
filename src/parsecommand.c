@@ -56,6 +56,14 @@ command* parseCommand(char commandInput[1000])
     {
          comm->cmd = 8;
     } 
+    else if (strcmp(comm->arg[0], "llist")==0)
+    {
+         comm->cmd = 9;
+    } 
+    else if (strcmp(comm->arg[0], "link")==0)
+    {
+         comm->cmd = 10;
+    } 
     else 
     {
          comm->cmd = 0;
