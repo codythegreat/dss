@@ -90,12 +90,15 @@ void handleMarkdownStyleLink(char buf[1000], slide *s) {
         char *titleEnd;
 
         // evaluate each character to see where title ends
-        while (*linkPtr!='\n' && *linkPtr!='\0') {
+        while (*linkPtr!='\0') {
             linkPtr+=1;
             // ] marks end of title, go back one character and break
             if (*linkPtr==']') {
                 titleEnd = linkPtr-1;
                 break;
+            }
+            if (*linkPtr=='\n') {
+                return;
             }
         }
 
@@ -116,11 +119,14 @@ void handleMarkdownStyleLink(char buf[1000], slide *s) {
             // holds first last char addresses in url
             char *urlStart = linkPtr+1;
             char *urlEnd;
-            while (*linkPtr!='\n' && *linkPtr!='\0') {
+            while (*linkPtr!='\0') {
                 linkPtr++;
                 if (*linkPtr==')') {
                     urlEnd = linkPtr-1;
                     break;
+                }
+                if (*linkPtr=='\n') {
+                    return;
                 }
             }
 
