@@ -2,17 +2,16 @@ title="A Sample Set of Slides for dss"
 {STARTSLIDES}
          What is DSS?         
                               
-                              
 DSS is a terminal .txt slide  
 tool that uses premade .txt   
  files similar to this one.   
                               
 DSS has an advantage in that  
- You can format and control    
+ You can format and control   
 exactly how the slide looks   
                               
 DSS slides are simply sections
-of a text document that can be 
+of a text document that can be
     easily cycled through   
 {ENDSLIDE}
       But Why should I use DSS?      
@@ -67,6 +66,6 @@ COLOR="wB"
                                  
                                  
                                  
-     Copyright 2019 Made By Cody Maxie
+      Copyright 2019 Made By Cody Maxie
 
 {ENDSLIDE}
