@@ -88,16 +88,15 @@ int main(int argc, char *argv[])
             fprintf(stderr, "%s: %s: '%s'\n", PROGNAME, "could not read file", fileName);
             return EXIT_FAILURE;
         }
+        // parse and return slides from txt file
+        slide *beg = parseTXT(currentFile, &slideCount, title);
+        // close the file
+        fclose(currentFile);
 
         if (!displayInitialized) {
             initDisplay();
             displayInitialized = 1;
         }
-
-        // parse and return slides from txt file
-        slide *beg = parseTXT(currentFile, &slideCount, title);
-        // close the file
-        fclose(currentFile);
 
         // initiate display loop, when it returns store exit code
         returnCode = displayLoop(beg, &slideCount, title, fileName);
