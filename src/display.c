@@ -450,7 +450,7 @@ void openLinkAtIndex(int index, slide *curSlide) {
     while (l) {
         if (index == l->index) {
             // build a command that will open link in def browser
-            char systemCommand[1000];
+            char systemCommand[1000] = {0};
             strcat(systemCommand, "xdg-open ");
             strcat(systemCommand, l->url);
             // send any output to /dev/null (instead of stdout)
