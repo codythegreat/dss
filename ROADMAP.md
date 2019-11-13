@@ -9,13 +9,12 @@
 ### 0.2
 ---
 
-Current version. Includes previous version features plus the following:
-
 + Vim-like command mode (file switching, theme switching, displaying bmark list)
 + Vim-like search mode (use `/` to initiate a search, and `n`/`N` to search forward and backwards)
 
 ### 0.3
 ---
+Current version. Includes previous version features plus the following:
 
 + Specifying line color
 + URL detection/selection (key binding and command)
