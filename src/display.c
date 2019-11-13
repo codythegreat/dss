@@ -342,12 +342,16 @@ slide* handleCommand(slide *curSlide)
                 doubleSlideDisplayMode = 0;
                 break;
         case 9: // list links on a slide
-            printLinksOnSlide(curSlide);
+            if (doubleSlideDisplayMode) {
+                printLinksOnSlide(curSlide->next);
+            } else {
+                printLinksOnSlide(curSlide);
+            }
             getch();
             break;
         case 10: // open link at index
             if (atoi(comm->arg[1])) {
-                if (doubleSlideDisplayMode==1) {
+                if (doubleSlideDisplayMode) {
                     if (curSlide->next->link!=NULL) {
                         openLinkAtIndex(atoi(comm->arg[1]), curSlide->next);
                     } else {
