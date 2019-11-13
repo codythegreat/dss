@@ -161,7 +161,7 @@ void printSlideAtPosition(int x, int y, slide *printing) {
         printw(currentLine->content);
 
         // add spaces to EOL up to len of longest line
-        for (spaces=0;spaces<(printing->maxX-strlen(currentLine->content));spaces++) {
+        for (spaces=0;spaces<(int)(printing->maxX-strlen(currentLine->content));spaces++) {
             printw(" ");
         }
 
@@ -240,6 +240,10 @@ slide* jumpToSlideAtBookmark(int key, slide *curSlide) {
 
 void printLinksOnSlide(slide *curSlide) {
     mdlink *l = curSlide->link;
+    if (!l) {
+        printMessageBottomBar("No links detected on current slide");
+        return;
+    }
     int i = 2; //start line to print at
     while (l) {
         move(i, 0);
@@ -343,28 +347,22 @@ slide* handleCommand(slide *curSlide)
                 break;
         case 9: // list links on a slide
             if (doubleSlideDisplayMode) {
-                printLinksOnSlide(curSlide->next);
+                printMessageBottomBar("Links not supported in double slide display mode");
             } else {
                 printLinksOnSlide(curSlide);
             }
             getch();
             break;
         case 10: // open link at index
-            if (atoi(comm->arg[1])) {
-                if (doubleSlideDisplayMode) {
-                    if (curSlide->next->link!=NULL) {
-                        openLinkAtIndex(atoi(comm->arg[1]), curSlide->next);
-                    } else {
-                        printMessageBottomBar("No links detected on this slide");
-                        getch();
-                    }
+            if (doubleSlideDisplayMode) {
+                printMessageBottomBar("Links not supported in double slide display mode");
+                getch();
+            } else {
+                if (atoi(comm->arg[1]) && curSlide->link!=NULL) {
+                    openLinkAtIndex(atoi(comm->arg[1]), curSlide);
                 } else {
-                    if (curSlide->link!=NULL) {
-                        openLinkAtIndex(atoi(comm->arg[1]), curSlide);
-                    } else {
-                        printMessageBottomBar("No links detected on this slide");
-                        getch();
-                    }
+                    printMessageBottomBar("No links detected on this slide");
+                    getch();
                 }
             }
             break;
@@ -590,20 +588,16 @@ slide* handleKeyPress(slide *curSlide)
             curSlide = searchLastInput(BACKWARD, curSlide);
             break;
         case 'l':
-            // TODO: handle > 9 link indexes
+            // TODO: handle double slide mode for links
+            if (doubleSlideDisplayMode) {
+                printMessageBottomBar("Links not supported in double slide display mode");
+                getch();
+                break;
+            }
+            printLinksOnSlide(curSlide);
+            keyInput = getch()-48;
             if (curSlide->link!=NULL) {
-                printLinksOnSlide(curSlide);
-                openLinkAtIndex(getch()-48, curSlide);
-            } else {
-                if (doubleSlideDisplayMode) {
-                    if (curSlide->next->link!=NULL) {
-                        printLinksOnSlide(curSlide->next);
-                        openLinkAtIndex(getch()-48, curSlide->next);
-                    }
-                } else {
-                    printMessageBottomBar("No links detected on this slide");
-                    getch();
-                }
+                openLinkAtIndex(keyInput, curSlide);
             }
             break;
         default:
