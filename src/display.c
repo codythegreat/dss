@@ -604,9 +604,13 @@ slide* handleKeyPress(slide *curSlide)
                 break;
             }
             printLinksOnSlide(curSlide);
-            keyInput = getch()-48;
+            keyInput = getch();
+            // on esc, break
+            if (keyInput == 27) {
+                break;
+            }
             if (curSlide->link!=NULL) {
-                openLinkAtIndex(keyInput, curSlide);
+                openLinkAtIndex(keyInput-48, curSlide);
             }
             break;
         default:
