@@ -19,19 +19,33 @@ DSS is in the very early stages of development. Here are the features available 
 + switching color themes with `t` (currently there are 4 themes, but more are planned to be added)
 + search for a slide by text using the `/` key. You can redo a search forward or backwards using `n` and `N`
 + Vim style command mode `:` for jumping to slides `:3`, quitting `:q`, bookmark handling `:bmark/blist/bclear`, jumping to bookmarks `:[register]`, and opening of new files `:open filename`.
-
-Extra features available in the Master branch (**may be unstable. please use the release version for a more stable experience.**)
-+ `d` enables double slide mode where two slides are displayed at once (similarly to pages in a book)
++ `d`/`:double` enables double slide mode where two slides are displayed at once (similarly to pages in a book)
 + `t` cycles foreground colors while `T` cycles background colors (56 possible pairs)
-+ rudimentary per-line coloring using `COLOR="n"` tag where `n` is a value between 1-56
++ `l`/`:llist`/`:link` link printing and selection (for a link to be parsed correctly use markdown formatting: `[Google](https://www.google.com)`
++ line coloring using `COLOR="wB"` tag where the first letter is foreground and the second is the background. See below:
+```
+B = black
+r = red
+g = green
+b = blue
+y = yellow
+m = magenta
+c = cyan
+w = white
+```
+
+<!---
+Extra features available in the Master branch (**may be unstable. please use the release version for a more stable experience.**)
+-->
+
 
 ### Planned Features
 
 A few features that are planned include:
 + greater color formatting options
-+ url detection and selection with H/L
 + markdown style text parsing (optional, enabled by flag)
 + quick fade animations (quick as in non-intrusive when rapidly switching through slides)
++ Windows verison
 
 ### Installation
 
@@ -44,6 +58,10 @@ To install globally:
 To compile into an executable inside the directory:
 
 `make`
+
+If for some reason you get an error when compiling, try this:
+
+`make tidy && make`
 
 ### Usage
 
