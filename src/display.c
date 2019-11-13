@@ -238,6 +238,38 @@ slide* jumpToSlideAtBookmark(int key, slide *curSlide) {
     return curSlide;
 }
 
+void printLinksOnSlide(slide *curSlide) {
+    mdlink *l = curSlide->link;
+    int i = 2; //start line to print at
+    while (l) {
+        move(i, 0);
+        printw("%d - %s",l->index, l->url);
+        l = l->next;
+        i++;
+    }
+}
+
+void openLinkAtIndex(int index, slide *curSlide) {
+    mdlink *l = curSlide->link;
+    while (l) {
+        if (index == l->index) {
+            // build a command that will open link in def browser
+            char systemCommand[1000] = {0};
+            strcat(systemCommand, "xdg-open ");
+            strcat(systemCommand, l->url);
+            // send any output to /dev/null (instead of stdout)
+            strcat(systemCommand, " >/dev/null 2>&1");
+            // if the command fails, display a soft error
+            system(systemCommand);
+            return;
+        } else {
+            l = l->next;
+        }
+    }
+    printMessageBottomBar("index given does not contain a link");
+    getch();
+}
+
 slide* handleCommand(slide *curSlide)
 {
     // if lastCommand is empty, return
@@ -309,6 +341,29 @@ slide* handleCommand(slide *curSlide)
                 else
                 doubleSlideDisplayMode = 0;
                 break;
+        case 9: // list links on a slide
+            printLinksOnSlide(curSlide);
+            getch();
+            break;
+        case 10: // open link at index
+            if (atoi(comm->arg[1])) {
+                if (doubleSlideDisplayMode==1) {
+                    if (curSlide->next->link!=NULL) {
+                        openLinkAtIndex(atoi(comm->arg[1]), curSlide->next);
+                    } else {
+                        printMessageBottomBar("No links detected on this slide");
+                        getch();
+                    }
+                } else {
+                    if (curSlide->link!=NULL) {
+                        openLinkAtIndex(atoi(comm->arg[1]), curSlide);
+                    } else {
+                        printMessageBottomBar("No links detected on this slide");
+                        getch();
+                    }
+                }
+            }
+            break;
         // todo: command to display meta information
         // todo: command to enable markdown mode
         default:
@@ -436,35 +491,6 @@ slide* searchLastInput(int direction, slide* curSlide) {
     return searching;
 }
 
-void printLinksOnSlide(slide *curSlide) {
-    move(2, 0);
-    mdlink *l = curSlide->link;
-    while (l) {
-        printw("%d - %s\n",l->index, l->url);
-        l = l->next;
-    }
-}
-
-void openLinkAtIndex(int index, slide *curSlide) {
-    mdlink *l = curSlide->link;
-    while (l) {
-        if (index == l->index) {
-            // build a command that will open link in def browser
-            char systemCommand[1000] = {0};
-            strcat(systemCommand, "xdg-open ");
-            strcat(systemCommand, l->url);
-            // send any output to /dev/null (instead of stdout)
-            strcat(systemCommand, " >/dev/null 2>&1");
-            // if the command fails, display a soft error
-            system(systemCommand);
-            return;
-        } else {
-            l = l->next;
-        }
-    }
-    printMessageBottomBar("index given does not contain a link");
-    getch();
-}
 
 slide* handleKeyPress(slide *curSlide)
 {
