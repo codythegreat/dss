@@ -37,10 +37,11 @@ line *nextLine(line *prev) {
 
 void freeSlides(slide *s) {
     slide *next;
-    while (next!=NULL) {
+    while (s) {
         next = s->next;
         memset(s, 0, sizeof(*s));
         free(s);
+        s = next;
     }
 }
 
