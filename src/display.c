@@ -455,7 +455,7 @@ slide* searchLastInput(int direction, slide* curSlide) {
     slide *searching;
     line *toSearch;
     if (direction==1) {
-        if (!curSlide->next==NULL) {
+        if (curSlide->next) {
             searching = curSlide->next;
             toSearch = searching->first;
         } else {
@@ -464,7 +464,7 @@ slide* searchLastInput(int direction, slide* curSlide) {
             return curSlide;
         }
     } else {
-        if (!curSlide->prev==NULL) {
+        if (curSlide->prev) {
             searching = curSlide->prev;
             toSearch = searching->first;
         } else {
@@ -515,12 +515,12 @@ slide* handleKeyPress(slide *curSlide)
         case 'j':
         case 'J':
         case ' ': // next slide
-            if (!curSlide->next==NULL)
+            if (curSlide->next)
                 curSlide = curSlide->next;
             break;
         case 'k':
         case 'K': // prev slide
-            if (!curSlide->prev==NULL)
+            if (curSlide->prev)
                 curSlide = curSlide->prev;
             break;
         case '9':
