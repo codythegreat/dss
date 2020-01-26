@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +14,7 @@ void printColorValueError(int slideNumber, int lineNumber) {
     getc(stdin);
 }
 
-void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
+void handleColorTag(char *buf, ssize_t *lineLength, int slideNumber, int lineNumber, int *colorPairOut) {
     // stores coresponding tag to color values
     char colValues[8][2] = {
         {'B', '0'},
@@ -26,8 +27,7 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
         {'w', '7'},
     };
     // find color tag inside buffer
-    char *colPtr;
-    colPtr = strstr(buf, "COLOR=\"");
+    char *colPtr = strstr(buf, "COLOR=\"");
     
     // if tag exists, get and assign value, then remove tag
     if (colPtr!=NULL) {
@@ -61,7 +61,9 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
 
         if (colorNumber >= 1 && colorNumber <= 56) {
             // assign the tag's value to the line's colorPair
-            l->colorPair = colorNumber;
+            if (colorPairOut) {
+                *colorPairOut = colorNumber;
+            }
 
             // remove the tag from buf by shifting each character up over the tag
             char currentChar;
@@ -70,7 +72,10 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
                 currentChar = *(colPtr + (10+i));
                 buf[(colPtr-&buf[0])+i] = currentChar;
                 i++;
-            } while (currentChar!='\n');
+            } while (currentChar!='\0');
+            if (lineLength) {
+                *lineLength -= 10;
+            }
         
         // if number is bad, print a soft error
         } else {
@@ -81,13 +86,13 @@ void handleColorTag(char buf[1000], line *l, int slideNumber, int lineNumber) {
 }
 
 // searches for a link in the buffer and parses it into mdlink struct
-void handleMarkdownStyleLink(char buf[1000], slide *s) {
+void handleMarkdownStyleLink(char *buf, slide *s) {
     // points to first char '[' in link
     char *linkPtr = strchr(buf, '[');
-    if (linkPtr!=NULL) {
+    if (linkPtr) {
         // holds first/last char addresses in title
-        char *titleStart = linkPtr;
-        char *titleEnd;
+        char *titleStart = linkPtr + 1;
+        char *titleEnd = NULL;
 
         // evaluate each character to see where title ends
         while (*linkPtr!='\0') {
@@ -105,20 +110,9 @@ void handleMarkdownStyleLink(char buf[1000], slide *s) {
         // if next char is ( then build link title and url
         linkPtr+=1;
         if (*linkPtr=='(') {
-
-            // create the title by assigning each character to it
-            int currentPosition = 0;
-            char titleBuffer[256];
-            
-            do {
-                titleBuffer[currentPosition] = *(titleStart+currentPosition);
-                currentPosition++;
-            } while (!(titleStart+currentPosition>titleEnd));
-            titleBuffer[currentPosition]='\0';
-
             // holds first last char addresses in url
             char *urlStart = linkPtr+1;
-            char *urlEnd;
+            char *urlEnd = NULL;
             while (*linkPtr!='\0') {
                 linkPtr++;
                 if (*linkPtr==')') {
@@ -130,32 +124,40 @@ void handleMarkdownStyleLink(char buf[1000], slide *s) {
                 }
             }
 
-            // create the url
-            currentPosition = 0;
-            char urlBuffer[1000];
-            do {
-                urlBuffer[currentPosition] = *(urlStart+currentPosition);
-                currentPosition++;
-            } while (!(urlStart+currentPosition>urlEnd));
-            urlBuffer[currentPosition]='\0';
-
-            // create link
-            mdlink *l;
-            if (s->link !=NULL) {
-                l = appendLink(s->link);
+            size_t parsedURLLength = urlEnd - urlStart + 1;
+            char *url;
+            size_t urlLength;
+            bool shouldFreeURL;
+            // make sure that http in url before assigning as value to struct
+            if (strnstr(urlStart, "http://", parsedURLLength) || 
+                strnstr(urlStart, "https://", parsedURLLength)) {
+                url = urlStart;
+                urlLength = parsedURLLength;
+                shouldFreeURL = false;
             } else {
-                l = newLink();
-                s->link = l;
+                char *formatString = NULL;
+                asprintf(&formatString, "https://%%.%lds", parsedURLLength);
+                urlLength = asprintf(&url, formatString, urlStart);
+                free(formatString);
+                shouldFreeURL = true;
             }
 
-            // assign values to the link
-            strcat(l->title, titleBuffer);
-            // make sure that http in url before assigning as value to struct
-            if (strstr(urlBuffer, "http://") || strstr(urlBuffer, "https://")) {
-                strcat(l->url, urlBuffer);
+            mdlink *link = newLink(
+                titleStart,
+                titleEnd - titleStart + 1,
+                url,
+                urlLength
+            );
+
+            if (shouldFreeURL) {
+                free(url);
+            }
+
+            if (s->link) {
+                s->link->next = link;
+                link->index = s->link->index + 1;
             } else {
-                strcat(l->url, "https://");
-                strcat(l->url, urlBuffer);
+                s->link = link;
             }
         }
     }
@@ -167,10 +169,12 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     slideC = 0;
 
     // create a buffer for each line
-    char buf[1000];
+    char *buf = NULL;
+    size_t buflen = 0;
+    ssize_t lineLength = 0;
 
     // parse inFile for meta information
-    while(fgets(buf, 1000, inFile)!=NULL) {
+    while((lineLength = getline(&buf, &buflen, inFile)) != -1) {
         if (strstr(buf, "title=")!=NULL) { // finds title line
             char quoted[256];
             if (sscanf(buf, "%*[^\"]\"%127[^\"]\"", quoted) == 1) {
@@ -190,14 +194,13 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
     slide *s = newSlide();
     slide *beginning = s;
 
-    // create line pointers, l is for iterating while 
-    // first is the pointer used in each slide struct
-    line *l = newLine();
-    line *first = l;
-    l->content[0] = '\0';
+    // create line pointers, previousLine is for iterating while 
+    // firstLine is the pointer used in each slide struct
+    line *previousLine = NULL;
+    line *firstLine = NULL;
 
     // curMaxX and curY are used to set x/y values to slides
-    int curMaxX = 0;
+    ssize_t curMaxX = 0;
     int curY = 0;
 
     int startSlides = 0; // when {STARTSLIDES} encounterd, set as 1
@@ -205,7 +208,7 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
 
     // continue itteration over file starting after STARTSLIDES
     int i = 0;
-    while(fgets(buf, 1000, inFile)!=NULL) {
+    while((lineLength = getline(&buf, &buflen, inFile)) != -1) {
         if (strstr(buf, "{STARTSLIDES}")!=NULL) {
             startSlides++;
             continue;
@@ -213,9 +216,9 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
         if (startSlides==0) {
             continue;
         }
-	// if at end of slide, assign slide values and move to next
+        // if at end of slide, assign slide values and move to next
         if (strstr(buf, "{ENDSLIDE}")!=NULL) {
-            s->first = first;
+            s->first = firstLine;
             s->number = i+1;
             s->maxX = curMaxX;
             s->y = curY;
@@ -228,36 +231,36 @@ slide* parseTXT(FILE *inFile, int* slideCounter, char *presTitle)
             i++;
             if (i==slideC)
                 break;
-    	    l = newLine();
-            first = l;
+    	    previousLine = NULL;
+            firstLine = NULL;
 
         } else {
             // if line contains color tag, get color value and set l->colorPair
-            handleColorTag(buf, l, i+1, curY+1);
+            int colorPair = 0;
+            handleColorTag(buf, &lineLength, i+1, curY+1, &colorPair);
 
             // if line contains a link, add it to the slide's links
             handleMarkdownStyleLink(buf,s);
-            // replace new line character with string terminator character
-            char *endLine;
-            endLine = strchr(buf, '\n');
-            *endLine = '\0';
-            // add buf to current line and itterate to the next
-            strcat(l->content, buf);
-            l = nextLine(l);
+
+            // add buf to current line and iterate to the next
+            line *line = newLine(buf, lineLength);
+            line->colorPair = colorPair;
+            if (previousLine) {
+                line->prev = previousLine;
+                previousLine->next = line;
+            }
+            previousLine = line;
+            firstLine = firstLine ?: line;
 
             // with each line, y increases
             curY++;
 
             // update curMaxX only if line is longer that previous lines
-            char end = '\0';
-            char *ptr = strchr(buf, end);
-            if (ptr) {
-                int n = ptr - buf;
-                if (n>curMaxX) {
-                    curMaxX = n;
-                }
-            }
+            curMaxX = (lineLength > curMaxX) ? lineLength : curMaxX;
         }
+    }
+    if (buf) {
+        free(buf);
     }
     // return first slide
     return beginning;

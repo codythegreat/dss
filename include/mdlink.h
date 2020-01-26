@@ -4,13 +4,28 @@
 typedef struct mdlink
 {
     int index;
-    char title[256];
-    char url[1000];
     struct mdlink *next;
+    int __urlOffset;
+    char __storage[];
 } mdlink;
 
-mdlink *newLink();
-mdlink *appendLink(mdlink *first);
+mdlink *newLink(char *title, size_t titleLength, char *url, size_t urlLength);
 void freeLinks(mdlink *first);
+
+static inline
+__attribute__((always_inline))
+char *
+linkGetTitle(mdlink *link) 
+{
+    return link->__storage;
+}
+
+static inline
+__attribute__((always_inline))
+char *
+linkGetURL(mdlink *link) 
+{
+    return link->__storage + link->__urlOffset;
+}
 
 #endif

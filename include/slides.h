@@ -15,16 +15,16 @@ typedef struct slide
 } slide;
 
 typedef struct line {
-    char content[256]; // todo can this be dynamic?
     int colorPair;
     struct line *prev;
     struct line *next;
+    size_t contentLength;
+    char content[];
 } line;
 
 slide *newSlide();
 slide *nextSlide(slide *prev);
-line *newLine();
-line *nextLine(line *prev);
+line *newLine(char *buffer, size_t length);
 void freeSlides(slide *s);
 void freeLines(line *first);
 

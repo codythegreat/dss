@@ -20,19 +20,15 @@ slide *nextSlide(slide *prev) {
     return n;
 }
 
-line *newLine() {
-    line *l = malloc(sizeof(line));
-    memset(l, 0, sizeof(*l));
+line *newLine(char *buffer, size_t length) {
+    line *l = malloc(sizeof(line) + sizeof(char) * length);
+    l->colorPair = 0;
+    l->prev = NULL;
+    l->next = NULL;
+    l->contentLength = length;
+    strncpy(l->content, buffer, length);
+    l->content[length - 1] = '\0';
     return l;
-}
-
-line *nextLine(line *prev) {
-    line *n = malloc(sizeof(line));
-    memset(n, 0, sizeof(*n));
-    n->prev = prev;
-    prev->next = n;
-    n->next = NULL;
-    return n;
 }
 
 void freeSlides(slide *s) {
