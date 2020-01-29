@@ -129,8 +129,8 @@ void handleMarkdownStyleLink(char *buf, slide *s) {
             size_t urlLength;
             bool shouldFreeURL;
             // make sure that http in url before assigning as value to struct
-            if (strnstr(urlStart, "http://", parsedURLLength) || 
-                strnstr(urlStart, "https://", parsedURLLength)) {
+            if ((parsedURLLength > 7 /*strlen("http://")*/ && memcmp(urlStart, "http://", 7) == 0) ||
+                (parsedURLLength > 8 /*strlen("https://")*/ && memcmp(urlStart, "https://", 8) == 0)) {
                 url = urlStart;
                 urlLength = parsedURLLength;
                 shouldFreeURL = false;
