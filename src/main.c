@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     int displayInitialized = 0;
 
     //0-exit, 1-open new file
-    int returnCode; 
+    int returnCode = 0; 
     do
     {
         // if opening new file, reset vars from last loop

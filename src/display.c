@@ -249,7 +249,7 @@ void printLinksOnSlide(slide *curSlide) {
     int i = 2; //start line to print at
     while (l) {
         move(i, 0);
-        printw("%d - %s",l->index, l->url);
+        printw("%d - %s",l->index, linkGetURL(l));
         l = l->next;
         i++;
     }
@@ -260,13 +260,12 @@ void openLinkAtIndex(int index, slide *curSlide) {
     while (l) {
         if (index == l->index) {
             // build a command that will open link in def browser
-            char systemCommand[1000] = {0};
-            strcat(systemCommand, "xdg-open ");
-            strcat(systemCommand, l->url);
             // send any output to /dev/null (instead of stdout)
-            strcat(systemCommand, " >/dev/null 2>&1");
+            char *systemCommand = NULL;
+            asprintf(&systemCommand, "xdg-open %s >/dev/null 2>&1", linkGetURL(l));
             // if the command fails, display a soft error
             system(systemCommand);
+            free(systemCommand);
             return;
         } else {
             l = l->next;
@@ -455,7 +454,7 @@ slide* searchLastInput(int direction, slide* curSlide) {
     slide *searching;
     line *toSearch;
     if (direction==1) {
-        if (!curSlide->next==NULL) {
+        if (curSlide->next) {
             searching = curSlide->next;
             toSearch = searching->first;
         } else {
@@ -464,7 +463,7 @@ slide* searchLastInput(int direction, slide* curSlide) {
             return curSlide;
         }
     } else {
-        if (!curSlide->prev==NULL) {
+        if (curSlide->prev) {
             searching = curSlide->prev;
             toSearch = searching->first;
         } else {
@@ -515,12 +514,12 @@ slide* handleKeyPress(slide *curSlide)
         case 'j':
         case 'J':
         case ' ': // next slide
-            if (!curSlide->next==NULL)
+            if (curSlide->next)
                 curSlide = curSlide->next;
             break;
         case 'k':
         case 'K': // prev slide
-            if (!curSlide->prev==NULL)
+            if (curSlide->prev)
                 curSlide = curSlide->prev;
             break;
         case '9':
