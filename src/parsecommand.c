@@ -44,11 +44,11 @@ command* parseCommand(char commandInput[1000])
     {
          comm->cmd = 5;
     } 
-    else if (atoi(comm->arg[0])!=NULL)
+    else if (atoi(comm->arg[0])!=0)
     {
          comm->cmd = 6;
     } 
-    else if (strlen(comm->arg[0])==1 && atoi(comm->arg[0])==NULL)
+    else if (strlen(comm->arg[0])==1 && atoi(comm->arg[0])==0)
     {
          comm->cmd = 7;
     } 
