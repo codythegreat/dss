@@ -1,3 +1,4 @@
+#include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -77,7 +78,6 @@ int main(int argc, char *argv[])
         // if opening new file, reset vars from last loop
         if (returnCode==1) {
             title[0] = '\0';
-            returnCode = 0;
         }
         // open the file, otherwise return error
         FILE *currentFile;

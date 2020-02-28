@@ -5,7 +5,7 @@
 typedef struct slide
 {
     int number;
-    int maxX;
+    size_t maxX;
     int y;
     int colorPair;
     struct line *first;

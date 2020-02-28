@@ -8,7 +8,7 @@
 
 int numOfSlides; // total of slides
 
-int max_x; // ncurses character "res" x axis
+size_t max_x; // ncurses character "res" x axis
 int max_y; // ncurses character "res" y axis
 
 char slideNumberInputBuffer[10] = {'\0'}; // buffer for jumping to slides by number
