@@ -26,7 +26,7 @@ void version() {
 int main(int argc, char *argv[])
 {	
     // parse flags
-    char ch;
+    int ch; // must be int: comparing char to EOF always returns true
     while ((ch=getopt(argc, argv, "hv"))!=EOF) {
         switch (ch)
         {
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
     }
-    argv += optind;
+    argv += optind; // optind is the offset of the first non-option arg
 
     if (argc == 1) {
         /* no args (other than options) */

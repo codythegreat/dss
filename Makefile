@@ -38,6 +38,8 @@ all: dss
 dss: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o dss $(LDFLAGS)
 
+anew: clean all
+
 tidy:
 	$(RM) *.o
 	$(RM) src/*.o
