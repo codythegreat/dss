@@ -359,11 +359,20 @@ slide* handleCommand(slide *curSlide)
                 printMessageBottomBar("Links not supported in double slide display mode");
                 getch();
             } else {
-                if (atoi(comm->arg[1]) && curSlide->link!=NULL) {
-                    openLinkAtIndex(atoi(comm->arg[1]), curSlide);
-                } else {
-                    printMessageBottomBar("No links detected on this slide");
+                if (strlen(comm->arg[1]) == 0) {
+                    printMessageBottomBar("Missing link index. Usage: link <number>");
                     getch();
+                } else {
+                    int link_idx = atoi(comm->arg[1]);
+                    if (link_idx == 0 && strcmp(comm->arg[1], "0") != 0) {
+                         printMessageBottomBar("Invalid link index. Index must be a number. Usage: link <number>");
+                         getch();
+                    } else if (curSlide->link == NULL) {
+                        printMessageBottomBar("No links detected on this slide");
+                        getch();
+                    } else { // Argument provided, it's a number, and links exist
+                        openLinkAtIndex(link_idx, curSlide);
+                    }
                 }
             }
             break;
