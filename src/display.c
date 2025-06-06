@@ -388,6 +388,7 @@ slide* handleCommand(slide *curSlide)
         default:
             break;
     }
+    free(comm);
     return curSlide;
 }
 
